@@ -122,6 +122,11 @@ uploads_dir = Path(__file__).parent.parent / "uploads"
 uploads_dir.mkdir(exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
+# rsc 디렉토리 정적 파일 서빙 (식단 기록 이미지, 음식 이미지 등)
+rsc_dir = Path(__file__).parent.parent.parent / "rsc"
+rsc_dir.mkdir(exist_ok=True)
+app.mount("/rsc", StaticFiles(directory=str(rsc_dir)), name="rsc")
+
 # Error handlers (UTI-005)
 app.add_exception_handler(StarletteHTTPException, not_found_handler)
 app.add_exception_handler(Exception, internal_server_error_handler)
