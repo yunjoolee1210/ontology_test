@@ -558,31 +558,6 @@ export function DietCarePage() {
         {activeTab === 'diet-log' && (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h3 className="font-medium text-[#1F2937]">목표 설정</h3>
-            </div>
-
-            <div className="rounded-xl p-4" style={{ background: 'linear-gradient(135deg, #F2FFFD 0%, #F8F4FE 100%)' }}>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div>
-                  <label className="block text-xs mb-1 text-[#6B7280]">칼륨 (mg/일)</label>
-                  <input type="number" placeholder="2000" className="w-full px-3 py-2 border rounded-lg text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs mb-1 text-[#6B7280]">인 (mg/일)</label>
-                  <input type="number" placeholder="800" className="w-full px-3 py-2 border rounded-lg text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs mb-1 text-[#6B7280]">단백질 (g/일)</label>
-                  <input type="number" placeholder="60" className="w-full px-3 py-2 border rounded-lg text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs mb-1 text-[#6B7280]">열량 (kcal/일)</label>
-                  <input type="number" placeholder="2000" className="w-full px-3 py-2 border rounded-lg text-sm" />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center">
               <h3 className="font-medium text-[#1F2937]">식사 기록</h3>
               <button
                 onClick={() => setIsModalOpen(true)}
