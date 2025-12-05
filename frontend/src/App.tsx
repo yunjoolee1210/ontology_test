@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { MobileNav } from './components/MobileNav';
@@ -38,6 +39,7 @@ import { SupportPage } from './pages/SupportPage';
 import { NotificationPage } from './pages/NotificationPage';
 import { TermsAndConditionsPage } from './pages/TermsAndConditionsPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { RecipeDetailPage } from './pages/RecipeDetailPage';
 
 function AppContent() {
   const { isDrawerOpen, closeDrawer, openDrawer, isLoggedIn, login, logout } = useLayout();
@@ -90,6 +92,7 @@ function AppContent() {
           <Route path="/diet-care" element={<DietCarePage />} />
           <Route path="/diet-care/nutri-coach" element={<NutriCoachPage />} />
           <Route path="/diet-care/diet-log" element={<DietLogPage />} />
+          <Route path="/recipe/:slug" element={<RecipeDetailPage />} />
           <Route path="/quiz/list" element={<QuizListPage />} />
           <Route path="/quiz/:id" element={<QuizPage />} />
           <Route path="/community" element={<CommunityPage />} />
@@ -125,8 +128,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <LayoutProvider>
-      <AppContent />
-    </LayoutProvider>
+    <HelmetProvider>
+      <LayoutProvider>
+        <AppContent />
+      </LayoutProvider>
+    </HelmetProvider>
   );
 }

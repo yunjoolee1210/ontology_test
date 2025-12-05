@@ -43,6 +43,7 @@ from app.api import auth, user, admin
 from app.api.health_record import router as health_record_router
 from app.api.diet_log import router as diet_log_router
 from app.api.test_results import router as test_results_router
+from app.api.recipe import router as recipe_router
 
 # Import NutritionAgent
 from Agent.nutrition.agent import NutritionAgent
@@ -116,6 +117,7 @@ app.include_router(footer_router)
 app.include_router(notification_router)
 app.include_router(diet_log_router)  # 식단 기록 API
 app.include_router(test_results_router)  # 검진결과 OCR API
+app.include_router(recipe_router)  # 레시피 API
 
 # 정적 파일 서빙 (프로필 이미지 등)
 uploads_dir = Path(__file__).parent.parent / "uploads"

@@ -7,6 +7,7 @@ import shutil
 import logging
 import re
 import base64
+import hashlib
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 from pathlib import Path
@@ -185,9 +186,11 @@ async def upload_diet_image(
         if dish_name and dish_name != ai_recognized_name:
             recognition_source = "manual"
 
-        # 파일명: {dish_name}_{timestamp}_{uuid8}.ext
+        # 파일명: {익명화ID}_{요리명}_{식사유형}_{등록일시}.ext
+        # 익명화ID: user_id의 SHA256 해시 앞 12자리 (DB의 user_id로 동일 해시 생성하여 맵핑 가능)
+        anonymous_id = hashlib.sha256(user_id.encode()).hexdigest()[:12]
         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        filename = f"{sanitized_name}_{timestamp}_{uuid.uuid4().hex[:8]}{ext}"
+        filename = f"{anonymous_id}_{sanitized_name}_{meal_type}_{timestamp}{ext}"
         file_path = upload_subdir / filename
 
         # 파일 저장

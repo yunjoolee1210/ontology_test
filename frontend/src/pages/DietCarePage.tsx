@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, ChevronUp, Apple, Utensils, ShoppingBag, Plus, X, Camera, Loader2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Apple, Utensils, ShoppingBag, Plus, X, Camera, Loader2, Volume2, VolumeX, Bookmark, ChefHat } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import {
   FoodItem,
@@ -20,7 +20,7 @@ import {
   getPhosphorusLevel,
 } from '../data/nutritionKnowledgeBase';
 
-type TabType = 'nutri-coach' | 'diet-log';
+type TabType = 'nutri-coach' | 'recipe-coach' | 'diet-log';
 type NutrientType = 'potassium' | 'phosphorus';
 
 interface DietLog {
@@ -41,6 +41,28 @@ interface DietLog {
   food_count: number;
   recognition_source: string;
   logged_at: string;
+}
+
+// 레시피 데이터 인터페이스 (API 응답 형식)
+interface RecipeData {
+  id: string;
+  name: string;
+  name_en: string;
+  slug: string;  // SEO-friendly URL slug
+  image_url: string;
+  category: 'low-potassium' | 'low-phosphorus';
+  cooking_time: string;
+  servings: string;
+  nutrients: {
+    calories: number;
+    potassium: number;
+    phosphorus: number;
+    protein: number;
+    sodium: number;
+  };
+  ingredients: string[];
+  steps: string[];
+  tips: string;
 }
 
 // 정렬 함수: 영양소 값 기준 내림차순 (높은 것 먼저)
@@ -160,6 +182,247 @@ function FoodSection({ title, icon, lowItems, highItems, nutrientType }: FoodSec
             ))}
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// 레시피 카드 컴포넌트
+interface RecipeCardProps {
+  recipe: RecipeData;
+  onFavorite: (id: string) => void;
+  isFavorite: boolean;
+}
+
+function RecipeCard({ recipe, onFavorite, isFavorite }: RecipeCardProps) {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      onClick={() => navigate(`/recipe/${recipe.slug}`)}
+      className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+    >
+      <div className="relative">
+        <img
+          src={recipe.image_url}
+          alt={recipe.name}
+          className="w-full h-32 object-cover"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = `https://placehold.co/400x200/E8F5E9/2E7D32?text=${encodeURIComponent(recipe.name)}`;
+          }}
+        />
+        <div className="absolute top-2 left-2">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+            recipe.category === 'low-potassium'
+              ? 'bg-green-100 text-green-700'
+              : 'bg-blue-100 text-blue-700'
+          }`}>
+            {recipe.category === 'low-potassium' ? '저칼륨' : '저인'}
+          </span>
+        </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onFavorite(recipe.id);
+          }}
+          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 hover:bg-white transition-colors"
+        >
+          <Bookmark
+            size={18}
+            className={isFavorite ? 'fill-[#00C9B7] text-[#00C9B7]' : 'text-gray-400'}
+          />
+        </button>
+      </div>
+      <div className="p-3">
+        <h4 className="font-medium text-[#1F2937] mb-1">{recipe.name}</h4>
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          <span>{recipe.cooking_time}</span>
+          <span>·</span>
+          <span>{recipe.servings}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 레시피 상세 모달
+interface RecipeDetailModalProps {
+  recipe: RecipeData | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onFavorite: (id: string) => void;
+  isFavorite: boolean;
+}
+
+function RecipeDetailModal({ recipe, isOpen, onClose, onFavorite, isFavorite }: RecipeDetailModalProps) {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  const handleSpeak = () => {
+    if (!recipe) return;
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    const text = `${recipe.name} 레시피입니다.
+      조리시간 ${recipe.cooking_time}, ${recipe.servings} 기준입니다.
+      재료: ${recipe.ingredients.join(', ')}.
+      조리 순서: ${recipe.steps.map((step, i) => `${i + 1}단계. ${step}`).join(' ')}.
+      팁: ${recipe.tips}`;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ko-KR';
+    utterance.rate = 0.9;
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    speechRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(true);
+  };
+
+  const handleClose = () => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    onClose();
+  };
+
+  if (!isOpen || !recipe) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-2xl w-[95%] max-w-lg mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="relative flex-shrink-0">
+          <img
+            src={recipe.image_url}
+            alt={recipe.name}
+            className="w-full h-48 object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = `https://placehold.co/400x200/E8F5E9/2E7D32?text=${encodeURIComponent(recipe.name)}`;
+            }}
+          />
+          <button
+            onClick={handleClose}
+            className="absolute top-3 right-3 p-2 rounded-full bg-black/30 hover:bg-black/50 transition-colors"
+          >
+            <X size={20} className="text-white" />
+          </button>
+          <div className="absolute bottom-3 left-3 flex gap-2">
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+              recipe.category === 'low-potassium'
+                ? 'bg-green-100 text-green-700'
+                : 'bg-blue-100 text-blue-700'
+            }`}>
+              {recipe.category === 'low-potassium' ? '저칼륨 요리' : '저인 요리'}
+            </span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-bold text-[#1F2937]">{recipe.name}</h3>
+              <p className="text-sm text-gray-500">{recipe.cooking_time} · {recipe.servings}</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleSpeak}
+                className={`p-2 rounded-full transition-colors ${
+                  isSpeaking ? 'bg-[#00C9B7] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+                title={isSpeaking ? '음성 중지' : '음성으로 듣기'}
+              >
+                {isSpeaking ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
+              <button
+                onClick={() => onFavorite(recipe.id)}
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              >
+                <Bookmark
+                  size={20}
+                  className={isFavorite ? 'fill-[#00C9B7] text-[#00C9B7]' : 'text-gray-400'}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* 영양소 정보 */}
+          <div className="grid grid-cols-5 gap-2 mb-4 p-3 bg-gray-50 rounded-xl">
+            <div className="text-center">
+              <p className="text-xs text-gray-500">칼로리</p>
+              <p className="font-bold text-[#1F2937]">{recipe.nutrients.calories}</p>
+              <p className="text-xs text-gray-400">kcal</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xs text-gray-500">칼륨</p>
+              <p className="font-bold text-green-600">{recipe.nutrients.potassium}</p>
+              <p className="text-xs text-gray-400">mg</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xs text-gray-500">인</p>
+              <p className="font-bold text-blue-600">{recipe.nutrients.phosphorus}</p>
+              <p className="text-xs text-gray-400">mg</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xs text-gray-500">단백질</p>
+              <p className="font-bold text-[#1F2937]">{recipe.nutrients.protein}</p>
+              <p className="text-xs text-gray-400">g</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xs text-gray-500">나트륨</p>
+              <p className="font-bold text-orange-600">{recipe.nutrients.sodium}</p>
+              <p className="text-xs text-gray-400">mg</p>
+            </div>
+          </div>
+
+          {/* 재료 */}
+          <div className="mb-4">
+            <h4 className="font-medium text-[#1F2937] mb-2 flex items-center gap-2">
+              <ShoppingBag size={16} className="text-[#00C9B7]" />
+              재료
+            </h4>
+            <div className="bg-[#F0FDF4] rounded-xl p-3">
+              <ul className="grid grid-cols-2 gap-x-3 gap-y-1">
+                {recipe.ingredients.map((ing, idx) => (
+                  <li key={idx} className="text-sm text-gray-700 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00C9B7] flex-shrink-0" />
+                    {ing}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* 조리 순서 */}
+          <div className="mb-4">
+            <h4 className="font-medium text-[#1F2937] mb-2 flex items-center gap-2">
+              <ChefHat size={16} className="text-[#9F7AEA]" />
+              조리 순서
+            </h4>
+            <div className="space-y-2">
+              {recipe.steps.map((step, idx) => (
+                <div key={idx} className="flex gap-3 p-3 bg-gray-50 rounded-xl">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#9F7AEA] text-white text-sm font-medium flex items-center justify-center">
+                    {idx + 1}
+                  </span>
+                  <p className="text-sm text-gray-700">{step}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 팁 */}
+          <div className="p-3 bg-[#FEF3C7] rounded-xl">
+            <p className="text-sm text-[#92400E]">
+              <strong>💡 CKD 환자 팁:</strong> {recipe.tips}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -393,6 +656,106 @@ export function DietCarePage() {
   const [dietLogs, setDietLogs] = useState<DietLog[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoadingLogs, setIsLoadingLogs] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  // 레시피 코치 상태
+  const [recipes, setRecipes] = useState<RecipeData[]>([]);
+  const [isLoadingRecipes, setIsLoadingRecipes] = useState(false);
+  const [favoriteRecipes, setFavoriteRecipes] = useState<string[]>([]);
+
+  // 레시피 목록 불러오기
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      setIsLoadingRecipes(true);
+      try {
+        const response = await fetch('/api/recipes');
+        if (response.ok) {
+          const data = await response.json();
+          setRecipes(data.recipes || []);
+        }
+      } catch (err) {
+        console.error('Failed to load recipes:', err);
+      } finally {
+        setIsLoadingRecipes(false);
+      }
+    };
+    fetchRecipes();
+  }, []);
+
+  // 즐겨찾기 토글 (로그인 필요)
+  const handleFavoriteToggle = async (recipeId: string) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    const isFavorite = favoriteRecipes.includes(recipeId);
+
+    // 즉시 UI 업데이트 (낙관적 업데이트)
+    if (isFavorite) {
+      setFavoriteRecipes(prev => prev.filter(id => id !== recipeId));
+    } else {
+      setFavoriteRecipes(prev => [...prev, recipeId]);
+    }
+
+    try {
+      const response = await fetch(`/api/recipes/${recipeId}/favorite`, {
+        method: isFavorite ? 'DELETE' : 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        // 실패 시 롤백
+        if (isFavorite) {
+          setFavoriteRecipes(prev => [...prev, recipeId]);
+        } else {
+          setFavoriteRecipes(prev => prev.filter(id => id !== recipeId));
+        }
+      }
+    } catch (err) {
+      console.error('Failed to toggle favorite:', err);
+      // 실패 시 롤백
+      if (isFavorite) {
+        setFavoriteRecipes(prev => [...prev, recipeId]);
+      } else {
+        setFavoriteRecipes(prev => prev.filter(id => id !== recipeId));
+      }
+    }
+  };
+
+  // 즐겨찾기 목록 불러오기
+  useEffect(() => {
+    const loadFavorites = async () => {
+      const token = localStorage.getItem('accessToken');
+      if (!token) return;
+
+      try {
+        const response = await fetch('/api/recipes/user/favorites', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setFavoriteRecipes(data.favorites || []);
+        }
+      } catch (err) {
+        console.error('Failed to load favorites:', err);
+      }
+    };
+    loadFavorites();
+  }, []);
+
+  // 등록 버튼 클릭 시 로그인 체크
+  const handleAddClick = () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      setShowLoginModal(true);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
 
   // 식단 기록 목록 가져오기
   const fetchDietLogs = async () => {
@@ -455,8 +818,25 @@ export function DietCarePage() {
                 fontWeight: activeTab === 'nutri-coach' ? 'bold' : 'normal'
               }}
             >
-              뉴트리코치
+              영양 코치
               {activeTab === 'nutri-coach' && (
+                <div
+                  className="absolute bottom-[-1px] left-0 right-0"
+                  style={{ height: '2px', background: '#9F7AEA', width: '100%' }}
+                />
+              )}
+            </div>
+            <div
+              onClick={() => setActiveTab('recipe-coach')}
+              className="relative pb-3 cursor-pointer transition-all duration-200"
+              style={{
+                color: activeTab === 'recipe-coach' ? '#00C9B7' : '#9CA3AF',
+                fontSize: '15px',
+                fontWeight: activeTab === 'recipe-coach' ? 'bold' : 'normal'
+              }}
+            >
+              레시피 코치
+              {activeTab === 'recipe-coach' && (
                 <div
                   className="absolute bottom-[-1px] left-0 right-0"
                   style={{ height: '2px', background: '#9F7AEA', width: '100%' }}
@@ -554,19 +934,53 @@ export function DietCarePage() {
           </div>
         )}
 
+        {/* Recipe Coach Content */}
+        {activeTab === 'recipe-coach' && (
+          <div className="space-y-6">
+            {/* 안내 메시지 */}
+            <div className="bg-gradient-to-r from-[#F0FDF4] to-[#EFF6FF] rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <ChefHat size={24} className="text-[#00C9B7] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-[#1F2937] mb-1">CKD 환자를 위한 질환식 레시피</h4>
+                  <p className="text-sm text-gray-600">
+                    칼륨과 인 함량이 낮은 요리 레시피를 확인하세요.
+                    <span className="text-[#9F7AEA]"> 🔊 음성으로 듣기</span> 기능과
+                    <span className="text-[#00C9B7]"> 🔖 즐겨찾기</span> 기능을 활용해보세요.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 레시피 그리드 */}
+            {isLoadingRecipes ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 size={24} className="animate-spin text-[#00C9B7]" />
+              </div>
+            ) : recipes.length > 0 ? (
+              <div className="grid grid-cols-2 gap-3">
+                {recipes.map((recipe) => (
+                  <RecipeCard
+                    key={recipe.id}
+                    recipe={recipe}
+                    onFavorite={handleFavoriteToggle}
+                    isFavorite={favoriteRecipes.includes(recipe.id)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-gray-400">
+                <ChefHat size={40} className="mx-auto mb-3 opacity-50" />
+                <p className="text-sm">등록된 레시피가 없습니다.</p>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Diet Log Content */}
         {activeTab === 'diet-log' && (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium text-[#1F2937]">식사 기록</h3>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-1 px-3 py-1.5 bg-[#00C9B7] text-white text-sm font-medium rounded-lg hover:bg-[#00B5A5] transition-colors"
-              >
-                <Plus size={16} />
-                기록하기
-              </button>
-            </div>
+            <h3 className="font-medium text-[#1F2937]">식사 기록</h3>
 
             {isLoadingLogs ? (
               <div className="flex items-center justify-center py-12">
@@ -616,7 +1030,7 @@ export function DietCarePage() {
               <div className="text-center py-12 text-gray-400">
                 <Camera size={40} className="mx-auto mb-3 opacity-50" />
                 <p className="text-sm">아직 기록된 식사가 없습니다.</p>
-                <p className="text-xs mt-1">위의 "기록하기" 버튼을 눌러 첫 식사를 기록해보세요!</p>
+                <p className="text-xs mt-1">우측 하단의 + 버튼을 눌러 첫 식사를 기록해보세요!</p>
               </div>
             )}
           </div>
@@ -626,8 +1040,9 @@ export function DietCarePage() {
       {/* 플로팅 버튼 (식단 로그 탭에서만 표시) */}
       {activeTab === 'diet-log' && (
         <button
-          onClick={() => setIsModalOpen(true)}
-          className="fixed bottom-24 right-4 lg:bottom-8 lg:right-8 w-14 h-14 bg-[#00C9B7] text-white rounded-full shadow-lg flex items-center justify-center hover:bg-[#00B5A5] transition-colors z-40"
+          onClick={handleAddClick}
+          className="fixed bottom-24 right-4 lg:bottom-8 lg:right-8 w-14 h-14 text-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all z-40"
+          style={{ background: 'linear-gradient(135deg, #00C8B4 0%, #9F7AEA 100%)' }}
         >
           <Plus size={24} />
         </button>
@@ -639,6 +1054,36 @@ export function DietCarePage() {
         onClose={() => setIsModalOpen(false)}
         onSuccess={fetchDietLogs}
       />
+
+      {/* 로그인 필요 모달 */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl w-[85%] max-w-sm mx-4 p-6 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#F0FDF4] flex items-center justify-center">
+              <Utensils size={32} className="text-[#00C9B7]" />
+            </div>
+            <h3 className="text-lg font-bold text-[#1F2937] mb-2">회원 전용 메뉴입니다</h3>
+            <p className="text-sm text-gray-500 mb-6">
+              로그인하시면 식단 기록 기능을<br />이용할 수 있습니다.
+            </p>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => navigate('/login')}
+                className="w-full py-3 rounded-xl font-medium text-white"
+                style={{ background: 'linear-gradient(135deg, #00C8B4 0%, #9F7AEA 100%)' }}
+              >
+                로그인
+              </button>
+              <button
+                onClick={() => setShowLoginModal(false)}
+                className="w-full py-3 rounded-xl font-medium text-gray-500 hover:bg-gray-100"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
