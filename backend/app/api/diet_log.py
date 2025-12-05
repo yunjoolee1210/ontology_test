@@ -88,7 +88,7 @@ async def upload_diet_image(
     file: UploadFile = File(..., description="음식 이미지 파일"),
     dish_name: Optional[str] = Form(None, description="요리명 (선택, AI 인식 실패 시 직접 입력)"),
     meal_type: str = Form("lunch", description="식사 유형: breakfast, lunch, dinner, snack"),
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """
     식단 이미지 업로드
@@ -115,7 +115,7 @@ async def upload_diet_image(
     if len(contents) > MAX_FILE_SIZE:
         raise HTTPException(status_code=400, detail="파일 크기는 5MB를 초과할 수 없습니다.")
 
-    user_id = str(current_user["_id"])
+    user_id = current_user
     log_id = str(uuid.uuid4())
 
     # 폴더 생성: rsc/uploads/diet-log/{log_id}/
@@ -247,14 +247,14 @@ async def upload_diet_image(
 async def update_dish_name(
     log_id: str,
     request: DietLogUpdateRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """
     요리명 수정 (AI 인식 실패 시 사용자가 직접 입력)
 
     - 파일명도 함께 변경
     """
-    user_id = str(current_user["_id"])
+    user_id = current_user
 
     try:
         await user_db_manager.connect()
@@ -316,10 +316,10 @@ async def get_diet_logs(
     date: Optional[str] = None,
     limit: int = 20,
     skip: int = 0,
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """사용자의 식단 기록 목록 조회"""
-    user_id = str(current_user["_id"])
+    user_id = current_user
 
     try:
         await user_db_manager.connect()
@@ -371,10 +371,10 @@ async def get_diet_logs(
 @router.delete("/{log_id}")
 async def delete_diet_log(
     log_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """식단 기록 삭제"""
-    user_id = str(current_user["_id"])
+    user_id = current_user
 
     try:
         await user_db_manager.connect()

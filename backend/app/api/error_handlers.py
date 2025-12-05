@@ -9,17 +9,32 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 async def not_found_handler(request: Request, exc: StarletteHTTPException):
     """
-    404 Not Found 에러 핸들러
-    
+    HTTP 에러 핸들러
+
     사용자 친화적인 메시지 반환
+    원래 status code를 유지하면서 처리
     """
+    # 원래 status code 유지
+    status_code = exc.status_code if hasattr(exc, 'status_code') else status.HTTP_404_NOT_FOUND
+
+    # status code별 기본 메시지
+    default_messages = {
+        401: "인증이 필요합니다",
+        403: "접근 권한이 없습니다",
+        404: "페이지를 찾을 수 없습니다",
+        405: "허용되지 않은 메서드입니다",
+    }
+
+    message = default_messages.get(status_code, "요청을 처리할 수 없습니다")
+
     return JSONResponse(
-        status_code=status.HTTP_404_NOT_FOUND,
+        status_code=status_code,
         content={
-            "error_code": 404,
-            "message": "페이지를 찾을 수 없습니다",
+            "error_code": status_code,
+            "message": message,
             "detail": str(exc.detail) if hasattr(exc, 'detail') else None
-        }
+        },
+        headers=exc.headers if hasattr(exc, 'headers') and exc.headers else None
     )
 
 

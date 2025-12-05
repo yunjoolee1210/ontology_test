@@ -4,9 +4,11 @@ FatSecret Image Recognition API Service
 """
 
 import os
+import ssl
 import base64
 import logging
 import aiohttp
+import certifi
 from typing import Dict, Any, Optional, List
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -93,11 +95,14 @@ class FatSecretService:
         if not self.client_id or not self.client_secret:
             raise ValueError("FatSecret API credentials not configured")
 
-        async with aiohttp.ClientSession() as session:
+        # SSL 컨텍스트 설정 (certifi 인증서 사용)
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+
+        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=ssl_context)) as session:
             auth = aiohttp.BasicAuth(self.client_id, self.client_secret)
             data = {
                 "grant_type": "client_credentials",
-                "scope": "premier image-recognition"
+                "scope": "basic"  # Basic scope for standard API access
             }
 
             async with session.post(
@@ -164,7 +169,10 @@ class FatSecretService:
                 "Content-Type": "application/json"
             }
 
-            async with aiohttp.ClientSession() as session:
+            # SSL 컨텍스트 설정 (certifi 인증서 사용)
+            ssl_context = ssl.create_default_context(cafile=certifi.where())
+
+            async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=ssl_context)) as session:
                 async with session.post(
                     self.IMAGE_RECOGNITION_URL,
                     headers=headers,
@@ -432,12 +440,126 @@ def get_fatsecret_service() -> FatSecretService:
     return _fatsecret_service
 
 
+async def recognize_food_with_openai(image_data: str) -> Dict[str, Any]:
+    """
+    OpenAI Vision API를 사용한 음식 인식 (FatSecret 대체)
+
+    Args:
+        image_data: Base64 인코딩된 이미지 데이터
+
+    Returns:
+        CKD 포맷의 인식 결과
+    """
+    import openai
+    import json
+
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    if not openai_api_key:
+        return {
+            "success": False,
+            "error": "OpenAI API key not configured",
+            "dish_name": None,
+            "ingredients": [],
+            "nutrients": None
+        }
+
+    client = openai.OpenAI(api_key=openai_api_key)
+
+    try:
+        # 이미지 데이터 형식 정리
+        if "," in image_data:
+            image_data = image_data.split(",")[1]
+
+        prompt = """이 음식 이미지를 분석하고 다음 JSON 형식으로 응답해주세요:
+{
+    "dish_name": "음식 이름 (한국어)",
+    "ingredients": [
+        {"name": "재료명", "amount": 예상량(숫자), "unit": "g"}
+    ],
+    "nutrients": {
+        "calories": 예상 칼로리(숫자),
+        "protein": 단백질(g),
+        "fat": 지방(g),
+        "carbohydrate": 탄수화물(g),
+        "sodium": 나트륨(mg),
+        "potassium": 칼륨(mg),
+        "phosphorus": 인(mg),
+        "calcium": 칼슘(mg),
+        "fiber": 식이섬유(g)
+    },
+    "confidence": 0.0-1.0 사이의 신뢰도
+}
+
+CKD(만성콩팥병) 환자를 위한 영양 분석이므로 나트륨, 칼륨, 인 수치를 정확하게 추정해주세요.
+반드시 유효한 JSON만 응답하세요."""
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{image_data}",
+                                "detail": "low"
+                            }
+                        }
+                    ]
+                }
+            ],
+            max_tokens=1000
+        )
+
+        response_text = response.choices[0].message.content.strip()
+
+        # JSON 파싱
+        if "```json" in response_text:
+            response_text = response_text.split("```json")[1].split("```")[0].strip()
+        elif "```" in response_text:
+            response_text = response_text.split("```")[1].split("```")[0].strip()
+
+        result = json.loads(response_text)
+
+        return {
+            "success": True,
+            "dish_name": result.get("dish_name", "알 수 없는 음식"),
+            "ingredients": result.get("ingredients", []),
+            "nutrients": result.get("nutrients", {}),
+            "food_count": len(result.get("ingredients", [])) or 1,
+            "confidence": result.get("confidence", 0.8)
+        }
+
+    except json.JSONDecodeError as e:
+        logger.error(f"OpenAI response JSON parse error: {e}")
+        return {
+            "success": False,
+            "error": "음식 정보 파싱 실패",
+            "dish_name": None,
+            "ingredients": [],
+            "nutrients": None
+        }
+    except Exception as e:
+        logger.error(f"OpenAI Vision API error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "dish_name": None,
+            "ingredients": [],
+            "nutrients": None
+        }
+
+
 async def recognize_food_from_image(
     image_data: str,
     include_food_data: bool = True
 ) -> Dict[str, Any]:
     """
     음식 이미지 인식 헬퍼 함수
+
+    FatSecret API를 먼저 시도하고, 실패하면 OpenAI Vision API를 사용
 
     Args:
         image_data: Base64 인코딩된 이미지 데이터
@@ -446,9 +568,24 @@ async def recognize_food_from_image(
     Returns:
         CKD 포맷으로 변환된 인식 결과
     """
+    # FatSecret 시도
     service = get_fatsecret_service()
     result = await service.recognize_food_image(image_data, include_food_data)
-    return service.convert_to_ckd_format(result)
+    ckd_result = service.convert_to_ckd_format(result)
+
+    # FatSecret이 음식을 인식했으면 반환
+    if ckd_result.get("success") and ckd_result.get("dish_name"):
+        logger.info(f"FatSecret recognized: {ckd_result.get('dish_name')}")
+        return ckd_result
+
+    # FatSecret 실패 시 OpenAI Vision으로 대체
+    logger.info("FatSecret failed or no food detected, trying OpenAI Vision...")
+    openai_result = await recognize_food_with_openai(image_data)
+
+    if openai_result.get("success"):
+        logger.info(f"OpenAI recognized: {openai_result.get('dish_name')}")
+
+    return openai_result
 
 
 async def recognize_food_from_file(

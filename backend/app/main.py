@@ -41,6 +41,8 @@ from app.api.error_handlers import (
 )
 from app.api import auth, user, admin
 from app.api.health_record import router as health_record_router
+from app.api.diet_log import router as diet_log_router
+from app.api.test_results import router as test_results_router
 
 # Import NutritionAgent
 from Agent.nutrition.agent import NutritionAgent
@@ -112,6 +114,8 @@ app.include_router(community_router, prefix="/api/community", tags=["community"]
 app.include_router(header_router)
 app.include_router(footer_router)
 app.include_router(notification_router)
+app.include_router(diet_log_router)  # 식단 기록 API
+app.include_router(test_results_router)  # 검진결과 OCR API
 
 # 정적 파일 서빙 (프로필 이미지 등)
 uploads_dir = Path(__file__).parent.parent / "uploads"
@@ -229,3 +233,4 @@ async def analyze_nutrition(
     except Exception as e:
         logger.error(f"❌ Nutrition analysis error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
+# Diet log API added

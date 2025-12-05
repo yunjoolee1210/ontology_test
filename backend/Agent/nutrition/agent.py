@@ -54,6 +54,26 @@ try:
 except ImportError:
     FATSECRET_AVAILABLE = False
 
+# Nutrition Knowledge Base (저칼륨/고칼륨/저인/고인 음식 DB)
+try:
+    from Agent.nutrition.knowledge_base import (
+        get_all_potassium_data,
+        get_all_phosphorus_data,
+        search_food_by_name,
+        get_food_risk_level,
+        LOW_POTASSIUM_INGREDIENTS,
+        HIGH_POTASSIUM_INGREDIENTS,
+        LOW_POTASSIUM_DISHES,
+        HIGH_POTASSIUM_DISHES,
+        LOW_PHOSPHORUS_INGREDIENTS,
+        HIGH_PHOSPHORUS_INGREDIENTS,
+        LOW_PHOSPHORUS_DISHES,
+        HIGH_PHOSPHORUS_DISHES,
+    )
+    KNOWLEDGE_BASE_AVAILABLE = True
+except ImportError:
+    KNOWLEDGE_BASE_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 # ============================================================

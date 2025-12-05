@@ -87,7 +87,7 @@ _temp_ocr_results = {}
 @router.post("/upload", response_model=OCRResultResponse)
 async def upload_test_result_images(
     files: List[UploadFile] = File(..., description="검진결과지 이미지 파일들"),
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """
     검진결과지 이미지 업로드 및 OCR 처리
@@ -100,7 +100,7 @@ async def upload_test_result_images(
         raise HTTPException(status_code=400, detail="파일이 없습니다.")
 
     # 파일 저장 - rsc/uploads/test-results/{temp_id}/ 구조
-    user_id = str(current_user["_id"])
+    user_id = current_user
     temp_id = str(uuid.uuid4())
     upload_subdir = os.path.join(UPLOAD_DIR, temp_id)
     os.makedirs(upload_subdir, exist_ok=True)
@@ -173,10 +173,10 @@ async def upload_test_result_images(
 @router.get("/ocr-result/{temp_id}", response_model=OCRResultResponse)
 async def get_ocr_result(
     temp_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """임시 저장된 OCR 결과 조회"""
-    user_id = str(current_user["_id"])
+    user_id = current_user
 
     if temp_id not in _temp_ocr_results:
         raise HTTPException(status_code=404, detail="OCR 결과를 찾을 수 없습니다.")
@@ -203,7 +203,7 @@ async def get_ocr_result(
 @router.post("/confirm")
 async def confirm_and_save_test_result(
     request: ConfirmTestResultRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """
     사용자가 OCR 결과를 확인/수정 후 최종 저장
@@ -212,7 +212,7 @@ async def confirm_and_save_test_result(
     - MongoDB에 영구 저장
     - 프로필과 연동
     """
-    user_id = str(current_user["_id"])
+    user_id = current_user
 
     # 임시 데이터 확인
     if request.temp_id not in _temp_ocr_results:
@@ -265,10 +265,10 @@ async def confirm_and_save_test_result(
 async def get_test_results(
     limit: int = 20,
     skip: int = 0,
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """사용자의 검진결과 목록 조회"""
-    user_id = str(current_user["_id"])
+    user_id = current_user
 
     try:
         await user_db_manager.connect()
@@ -305,10 +305,10 @@ async def get_test_results(
 @router.get("/{result_id}")
 async def get_test_result(
     result_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """특정 검진결과 상세 조회"""
-    user_id = str(current_user["_id"])
+    user_id = current_user
 
     try:
         await user_db_manager.connect()
@@ -341,10 +341,10 @@ async def get_test_result(
 @router.delete("/{result_id}")
 async def delete_test_result(
     result_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """검진결과 삭제"""
-    user_id = str(current_user["_id"])
+    user_id = current_user
 
     try:
         await user_db_manager.connect()
@@ -369,14 +369,14 @@ async def delete_test_result(
 
 @router.get("/latest/summary")
 async def get_latest_test_summary(
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """
     최신 검진결과 요약 조회 (프로필/챗봇 연동용)
 
     Agent 챗봇이나 식단케어에서 사용자의 최신 검진 수치를 참조할 때 사용
     """
-    user_id = str(current_user["_id"])
+    user_id = current_user
 
     try:
         await user_db_manager.connect()
