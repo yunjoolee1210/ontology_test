@@ -56,6 +56,41 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+# ============================================================
+# CKD 환자용 1끼 영양소 제한량 (1일 제한량 ÷ 3)
+# ============================================================
+# 1일 제한량: 나트륨 2000mg, 칼륨 2000mg, 인 800mg, 단백질 50g, 칼슘 1000mg
+PER_MEAL_LIMITS = {
+    "sodium": 667,       # 나트륨: 2000 ÷ 3 ≈ 667mg
+    "potassium": 667,    # 칼륨: 2000 ÷ 3 ≈ 667mg
+    "phosphorus": 267,   # 인: 800 ÷ 3 ≈ 267mg
+    "protein": 17,       # 단백질: 50 ÷ 3 ≈ 17g
+    "calcium": 333,      # 칼슘: 1000 ÷ 3 ≈ 333mg
+    "calories": 700,     # 칼로리: 2100 ÷ 3 = 700kcal
+}
+
+# 고염/고칼륨 음식에 대한 CKD 친화적 대체 요리 추천
+CKD_ALTERNATIVE_DISHES = {
+    "김치찌개": [
+        {"name": "양배추 저염 간장 조림", "reason": "나트륨 80% 감소, 칼륨 50% 감소", "nutrients": {"sodium": 150, "potassium": 120, "phosphorus": 40, "protein": 3}},
+        {"name": "무생채", "reason": "저염 드레싱 사용, 칼륨 배출 위해 물에 담가 조리", "nutrients": {"sodium": 80, "potassium": 100, "phosphorus": 30, "protein": 1}},
+        {"name": "데친 콩나물 무침", "reason": "데치면 칼륨 40% 감소", "nutrients": {"sodium": 100, "potassium": 80, "phosphorus": 35, "protein": 4}},
+    ],
+    "된장찌개": [
+        {"name": "양배추 저염 간장 조림", "reason": "나트륨 80% 감소", "nutrients": {"sodium": 150, "potassium": 120, "phosphorus": 40, "protein": 3}},
+        {"name": "오이냉국", "reason": "저염 육수 사용", "nutrients": {"sodium": 120, "potassium": 90, "phosphorus": 25, "protein": 2}},
+    ],
+    "라면": [
+        {"name": "저염 우동", "reason": "국물 반만 사용, 채소 추가", "nutrients": {"sodium": 400, "potassium": 150, "phosphorus": 80, "protein": 8}},
+        {"name": "양배추 볶음면", "reason": "저염 소스 사용", "nutrients": {"sodium": 300, "potassium": 100, "phosphorus": 60, "protein": 6}},
+    ],
+    "default": [
+        {"name": "양배추 저염 간장 조림", "reason": "저칼륨, 저나트륨 대표 요리", "nutrients": {"sodium": 150, "potassium": 120, "phosphorus": 40, "protein": 3}},
+        {"name": "오이 무침", "reason": "저염 드레싱, 칼륨 낮음", "nutrients": {"sodium": 80, "potassium": 70, "phosphorus": 20, "protein": 1}},
+        {"name": "애호박 볶음", "reason": "저칼륨 채소, 담백한 맛", "nutrients": {"sodium": 100, "potassium": 130, "phosphorus": 35, "protein": 2}},
+    ]
+}
+
 
 class NutritionAgent(BaseAgent):
     """영양 관리 Agent - CKD 환자 맞춤형 식단 분석 (5가지 이미지 케이스 완벽 지원)"""
@@ -354,44 +389,44 @@ class NutritionAgent(BaseAgent):
         Returns:
             영양 분석 결과
         """
-        # CKD 환자용 영양 데이터 생성
+        # CKD 환자용 영양 데이터 생성 (1끼 제한량 기준)
         nutrition_data = {
             "dishName": dish_name,
             "nutrients": [
                 {
                     "name": "나트륨",
                     "value": nutrients.get("sodium", 0),
-                    "max": 2000,
+                    "max": PER_MEAL_LIMITS["sodium"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(nutrients.get("sodium", 0), 2000)
+                    "status": self._get_nutrient_status(nutrients.get("sodium", 0), PER_MEAL_LIMITS["sodium"])
                 },
                 {
                     "name": "칼륨",
                     "value": nutrients.get("potassium", 0),
-                    "max": 2000,
+                    "max": PER_MEAL_LIMITS["potassium"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(nutrients.get("potassium", 0), 2000)
+                    "status": self._get_nutrient_status(nutrients.get("potassium", 0), PER_MEAL_LIMITS["potassium"])
                 },
                 {
                     "name": "인",
                     "value": nutrients.get("phosphorus", 0),
-                    "max": 800,
+                    "max": PER_MEAL_LIMITS["phosphorus"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(nutrients.get("phosphorus", 0), 800)
+                    "status": self._get_nutrient_status(nutrients.get("phosphorus", 0), PER_MEAL_LIMITS["phosphorus"])
                 },
                 {
                     "name": "단백질",
                     "value": nutrients.get("protein", 0),
-                    "max": 50,
+                    "max": PER_MEAL_LIMITS["protein"],
                     "unit": "g",
-                    "status": self._get_nutrient_status(nutrients.get("protein", 0), 50)
+                    "status": self._get_nutrient_status(nutrients.get("protein", 0), PER_MEAL_LIMITS["protein"])
                 },
                 {
                     "name": "칼로리",
                     "value": nutrients.get("calories", 0),
-                    "max": 700,  # 1끼 기준
+                    "max": PER_MEAL_LIMITS["calories"],
                     "unit": "kcal",
-                    "status": self._get_nutrient_status(nutrients.get("calories", 0), 700)
+                    "status": self._get_nutrient_status(nutrients.get("calories", 0), PER_MEAL_LIMITS["calories"])
                 }
             ],
             "alternatives": [],
@@ -466,37 +501,37 @@ class NutritionAgent(BaseAgent):
                 "calories": ing_nutrients.get("calories", 0)
             })
 
-        # 총 영양소 합계로 CKD 영양 데이터 생성
+        # 총 영양소 합계로 CKD 영양 데이터 생성 (1끼 제한량 기준)
         nutrition_data = {
             "dishName": dish_name,
             "nutrients": [
                 {
                     "name": "나트륨",
                     "value": total_nutrients.get("sodium", 0),
-                    "max": 2000,
+                    "max": PER_MEAL_LIMITS["sodium"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(total_nutrients.get("sodium", 0), 2000)
+                    "status": self._get_nutrient_status(total_nutrients.get("sodium", 0), PER_MEAL_LIMITS["sodium"])
                 },
                 {
                     "name": "칼륨",
                     "value": total_nutrients.get("potassium", 0),
-                    "max": 2000,
+                    "max": PER_MEAL_LIMITS["potassium"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(total_nutrients.get("potassium", 0), 2000)
+                    "status": self._get_nutrient_status(total_nutrients.get("potassium", 0), PER_MEAL_LIMITS["potassium"])
                 },
                 {
                     "name": "인",
                     "value": total_nutrients.get("phosphorus", 0),
-                    "max": 800,
+                    "max": PER_MEAL_LIMITS["phosphorus"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(total_nutrients.get("phosphorus", 0), 800)
+                    "status": self._get_nutrient_status(total_nutrients.get("phosphorus", 0), PER_MEAL_LIMITS["phosphorus"])
                 },
                 {
                     "name": "단백질",
                     "value": total_nutrients.get("protein", 0),
-                    "max": 50,
+                    "max": PER_MEAL_LIMITS["protein"],
                     "unit": "g",
-                    "status": self._get_nutrient_status(total_nutrients.get("protein", 0), 50)
+                    "status": self._get_nutrient_status(total_nutrients.get("protein", 0), PER_MEAL_LIMITS["protein"])
                 }
             ],
             "alternatives": [],
@@ -1028,44 +1063,50 @@ class NutritionAgent(BaseAgent):
             high_risk_ingredients = self._find_high_risk_ingredients(nutrition, ingredients)
             alternatives = await self._recommend_alternative_ingredients(dish_name, high_risk_ingredients)
 
-        # Nutrition data 생성
+        # Nutrition data 생성 (1끼 제한량 기준)
+        # 고위험 음식인 경우 CKD_ALTERNATIVE_DISHES에서 대체 요리 추가
+        if not alternative_recipes:
+            dish_key = dish_name if dish_name in CKD_ALTERNATIVE_DISHES else "default"
+            if dish_key in CKD_ALTERNATIVE_DISHES:
+                alternative_recipes = CKD_ALTERNATIVE_DISHES[dish_key]
+
         nutrition_data = {
             "dishName": dish_name,
             "nutrients": [
                 {
                     "name": "나트륨",
-                    "value": nutrition.get("sodium", 1500),
-                    "max": 2000,
+                    "value": nutrition.get("sodium", 500),
+                    "max": PER_MEAL_LIMITS["sodium"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(nutrition.get("sodium", 1500), 2000)
+                    "status": self._get_nutrient_status(nutrition.get("sodium", 500), PER_MEAL_LIMITS["sodium"])
                 },
                 {
                     "name": "칼륨",
-                    "value": nutrition.get("potassium", 1200),
-                    "max": 2000,
+                    "value": nutrition.get("potassium", 400),
+                    "max": PER_MEAL_LIMITS["potassium"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(nutrition.get("potassium", 1200), 2000)
+                    "status": self._get_nutrient_status(nutrition.get("potassium", 400), PER_MEAL_LIMITS["potassium"])
                 },
                 {
                     "name": "인",
-                    "value": nutrition.get("phosphorus", 450),
-                    "max": 800,
+                    "value": nutrition.get("phosphorus", 150),
+                    "max": PER_MEAL_LIMITS["phosphorus"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(nutrition.get("phosphorus", 450), 800)
+                    "status": self._get_nutrient_status(nutrition.get("phosphorus", 150), PER_MEAL_LIMITS["phosphorus"])
                 },
                 {
                     "name": "단백질",
-                    "value": nutrition.get("protein", 28),
-                    "max": 50,
+                    "value": nutrition.get("protein", 10),
+                    "max": PER_MEAL_LIMITS["protein"],
                     "unit": "g",
-                    "status": self._get_nutrient_status(nutrition.get("protein", 28), 50)
+                    "status": self._get_nutrient_status(nutrition.get("protein", 10), PER_MEAL_LIMITS["protein"])
                 },
                 {
                     "name": "칼슘",
                     "value": nutrition.get("calcium", 70),
-                    "max": 1000,
+                    "max": PER_MEAL_LIMITS["calcium"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(nutrition.get("calcium", 70), 1000)
+                    "status": self._get_nutrient_status(nutrition.get("calcium", 70), PER_MEAL_LIMITS["calcium"])
                 }
             ],
             "alternatives": alternatives,
@@ -1122,14 +1163,18 @@ class NutritionAgent(BaseAgent):
                 if original and substitute:
                     response_parts.append(f"- {original} → **{substitute}** ({reason})\n")
 
-        # 6. 대체 레시피 추천
+        # 6. 대체 레시피 추천 (CKD 친화적 요리)
         if alternative_recipes:
-            response_parts.append("\n🍳 **대체 레시피 추천:**\n")
-            for recipe_item in alternative_recipes[:2]:
+            response_parts.append("\n🍳 **CKD 친화적 대체 요리 추천:**\n")
+            for recipe_item in alternative_recipes[:3]:
                 recipe_name = recipe_item.get("name", "")
-                recipe_desc = recipe_item.get("description", "")
+                recipe_reason = recipe_item.get("reason", recipe_item.get("description", ""))
+                recipe_nutrients = recipe_item.get("nutrients", {})
                 if recipe_name:
-                    response_parts.append(f"- **{recipe_name}**: {recipe_desc}\n")
+                    nutrient_info = ""
+                    if recipe_nutrients:
+                        nutrient_info = f" (Na {recipe_nutrients.get('sodium', 0)}mg, K {recipe_nutrients.get('potassium', 0)}mg)"
+                    response_parts.append(f"- **{recipe_name}**: {recipe_reason}{nutrient_info}\n")
 
         # 7. 조리 팁
         if recipe:
@@ -1158,37 +1203,37 @@ class NutritionAgent(BaseAgent):
         dish_name = dish_recommendation.get("dishName", "요리")
         estimated_nutrients = dish_recommendation.get("estimatedNutrients", {})
 
-        # Nutrition data 생성
+        # Nutrition data 생성 (1끼 제한량 기준)
         nutrition_data = {
             "dishName": dish_name,
             "nutrients": [
                 {
                     "name": "나트륨",
-                    "value": estimated_nutrients.get("sodium", 500),
-                    "max": 2000,
+                    "value": estimated_nutrients.get("sodium", 300),
+                    "max": PER_MEAL_LIMITS["sodium"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(estimated_nutrients.get("sodium", 500), 2000)
+                    "status": self._get_nutrient_status(estimated_nutrients.get("sodium", 300), PER_MEAL_LIMITS["sodium"])
                 },
                 {
                     "name": "칼륨",
-                    "value": estimated_nutrients.get("potassium", 500),
-                    "max": 2000,
+                    "value": estimated_nutrients.get("potassium", 300),
+                    "max": PER_MEAL_LIMITS["potassium"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(estimated_nutrients.get("potassium", 500), 2000)
+                    "status": self._get_nutrient_status(estimated_nutrients.get("potassium", 300), PER_MEAL_LIMITS["potassium"])
                 },
                 {
                     "name": "인",
-                    "value": estimated_nutrients.get("phosphorus", 200),
-                    "max": 800,
+                    "value": estimated_nutrients.get("phosphorus", 100),
+                    "max": PER_MEAL_LIMITS["phosphorus"],
                     "unit": "mg",
-                    "status": self._get_nutrient_status(estimated_nutrients.get("phosphorus", 200), 800)
+                    "status": self._get_nutrient_status(estimated_nutrients.get("phosphorus", 100), PER_MEAL_LIMITS["phosphorus"])
                 },
                 {
                     "name": "단백질",
-                    "value": estimated_nutrients.get("protein", 15),
-                    "max": 50,
+                    "value": estimated_nutrients.get("protein", 8),
+                    "max": PER_MEAL_LIMITS["protein"],
                     "unit": "g",
-                    "status": self._get_nutrient_status(estimated_nutrients.get("protein", 15), 50)
+                    "status": self._get_nutrient_status(estimated_nutrients.get("protein", 8), PER_MEAL_LIMITS["protein"])
                 }
             ],
             "alternatives": [],
@@ -1379,6 +1424,136 @@ class NutritionAgent(BaseAgent):
                 "calories": 450
             }
 
+    # 저칼륨 채소 데이터 (100g 기준 칼륨 함량, mg)
+    # Unsplash CDN 이미지 사용 - 고품질 통일 배경
+    LOW_POTASSIUM_VEGETABLES = [
+        {"id": "cabbage", "name": "양배추", "thumbnail": "https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=200&h=160&fit=crop&crop=center", "potassium": 170, "description": "쌈, 샐러드, 볶음 등 다양하게 활용"},
+        {"id": "cucumber", "name": "오이", "thumbnail": "https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=200&h=160&fit=crop&crop=center", "potassium": 147, "description": "냉국, 무침, 샐러드에 좋음"},
+        {"id": "eggplant", "name": "가지", "thumbnail": "https://images.unsplash.com/photo-1628773822503-930a7eaecf80?w=200&h=160&fit=crop&crop=center", "potassium": 230, "description": "볶음, 찜, 구이로 활용"},
+        {"id": "lettuce", "name": "상추", "thumbnail": "https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?w=200&h=160&fit=crop&crop=center", "potassium": 194, "description": "쌈 채소로 최적"},
+        {"id": "bellpepper", "name": "피망", "thumbnail": "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=200&h=160&fit=crop&crop=center", "potassium": 175, "description": "볶음, 샐러드에 활용"},
+        {"id": "iceberg", "name": "양상추", "thumbnail": "https://images.unsplash.com/photo-1519996529931-28324d5a630e?w=200&h=160&fit=crop&crop=center", "potassium": 141, "description": "샐러드, 샌드위치에 좋음"},
+        {"id": "zucchini", "name": "애호박", "thumbnail": "https://images.unsplash.com/photo-1563252722-6434563a985d?w=200&h=160&fit=crop&crop=center", "potassium": 261, "description": "전, 볶음, 찌개에 활용"},
+        {"id": "radish", "name": "무", "thumbnail": "https://images.unsplash.com/photo-1522184216316-3c25379f9760?w=200&h=160&fit=crop&crop=center", "potassium": 227, "description": "국, 나물, 깍두기로 활용"},
+        {"id": "beansprout", "name": "콩나물", "thumbnail": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=200&h=160&fit=crop&crop=center", "potassium": 169, "description": "무침, 국에 좋음"},
+        {"id": "onion", "name": "양파", "thumbnail": "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=200&h=160&fit=crop&crop=center", "potassium": 146, "description": "볶음, 조림에 기본 재료"},
+    ]
+
+    def _is_low_potassium_ingredient_query(self, user_input: str) -> bool:
+        """저칼륨 식재료 요청인지 확인"""
+        keywords = [
+            "저칼륨 음식 재료", "저칼륨 식재료", "저칼륨 재료",
+            "칼륨 낮은 재료", "칼륨 낮은 음식", "칼륨 낮은 식재료",
+            "저칼륨 채소", "칼륨 적은 채소", "칼륨 적은 재료",
+            "저칼륨 야채", "칼륨 낮은 야채", "저칼륨 대체 식재료"
+        ]
+        return any(keyword in user_input for keyword in keywords)
+
+    def _get_low_potassium_ingredients(self) -> Dict[str, Any]:
+        """저칼륨 식재료 캐러셀 데이터 반환"""
+        logger.info("🥬 Building low-potassium ingredient carousel data")
+        ingredients = []
+        for veg in self.LOW_POTASSIUM_VEGETABLES:
+            ingredients.append({
+                "id": veg["id"],
+                "name": veg["name"],
+                "thumbnail": veg["thumbnail"],
+                "potassium": veg["potassium"],
+                "category": "vegetable",
+                "description": veg["description"]
+            })
+
+        return {
+            "response": "신장병 환자분들께 적합한 **저칼륨 채소**를 소개해 드릴게요!\n\n아래 식재료들은 100g 기준 칼륨 함량이 낮아 CKD 식단에 안전하게 활용할 수 있어요.\n\n**식재료를 선택하시면 해당 재료를 활용한 레시피를 추천해 드립니다.**",
+            "ingredientCarouselData": ingredients,
+            "analysisType": "ingredient_carousel"
+        }
+
+    def _is_kimjang_recipe_query(self, user_input: str) -> bool:
+        """신장병 환자 김장 레시피 요청인지 확인"""
+        keywords = ["김장", "김치 담그", "김치 레시피", "배추김치"]
+        kidney_keywords = ["신장", "콩팥", "투석", "CKD", "저염", "저칼륨"]
+        has_kimchi = any(k in user_input for k in keywords)
+        has_kidney = any(k in user_input for k in kidney_keywords)
+        return has_kimchi and has_kidney
+
+    def _get_kidney_friendly_kimjang_recipe(self) -> Dict[str, Any]:
+        """신장병 환자를 위한 저염/저칼륨 김장 레시피 반환"""
+        logger.info("🥬 Returning kidney-friendly kimjang recipe")
+
+        recipe_response = """## 신장병 환자를 위한 저염 물김치 레시피
+
+신장병 환자분들도 김장 김치를 즐기실 수 있어요! 나트륨과 칼륨을 낮춘 **저염 물김치** 레시피를 소개합니다.
+
+### 재료 (4인분 기준)
+
+**주재료**
+- 알배기 배추 1개 (소금물에 살짝만 절이기)
+- 무 1/4개 (얇게 채썰기)
+- 당근 1개 (채썰기)
+- 쪽파 100g
+
+**양념 재료**
+- 물 2.5L
+- 저염 소금 2티스푼 (일반 소금의 1/3)
+- 고춧가루 2스푼
+- 다진 마늘 2스푼
+- 생강 반 개
+- 설탕 3스푼
+- 다시마 약간
+
+### 만드는 방법
+
+**1단계: 채소 준비**
+- 배추는 깨끗이 씻어 한입 크기로 자릅니다
+- 무와 당근은 얇게 채썰어 준비합니다
+- **TIP**: 칼륨을 낮추려면 채소를 물에 2시간 담가두세요
+
+**2단계: 양념물 만들기**
+- 생강, 고춧가루, 다진 마늘을 물 500ml와 함께 믹서기에 갈아줍니다
+- 체로 걸러 고춧물을 만들고 설탕을 섞습니다
+
+**3단계: 다시물 준비**
+- 물 2L에 다시마를 넣고 끓여 식힙니다
+- 저염 소금 2티스푼으로 간을 맞춥니다
+
+**4단계: 완성**
+- 준비한 채소를 용기에 담습니다
+- 다시물과 고춧물을 부어줍니다
+- 냉장고에서 2-3일 숙성 후 드세요
+
+### 영양 정보 (1인분 기준)
+| 영양소 | 함량 | 일반 김치 대비 |
+|--------|------|---------------|
+| 나트륨 | 약 300mg | **70% 감소** |
+| 칼륨 | 약 150mg | **50% 감소** |
+| 칼로리 | 약 25kcal | - |
+
+### 주의사항
+- 저염 제품이므로 **반드시 냉장 보관**하세요
+- 일주일 내로 드시는 것을 권장합니다
+- 개인의 투석 상태에 따라 섭취량을 조절하세요
+
+### 참고 자료
+- [식품의약품안전처 저염 레시피](https://www.foodnuri.go.kr)
+- [신장병 환자 김장 영상](https://youtube.com/shorts/s2_oWGoECEE)
+
+---
+*이 레시피는 일반적인 가이드라인입니다. 개인 상태에 따라 담당 의료진과 상담 후 드세요.*"""
+
+        return {
+            "response": recipe_response,
+            "analysisType": "recipe",
+            "recipeData": {
+                "name": "저염 물김치",
+                "category": "김치",
+                "tags": ["저염", "저칼륨", "신장병", "CKD"],
+                "sodium_per_serving": 300,
+                "potassium_per_serving": 150,
+                "calories_per_serving": 25
+            }
+        }
+
     async def _handle_text_input(
         self,
         user_input: str,
@@ -1387,7 +1562,7 @@ class NutritionAgent(BaseAgent):
         user_profile: str = "general"
     ) -> Dict[str, Any]:
         """
-        텍스트 입력 처리 - 레시피 요청 vs 일반 질문 구분
+        텍스트 입력 처리 - 레시피 요청 vs 저칼륨 식재료 vs 일반 질문 구분
 
         Args:
             user_input: 사용자 입력
@@ -1398,7 +1573,17 @@ class NutritionAgent(BaseAgent):
         Returns:
             처리 결과
         """
-        # 레시피 요청 확인
+        # 1. 신장병 환자 김장 레시피 요청 확인
+        if self._is_kimjang_recipe_query(user_input):
+            logger.info("🥬 Detected kidney-friendly kimjang recipe request")
+            return self._get_kidney_friendly_kimjang_recipe()
+
+        # 2. 저칼륨 식재료 요청 확인
+        if self._is_low_potassium_ingredient_query(user_input):
+            logger.info("🥬 Detected low-potassium ingredient request - returning carousel data")
+            return self._get_low_potassium_ingredients()
+
+        # 3. 레시피 요청 확인
         recipe_keywords = ["레시피", "만들기", "만드는법", "만드는 법", "요리법", "조리법"]
         is_recipe_request = any(keyword in user_input for keyword in recipe_keywords)
 
@@ -1420,7 +1605,7 @@ class NutritionAgent(BaseAgent):
             # RecipeHandler 실패 시 일반 텍스트 쿼리로 fallback
             logger.warning("Recipe handler failed - falling back to text query")
 
-        # 일반 텍스트 쿼리 처리
+        # 3. 일반 텍스트 쿼리 처리
         return await self._analyze_text_query(user_input, user_profile)
 
     async def _handle_text_query(

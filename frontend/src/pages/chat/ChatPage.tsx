@@ -13,8 +13,10 @@ import {
   extractAssistantMessages,
   extractPaperResults,
   RecommendedDish,
-  IngredientCandidate
+  IngredientCandidate,
+  IngredientCarouselItem
 } from './utils'
+import { IngredientCardCarousel, IngredientCard } from '../../components/IngredientCardCarousel'
 import { sleep } from './sleep'
 import NutritionAnalysisCard from '../../components/NutritionAnalysisCard'
 
@@ -47,21 +49,49 @@ const AGENT_CONFIG = {
 
 // Few-shot 예시 프롬프트
 const FEW_SHOT_EXAMPLES = [
-  '투석환자 식단 추천',
-  '저칼륨 대체 식재료 추천',
-  '저염식 김치 레시피'
+  '신장병 환자를 위한 김장 레시피 알려줘',
+  '저칼륨 음식 재료 알려줘',
+  '투석환자 식단 추천'
 ]
 
 function MessageBubble({
   message,
   onDishSelect,
-  onRecommendedDishSelect
+  onRecommendedDishSelect,
+  onIngredientSelect
 }: {
   message: ChatMessage
   onDishSelect?: (dishName: string) => void
   onRecommendedDishSelect?: (dish: RecommendedDish) => void
+  onIngredientSelect?: (ingredient: IngredientCard) => void
 }) {
   const isUser = message.role === 'user'
+
+  // Handle ingredient_carousel type (저칼륨 식재료 캐러셀)
+  if (!isUser && message.type === 'ingredient_carousel' && message.ingredientCarouselData) {
+    const carouselData: IngredientCard[] = message.ingredientCarouselData.map(item => ({
+      id: item.id,
+      name: item.name,
+      thumbnail: item.thumbnail,
+      potassium: item.potassium,
+      category: item.category,
+      description: item.description
+    }))
+
+    return (
+      <div className="flex justify-start mb-3 w-full">
+        <div className="max-w-3xl w-full">
+          <div className="bg-white text-gray-800 border border-gray-200 rounded-xl px-4 py-3 shadow">
+            <div className="text-sm whitespace-pre-wrap leading-relaxed mb-3">{message.text}</div>
+            <IngredientCardCarousel
+              ingredients={carouselData}
+              onSelectIngredient={(ing) => onIngredientSelect?.(ing)}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // Handle nutrition_analysis type
   if (!isUser && message.type === 'nutrition_analysis') {
@@ -506,6 +536,74 @@ export default function ChatPage() {
     }
   }
 
+  const handleIngredientSelect = async (ingredient: IngredientCard) => {
+    console.log('[ChatPage] Ingredient selected:', ingredient.name)
+    if (!session) return
+
+    // Add user message
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      text: `${ingredient.name}로 만들 수 있는 요리 추천해줘`,
+      createdAt: Date.now()
+    }
+    setMessages((prev) => [...prev, userMessage])
+
+    setIsSending(true)
+    setError(null)
+
+    try {
+      // Send selection to nutrition agent
+      const formData = new FormData()
+      formData.append('session_id', session.sessionId)
+      formData.append('user_profile', profile)
+      formData.append('text', `${ingredient.name}로 만들 수 있는 요리 추천해줘`)
+
+      const response = await fetch('/api/nutrition/analyze', {
+        method: 'POST',
+        body: formData
+      })
+
+      if (!response.ok) {
+        throw new Error(`Nutrition API error: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      console.log('[ChatPage] nutrition API response (ingredient selection)', data)
+
+      // Determine message type
+      const hasNutritionData = !!data.result?.nutritionData
+      const hasRecommendedDishes = !!data.result?.recommendedDishes
+      const hasIngredientCarousel = !!data.result?.ingredientCarouselData
+
+      let messageType: ChatMessage['type'] = 'general'
+      if (hasNutritionData) {
+        messageType = 'nutrition_analysis'
+      } else if (hasRecommendedDishes) {
+        messageType = 'ingredient_single'
+      } else if (hasIngredientCarousel) {
+        messageType = 'ingredient_carousel'
+      }
+
+      const assistantMessage: ChatMessage = {
+        id: `assistant-${Date.now()}`,
+        role: 'assistant',
+        text: data.result?.response || '요리를 추천해 드릴게요.',
+        type: messageType,
+        nutritionData: data.result?.nutritionData,
+        recommendedDishes: data.result?.recommendedDishes,
+        ingredientCarouselData: data.result?.ingredientCarouselData,
+        createdAt: Date.now()
+      }
+      setMessages((prev) => [...prev, assistantMessage])
+    } catch (err: any) {
+      setError(err?.message || '메시지 전송 중 오류가 발생했습니다.')
+      console.error('[ChatPage] handleIngredientSelect error', err)
+    } finally {
+      setIsSending(false)
+    }
+  }
+
   const handleFewShotClick = async (example: string) => {
     if (!session || isSending) {
       console.log('[ChatPage] handleFewShotClick blocked - missing session or already sending')
@@ -549,10 +647,13 @@ export default function ChatPage() {
       const hasDishCandidates = !!data.result?.dishCandidates
       const hasRecommendedDishes = !!data.result?.recommendedDishes
       const hasIngredientCandidates = !!data.result?.ingredientCandidates
+      const hasIngredientCarousel = !!data.result?.ingredientCarouselData
       const analysisType = data.result?.analysisType
 
       let messageType: ChatMessage['type'] = 'general'
-      if (hasNutritionData) {
+      if (hasIngredientCarousel || analysisType === 'ingredient_carousel') {
+        messageType = 'ingredient_carousel'
+      } else if (hasNutritionData) {
         messageType = 'nutrition_analysis'
       } else if (hasDishCandidates) {
         messageType = 'dish_selection'
@@ -573,6 +674,7 @@ export default function ChatPage() {
         dishCandidates: data.result?.dishCandidates,
         recommendedDishes: data.result?.recommendedDishes,
         ingredientCandidates: data.result?.ingredientCandidates,
+        ingredientCarouselData: data.result?.ingredientCarouselData,
         analysisType: analysisType,
         createdAt: Date.now()
       }
@@ -641,10 +743,13 @@ export default function ChatPage() {
         const hasDishCandidates = !!data.result?.dishCandidates
         const hasRecommendedDishes = !!data.result?.recommendedDishes
         const hasIngredientCandidates = !!data.result?.ingredientCandidates
+        const hasIngredientCarousel = !!data.result?.ingredientCarouselData
         const analysisType = data.result?.analysisType
 
         let messageType: ChatMessage['type'] = 'general'
-        if (hasNutritionData) {
+        if (hasIngredientCarousel || analysisType === 'ingredient_carousel') {
+          messageType = 'ingredient_carousel'
+        } else if (hasNutritionData) {
           messageType = 'nutrition_analysis'
         } else if (hasDishCandidates) {
           messageType = 'dish_selection'
@@ -665,6 +770,7 @@ export default function ChatPage() {
           dishCandidates: data.result?.dishCandidates,
           recommendedDishes: data.result?.recommendedDishes,
           ingredientCandidates: data.result?.ingredientCandidates,
+          ingredientCarouselData: data.result?.ingredientCarouselData,
           analysisType: analysisType,
           createdAt: Date.now()
         }
@@ -875,6 +981,7 @@ export default function ChatPage() {
                 message={msg}
                 onDishSelect={handleDishSelect}
                 onRecommendedDishSelect={handleRecommendedDishSelect}
+                onIngredientSelect={handleIngredientSelect}
               />
             ))}
 

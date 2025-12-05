@@ -27,6 +27,15 @@ export interface IngredientCandidate {
   }
 }
 
+export interface IngredientCarouselItem {
+  id: string
+  name: string
+  thumbnail: string
+  potassium: number
+  category: 'vegetable' | 'other'
+  description?: string
+}
+
 export interface ChatMessage {
   id: string
   role: 'user' | 'assistant'
@@ -34,12 +43,13 @@ export interface ChatMessage {
   status?: string
   correlationId?: string
   createdAt: number
-  type?: 'nutrition_analysis' | 'profile_question' | 'general' | 'dish_selection' | 'ingredient_single' | 'ingredient_multiple' | 'error'
+  type?: 'nutrition_analysis' | 'profile_question' | 'general' | 'dish_selection' | 'ingredient_single' | 'ingredient_multiple' | 'ingredient_carousel' | 'error'
   nutritionData?: any
   imageUrl?: string
   dishCandidates?: DishCandidate[]
   recommendedDishes?: RecommendedDish[]
   ingredientCandidates?: IngredientCandidate[]
+  ingredientCarouselData?: IngredientCarouselItem[]
   analysisType?: string
 }
 
