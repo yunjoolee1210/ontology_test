@@ -2,18 +2,65 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { Logo } from '../components/Logo';
+import { useLayout } from '../components/LayoutContext';
 
 export function LoginPage(props: { onLogin?: () => void }) {
   const navigate = useNavigate();
+  const { login } = useLayout();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login - navigate to chat
-    localStorage.setItem('isLoggedIn', 'true');
-    if (props.onLogin) props.onLogin();
-    navigate('/chat');
+    setIsLoading(true);
+
+    try {
+      // 1. 먼저 이메일이 등록되어 있는지 확인
+      const checkResponse = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
+      const checkData = await checkResponse.json();
+
+      if (checkData.available) {
+        // 이메일이 등록되어 있지 않음
+        alert('회원에 등록되어 있지 않습니다. 회원가입을 통해 등록한 후 로그인 해주세요.');
+        setIsLoading(false);
+        return;
+      }
+
+      // 2. 로그인 시도
+      const loginResponse = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const loginData = await loginResponse.json();
+
+      if (!loginResponse.ok) {
+        alert(loginData.detail || '로그인에 실패했습니다.');
+        setIsLoading(false);
+        return;
+      }
+
+      // 로그인 성공
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('accessToken', loginData.access_token);
+      localStorage.setItem('refreshToken', loginData.refresh_token);
+      localStorage.setItem('user', JSON.stringify(loginData.user));
+
+      // LayoutContext 상태 업데이트
+      login();
+
+      if (props.onLogin) props.onLogin();
+      navigate('/mypage');
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('로그인 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -95,16 +142,17 @@ export function LoginPage(props: { onLogin?: () => void }) {
 
             <button
               type="submit"
-              className="w-full py-3 rounded-lg transition-all duration-200"
+              disabled={isLoading}
+              className="w-full py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: 'linear-gradient(90deg, #00C9B7 0%, #9F7AEA 100%)',
                 color: 'white',
                 border: 'none',
                 fontSize: '16px',
-                cursor: 'pointer'
+                cursor: isLoading ? 'not-allowed' : 'pointer'
               }}
             >
-              로그인
+              {isLoading ? '로그인 중...' : '로그인'}
             </button>
           </form>
 

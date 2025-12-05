@@ -22,12 +22,18 @@ import { NewsDetailPage } from './pages/NewsDetailPage';
 import { KidneyDiseaseStagePage } from './pages/KidneyDiseaseStagePage';
 import { MyPage } from './pages/MyPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { AccountInfoPage } from './pages/AccountInfoPage';
+import { PersonalInfoPage } from './pages/PersonalInfoPage';
+import { DiseaseInfoPage } from './pages/DiseaseInfoPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { HealthRecordsPage } from './pages/HealthRecordsPage';
 import { HealthRecordAddPage } from './pages/HealthRecordAddPage';
+import { TestResultsAddPage } from './pages/TestResultsAddPage';
 import { HealthRecordEditPage } from './pages/HealthRecordEditPage';
 import { BookmarkPage } from './pages/BookmarkPage';
+import { GoalsPage } from './pages/GoalsPage';
+import { SubscriptionPage } from './pages/SubscriptionPage';
 import { SupportPage } from './pages/SupportPage';
 import { NotificationPage } from './pages/NotificationPage';
 import { TermsAndConditionsPage } from './pages/TermsAndConditionsPage';
@@ -94,11 +100,16 @@ function AppContent() {
           <Route path="/news/detail/:id" element={<NewsDetailPage />} />
           <Route path="/mypage" element={isLoggedIn ? <MyPage /> : <Navigate to="/login" />} />
           <Route path="/mypage/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/login" />} />
+          <Route path="/mypage/account" element={isLoggedIn ? <AccountInfoPage /> : <Navigate to="/login" />} />
+          <Route path="/mypage/personal" element={isLoggedIn ? <PersonalInfoPage /> : <Navigate to="/login" />} />
+          <Route path="/mypage/disease" element={isLoggedIn ? <DiseaseInfoPage /> : <Navigate to="/login" />} />
           <Route path="/mypage/profile/kidney-disease-stage" element={<KidneyDiseaseStagePage />} />
           <Route path="/mypage/test-results" element={<HealthRecordsPage />} />
-          <Route path="/mypage/test-results/add" element={<HealthRecordAddPage />} />
+          <Route path="/mypage/test-results/add" element={<TestResultsAddPage />} />
           <Route path="/mypage/test-results/edit/:id" element={<HealthRecordEditPage />} />
-          <Route path="/mypage/bookmark" element={<BookmarkPage />} />
+          <Route path="/mypage/bookmark" element={isLoggedIn ? <BookmarkPage /> : <Navigate to="/login" />} />
+          <Route path="/mypage/goals" element={isLoggedIn ? <GoalsPage /> : <Navigate to="/login" />} />
+          <Route path="/mypage/subscription" element={isLoggedIn ? <SubscriptionPage /> : <Navigate to="/login" />} />
           <Route path="/notifications" element={<NotificationPage />} />
           <Route path="/support" element={<SupportPage />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />

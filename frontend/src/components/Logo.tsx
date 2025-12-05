@@ -1,5 +1,8 @@
 import React from 'react';
-import biLogoPng from '../assets/bi_logo_careplus.png';
+
+// Brand logo from rsc/static/brand/ (PRD 9.1 참조)
+// publicDir: '../rsc/static' → /brand/logo-main.png
+const LOGO_PATH = '/brand/logo-main.png';
 
 export function Logo({ size = 'md', showTextOnMobile = true }: { size?: 'sm' | 'md' | 'lg'; showTextOnMobile?: boolean }) {
   const sizes = {
@@ -11,8 +14,8 @@ export function Logo({ size = 'md', showTextOnMobile = true }: { size?: 'sm' | '
   return (
     <div className="flex items-center">
       <img
-        src={biLogoPng}
-        alt="CarePlus Logo"
+        src={LOGO_PATH}
+        alt="CareKidney Logo"
         style={{
           width: sizes[size].width,
           height: sizes[size].height
@@ -29,7 +32,7 @@ export function Logo({ size = 'md', showTextOnMobile = true }: { size?: 'sm' | '
             backgroundClip: 'text'
           }}
         >
-          CarePlus
+          CareKidney
         </span>
       )}
     </div>

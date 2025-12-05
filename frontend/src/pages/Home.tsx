@@ -20,7 +20,7 @@ export default function Home() {
   const [displayedText, setDisplayedText] = useState('')
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const fullText = '케어플러스는 신장병 환우, 간병인, 연구자분들을 위해 만들어진 따뜻한 AI 파트너입니다. 의료·복지, 식이·영양, 연구 정보를 편하게 찾을 수 있도록 정성껏 도와드려요.'
+  const fullText = '케어키드니는 신장병 환우, 간병인, 연구자분들을 위해 만들어진 따뜻한 AI 파트너입니다. 의료·복지, 식이·영양, 연구 정보를 편하게 찾을 수 있도록 정성껏 도와드려요.'
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -71,11 +71,12 @@ export default function Home() {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl') as WebGLRenderingContext | null
     if (!gl) {
       console.warn('WebGL not supported, skipping particle animation')
       return
     }
+    const glContext = gl as WebGLRenderingContext
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1
@@ -83,7 +84,7 @@ export default function Home() {
       canvas.height = window.innerHeight * dpr
       canvas.style.width = window.innerWidth + 'px'
       canvas.style.height = window.innerHeight + 'px'
-      gl.viewport(0, 0, canvas.width, canvas.height)
+      glContext.viewport(0, 0, canvas.width, canvas.height)
     }
     resize()
     window.addEventListener('resize', resize)
@@ -104,23 +105,23 @@ export default function Home() {
       }
     `
 
-    const program = gl.createProgram()
-    const vshader = gl.createShader(gl.VERTEX_SHADER)
-    const fshader = gl.createShader(gl.FRAGMENT_SHADER)
+    const program = glContext.createProgram()
+    const vshader = glContext.createShader(glContext.VERTEX_SHADER)
+    const fshader = glContext.createShader(glContext.FRAGMENT_SHADER)
 
     if (!program || !vshader || !fshader) return
 
-    gl.shaderSource(vshader, vs)
-    gl.shaderSource(fshader, fs)
-    gl.compileShader(vshader)
-    gl.compileShader(fshader)
-    gl.attachShader(program, vshader)
-    gl.attachShader(program, fshader)
-    gl.linkProgram(program)
-    gl.useProgram(program)
+    glContext.shaderSource(vshader, vs)
+    glContext.shaderSource(fshader, fs)
+    glContext.compileShader(vshader)
+    glContext.compileShader(fshader)
+    glContext.attachShader(program, vshader)
+    glContext.attachShader(program, fshader)
+    glContext.linkProgram(program)
+    glContext.useProgram(program)
 
-    const position = gl.getAttribLocation(program, 'position')
-    gl.enableVertexAttribArray(position)
+    const position = glContext.getAttribLocation(program, 'position')
+    glContext.enableVertexAttribArray(position)
 
     const particles = 800
     const data = new Float32Array(particles * 2)
@@ -133,12 +134,12 @@ export default function Home() {
       velocity[i * 2 + 1] = (Math.random() - 0.5) * 0.001 + 0.0005
     }
 
-    const buffer = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW)
+    const buffer = glContext.createBuffer()
+    glContext.bindBuffer(glContext.ARRAY_BUFFER, buffer)
+    glContext.bufferData(glContext.ARRAY_BUFFER, data, glContext.DYNAMIC_DRAW)
 
-    gl.enable(gl.BLEND)
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+    glContext.enable(glContext.BLEND)
+    glContext.blendFunc(glContext.SRC_ALPHA, glContext.ONE_MINUS_SRC_ALPHA)
 
     let animationId: number
 
@@ -151,12 +152,12 @@ export default function Home() {
         if (data[i * 2] < -1) data[i * 2] = 1
         if (data[i * 2 + 1] > 1) data[i * 2 + 1] = -1
       }
-      gl.bufferSubData(gl.ARRAY_BUFFER, 0, data)
+      glContext.bufferSubData(glContext.ARRAY_BUFFER, 0, data)
 
-      gl.clearColor(0.04, 0.1, 0.18, 1)
-      gl.clear(gl.COLOR_BUFFER_BIT)
-      gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
-      gl.drawArrays(gl.POINTS, 0, particles)
+      glContext.clearColor(0.04, 0.1, 0.18, 1)
+      glContext.clear(glContext.COLOR_BUFFER_BIT)
+      glContext.vertexAttribPointer(position, 2, glContext.FLOAT, false, 0, 0)
+      glContext.drawArrays(glContext.POINTS, 0, particles)
 
       animationId = requestAnimationFrame(animate)
     }

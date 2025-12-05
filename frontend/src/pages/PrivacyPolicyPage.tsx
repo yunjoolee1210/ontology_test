@@ -17,7 +17,7 @@ export function PrivacyPolicyPage() {
         <div className="max-w-4xl mx-auto w-full">
           <h1 className="text-xl sm:text-2xl font-bold text-[#1F2937] mb-6">개인정보 처리방침</h1>
           <div className="text-[#374151] text-sm sm:text-base leading-relaxed whitespace-pre-wrap break-words">
-{`CarePlus(이하 "회사")는 「개인정보 보호법」 제15조 제1항 제1호, 제17조 제1항 제1호, 제23조 제1호, 제24조 제1항 제1호에 따라 아래와 같이 개인정보의 수집·이용에 관하여 귀하의 동의를 얻고자 합니다.
+{`CareKidney(이하 "회사")는 「개인정보 보호법」 제15조 제1항 제1호, 제17조 제1항 제1호, 제23조 제1호, 제24조 제1항 제1호에 따라 아래와 같이 개인정보의 수집·이용에 관하여 귀하의 동의를 얻고자 합니다.
 
 1. 개인정보의 수집 및 이용 목적
 회사는 수집한 개인정보를 다음의 목적을 위해 활용합니다.
@@ -60,7 +60,7 @@ export function PrivacyPolicyPage() {
 개인정보보호책임자
 - 이름: 홍길동
 - 직책: 개인정보보호팀장
-- 연락처: privacy@careplus.com
+- 연락처: privacy@carekidney.com
 
 9. 권익침해 구제방법
 정보주체는 개인정보침해로 인한 구제를 받기 위하여 개인정보분쟁조정위원회, 한국인터넷진흥원 개인정보침해신고센터 등에 분쟁해결이나 상담 등을 신청할 수 있습니다.

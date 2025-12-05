@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Send, Camera, Stethoscope, Utensils, FileText } from 'lucide-react';
-import biLogoGif from '../assets/BI_logo_CarePlus_v1.gif';
+import { Send, Stethoscope, Utensils, FileText } from 'lucide-react';
+
+// Brand logo from rsc/static/brand/ (PRD 9.1 참조)
+// publicDir: '../rsc/static' → /brand/logo-main.gif
+const biLogoGif = '/brand/logo-main.gif';
 
 export function MainPage() {
   const [message, setMessage] = useState('');
@@ -9,7 +12,7 @@ export function MainPage() {
   const [displayedLogoText, setDisplayedLogoText] = useState('');
   const navigate = useNavigate();
 
-  const logoText = 'CarePlus';
+  const logoText = 'CareKidney';
 
   useEffect(() => {
     setTimeout(() => setFadeIn(true), 100);
@@ -59,7 +62,7 @@ export function MainPage() {
           <div className="flex justify-center items-center mb-8" style={{ marginTop: '-100px' }}>
             <img
               src={biLogoGif}
-              alt="CarePlus Logo"
+              alt="CareKidney Logo"
               style={{
                 width: 57.6,
                 height: 57.6
@@ -86,7 +89,7 @@ export function MainPage() {
               color: 'var(--color-text-secondary)',
               lineHeight: '1.8'
             }}>
-              케어플러스는 신장병 환우, 간병인, 연구자분들을 위해 만들어진 따뜻한 AI 파트너입니다. 의료·복지, 식이·영양, 연구 정보를 편하게 찾을 수 있도록 정성껏 도와드려요.
+              케어키드니는 신장병 환우, 간병인, 연구자분들을 위해 만들어진 따뜻한 AI 파트너입니다. 의료·복지, 식이·영양, 연구 정보를 편하게 찾을 수 있도록 정성껏 도와드려요.
             </p>
           </div>
         
@@ -227,7 +230,7 @@ export function MainPage() {
           {/* Footer */}
           <div className="text-center pt-6">
             <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
-              © 2025 CarePlus. All rights reserved.
+              © 2025 CareKidney. All rights reserved.
             </p>
           </div>
         </div>

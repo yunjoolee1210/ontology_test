@@ -77,6 +77,7 @@ class OptimizedPubMedSearch:
 
         # Translation
         self.translator = GoogleTranslator(source='ko', target='en')
+        self.translator_to_ko = GoogleTranslator(source='en', target='ko')
 
         # Caching
         self._count_cache: Dict[str, int] = {}
@@ -107,6 +108,17 @@ class OptimizedPubMedSearch:
             return self.translator.translate(text)
         except Exception as e:
             logger.warning(f"Translation failed: {e}")
+            return text
+
+    @lru_cache(maxsize=CACHE_SIZE)
+    def _translate_to_korean(self, text: str) -> str:
+        """Translate English text to Korean (cached)"""
+        if not text or self._contains_korean(text):
+            return text
+        try:
+            return self.translator_to_ko.translate(text)
+        except Exception as e:
+            logger.warning(f"Translation to Korean failed: {e}")
             return text
 
     def _contains_korean(self, text: str) -> bool:
@@ -213,10 +225,16 @@ class OptimizedPubMedSearch:
             if descriptor:
                 mesh_terms[descriptor] = True
 
+        # Translate title and abstract to Korean
+        title_ko = self._translate_to_korean(title) if title else ""
+        abstract_ko = self._translate_to_korean(abstract[:500]) if abstract else ""  # Limit abstract for translation
+
         return {
             "pmid": pmid,
             "title": title,
+            "title_ko": title_ko,
             "abstract": abstract,
+            "abstract_ko": abstract_ko,
             "authors": authors,
             "journal": journal,
             "pub_date": pub_date,

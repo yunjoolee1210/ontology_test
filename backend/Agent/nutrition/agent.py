@@ -47,6 +47,13 @@ try:
 except ImportError:
     RECIPE_HANDLER_AVAILABLE = False
 
+# FatSecret food image recognition
+try:
+    from app.services.fatsecret_service import get_fatsecret_service, recognize_food_from_image
+    FATSECRET_AVAILABLE = True
+except ImportError:
+    FATSECRET_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -64,6 +71,10 @@ class NutritionAgent(BaseAgent):
 
         # Recipe handler
         self.recipe_handler = None
+
+        # FatSecret service (lazy initialization)
+        self.fatsecret_service = None
+        self._fatsecret_initialized = False
 
         # 멀티턴 대화 상태 저장 (session_id -> state)
         self.conversation_states = {}
@@ -91,6 +102,18 @@ class NutritionAgent(BaseAgent):
                 logger.error(f"RAG initialization failed: {e}")
                 self.rag = None
                 self._rag_initialized = False
+
+    def _ensure_fatsecret(self):
+        """FatSecret 서비스 lazy initialization"""
+        if not self._fatsecret_initialized and FATSECRET_AVAILABLE:
+            try:
+                self.fatsecret_service = get_fatsecret_service()
+                self._fatsecret_initialized = True
+                logger.info("✅ FatSecret service initialized")
+            except Exception as e:
+                logger.error(f"FatSecret initialization failed: {e}")
+                self.fatsecret_service = None
+                self._fatsecret_initialized = False
 
     def _get_conversation_state(self, session_id: str) -> Dict[str, Any]:
         """세션 대화 상태 가져오기"""
@@ -131,6 +154,7 @@ class NutritionAgent(BaseAgent):
         try:
             await self._ensure_client()
             self._ensure_rag()
+            self._ensure_fatsecret()
         except ValueError as e:
             return self._error_response(str(e), session_id)
 
@@ -199,7 +223,7 @@ class NutritionAgent(BaseAgent):
         user_profile: str = "general"
     ) -> Dict[str, Any]:
         """
-        이미지 업로드 처리 - 5가지 케이스 분류
+        이미지 업로드 처리 - FatSecret API 우선 사용, fallback으로 OpenAI Vision
 
         케이스 1: dish - 단일 요리 → Top-5 요리 후보
         케이스 2: ingredient_single - 단일 식재료 → 식재료명 + 추천 요리 Top-5
@@ -207,14 +231,28 @@ class NutritionAgent(BaseAgent):
         케이스 4: unclear - 판별 불가 → 에러 메시지
         케이스 5: irrelevant - 무관 이미지 → 에러 메시지
         """
-        logger.info(f"🖼️ Image upload - classifying into 5 cases")
+        logger.info(f"🖼️ Image upload - analyzing with FatSecret API first")
 
-        # Step 1: 이미지 분류 (5가지 케이스)
+        # Step 1: FatSecret API로 음식 인식 시도
+        fatsecret_result = None
+        if self.fatsecret_service and FATSECRET_AVAILABLE:
+            try:
+                fatsecret_result = await self._recognize_with_fatsecret(image_data)
+                if fatsecret_result and fatsecret_result.get("success"):
+                    logger.info(f"✅ FatSecret recognition successful: {fatsecret_result.get('dish_name')}")
+                    return await self._handle_fatsecret_result(fatsecret_result, session_id)
+                else:
+                    logger.warning(f"⚠️ FatSecret recognition failed: {fatsecret_result.get('error', 'Unknown error')}")
+            except Exception as e:
+                logger.error(f"FatSecret API error: {e}", exc_info=True)
+
+        # Step 2: FatSecret 실패 시 기존 OpenAI Vision으로 fallback
+        logger.info("🔄 Falling back to OpenAI Vision classification")
         classification = await self._classify_image(image_data)
         analysis_type = classification.get("analysisType")
         logger.info(f"✅ Image classified as: {analysis_type}")
 
-        # Step 2: 케이스별 처리
+        # Step 3: 케이스별 처리
         if analysis_type == "dish":
             return await self._handle_case_dish(image_data, classification, session_id)
 
@@ -245,6 +283,234 @@ class NutritionAgent(BaseAgent):
                 "nutritionData": None,
                 "analysisType": "error"
             }
+
+    async def _recognize_with_fatsecret(self, image_data: str) -> Dict[str, Any]:
+        """
+        FatSecret API를 사용한 음식 이미지 인식
+
+        Args:
+            image_data: Base64 인코딩된 이미지 데이터
+
+        Returns:
+            CKD 포맷으로 변환된 인식 결과
+        """
+        result = await self.fatsecret_service.recognize_food_image(
+            image_data,
+            include_food_data=True
+        )
+        return self.fatsecret_service.convert_to_ckd_format(result)
+
+    async def _handle_fatsecret_result(
+        self,
+        fatsecret_result: Dict[str, Any],
+        session_id: str
+    ) -> Dict[str, Any]:
+        """
+        FatSecret 인식 결과 처리
+
+        Args:
+            fatsecret_result: FatSecret API 인식 결과 (CKD 포맷)
+            session_id: 세션 ID
+
+        Returns:
+            영양 분석 결과
+        """
+        dish_name = fatsecret_result.get("dish_name", "알 수 없는 음식")
+        ingredients = fatsecret_result.get("ingredients", [])
+        nutrients = fatsecret_result.get("nutrients", {})
+        food_count = fatsecret_result.get("food_count", 1)
+        confidence = fatsecret_result.get("confidence", 0.85)
+
+        # 단일 음식 vs 복수 음식 판단
+        if food_count == 1:
+            # 단일 음식 - 바로 영양 분석 결과 반환
+            return await self._handle_fatsecret_single_food(
+                dish_name, nutrients, ingredients, confidence, session_id
+            )
+        else:
+            # 복수 음식 - 식재료 리스트 형태로 처리
+            return await self._handle_fatsecret_multiple_foods(
+                dish_name, ingredients, nutrients, session_id
+            )
+
+    async def _handle_fatsecret_single_food(
+        self,
+        dish_name: str,
+        nutrients: Dict[str, float],
+        ingredients: List[Dict[str, Any]],
+        confidence: float,
+        session_id: str
+    ) -> Dict[str, Any]:
+        """
+        FatSecret 단일 음식 인식 결과 처리
+
+        Args:
+            dish_name: 음식명
+            nutrients: 영양소 정보
+            ingredients: 재료 정보
+            confidence: 인식 신뢰도
+            session_id: 세션 ID
+
+        Returns:
+            영양 분석 결과
+        """
+        # CKD 환자용 영양 데이터 생성
+        nutrition_data = {
+            "dishName": dish_name,
+            "nutrients": [
+                {
+                    "name": "나트륨",
+                    "value": nutrients.get("sodium", 0),
+                    "max": 2000,
+                    "unit": "mg",
+                    "status": self._get_nutrient_status(nutrients.get("sodium", 0), 2000)
+                },
+                {
+                    "name": "칼륨",
+                    "value": nutrients.get("potassium", 0),
+                    "max": 2000,
+                    "unit": "mg",
+                    "status": self._get_nutrient_status(nutrients.get("potassium", 0), 2000)
+                },
+                {
+                    "name": "인",
+                    "value": nutrients.get("phosphorus", 0),
+                    "max": 800,
+                    "unit": "mg",
+                    "status": self._get_nutrient_status(nutrients.get("phosphorus", 0), 800)
+                },
+                {
+                    "name": "단백질",
+                    "value": nutrients.get("protein", 0),
+                    "max": 50,
+                    "unit": "g",
+                    "status": self._get_nutrient_status(nutrients.get("protein", 0), 50)
+                },
+                {
+                    "name": "칼로리",
+                    "value": nutrients.get("calories", 0),
+                    "max": 700,  # 1끼 기준
+                    "unit": "kcal",
+                    "status": self._get_nutrient_status(nutrients.get("calories", 0), 700)
+                }
+            ],
+            "alternatives": [],
+            "source": "FatSecret API",
+            "guideline": f"신장병 환자 식사 원칙: 나트륨·칼륨·인 최대한 줄이기, 단백질은 적당히!\n\n⚠️ 반드시 전문 영양사나 의료진과 상담하세요"
+        }
+
+        # 위험 영양소 확인 및 동적 응답 생성
+        danger_nutrients = [n for n in nutrition_data["nutrients"] if n["status"] == "danger"]
+        warning_nutrients = [n for n in nutrition_data["nutrients"] if n["status"] == "warning"]
+
+        response_parts = [f"📸 **{dish_name}**(으)로 인식되었습니다. (신뢰도: {round(confidence * 100)}%)"]
+
+        if danger_nutrients:
+            nutrient_names = ", ".join([n["name"] for n in danger_nutrients])
+            response_parts.append(f"\n\n⚠️ {nutrient_names} 함량이 높아 주의가 필요해요.")
+        elif warning_nutrients:
+            nutrient_names = ", ".join([n["name"] for n in warning_nutrients])
+            response_parts.append(f"\n\n💡 {nutrient_names} 함량이 조금 높으니 양을 조절하세요.")
+        else:
+            response_parts.append("\n\n✅ 신장병 환자분이 드셔도 비교적 안전한 메뉴예요!")
+
+        return {
+            "response": "".join(response_parts),
+            "nutritionData": nutrition_data,
+            "analysisType": "dish_fatsecret",
+            "fatsecretData": {
+                "dish_name": dish_name,
+                "confidence": confidence,
+                "ingredients": ingredients,
+                "raw_nutrients": nutrients
+            }
+        }
+
+    async def _handle_fatsecret_multiple_foods(
+        self,
+        dish_name: str,
+        ingredients: List[Dict[str, Any]],
+        total_nutrients: Dict[str, float],
+        session_id: str
+    ) -> Dict[str, Any]:
+        """
+        FatSecret 복수 음식 인식 결과 처리 (식재료 여러 개 감지)
+
+        Args:
+            dish_name: 조합된 음식명
+            ingredients: 각 음식/재료별 정보
+            total_nutrients: 총 영양소 합계
+            session_id: 세션 ID
+
+        Returns:
+            영양 분석 결과
+        """
+        # 식재료 목록 생성
+        ingredient_list = [ing.get("name", "") for ing in ingredients]
+        ingredients_str = ", ".join(ingredient_list[:5])
+        if len(ingredient_list) > 5:
+            ingredients_str += f" 외 {len(ingredient_list) - 5}개"
+
+        # 각 식재료별 영양 정보
+        ingredient_nutrients = []
+        for ing in ingredients[:5]:
+            ing_nutrients = ing.get("nutrients", {})
+            ingredient_nutrients.append({
+                "name": ing.get("name", ""),
+                "amount": ing.get("amount"),
+                "unit": ing.get("unit", "g"),
+                "sodium": ing_nutrients.get("sodium", 0),
+                "potassium": ing_nutrients.get("potassium", 0),
+                "phosphorus": round(ing_nutrients.get("protein", 0) * 14, 2),  # 추정
+                "protein": ing_nutrients.get("protein", 0),
+                "calories": ing_nutrients.get("calories", 0)
+            })
+
+        # 총 영양소 합계로 CKD 영양 데이터 생성
+        nutrition_data = {
+            "dishName": dish_name,
+            "nutrients": [
+                {
+                    "name": "나트륨",
+                    "value": total_nutrients.get("sodium", 0),
+                    "max": 2000,
+                    "unit": "mg",
+                    "status": self._get_nutrient_status(total_nutrients.get("sodium", 0), 2000)
+                },
+                {
+                    "name": "칼륨",
+                    "value": total_nutrients.get("potassium", 0),
+                    "max": 2000,
+                    "unit": "mg",
+                    "status": self._get_nutrient_status(total_nutrients.get("potassium", 0), 2000)
+                },
+                {
+                    "name": "인",
+                    "value": total_nutrients.get("phosphorus", 0),
+                    "max": 800,
+                    "unit": "mg",
+                    "status": self._get_nutrient_status(total_nutrients.get("phosphorus", 0), 800)
+                },
+                {
+                    "name": "단백질",
+                    "value": total_nutrients.get("protein", 0),
+                    "max": 50,
+                    "unit": "g",
+                    "status": self._get_nutrient_status(total_nutrients.get("protein", 0), 50)
+                }
+            ],
+            "alternatives": [],
+            "ingredientDetails": ingredient_nutrients,
+            "source": "FatSecret API",
+            "guideline": f"인식된 음식: {ingredients_str}\n\n⚠️ 반드시 전문 영양사나 의료진과 상담하세요"
+        }
+
+        return {
+            "response": f"📸 인식된 음식: **{ingredients_str}**\n\n각 음식의 영양소 정보를 확인하세요!",
+            "nutritionData": nutrition_data,
+            "ingredientCandidates": ingredient_nutrients,
+            "analysisType": "ingredient_multiple_fatsecret"
+        }
 
     async def _classify_image(self, image_data: str) -> Dict[str, Any]:
         """
@@ -306,64 +572,42 @@ class NutritionAgent(BaseAgent):
         """
         케이스 1: 단일 요리 이미지 처리
 
+        바로 영양 분석 결과 + 신장병 단계별 안전 여부 + 대체 식재료 추천까지 제공
+
         Returns:
             {
-                "response": "확인 메시지",
-                "dishCandidates": [Top-5 요리 후보],
+                "response": "영양 분석 결과",
+                "nutritionData": {영양소 정보 + 대체 식재료},
                 "analysisType": "dish"
             }
         """
-        # RAG로 유사 음식 검색
+        dish_name = classification.get("primaryItem", "분석된 요리")
+        confidence = classification.get("confidence", 0.8)
+        ingredients = classification.get("items", [])
+
+        logger.info(f"🍽️ Analyzing dish: {dish_name} (confidence: {confidence})")
+
+        # RAG로 유사 음식 검색하여 영양 정보 획득
+        dish_data = {}
         if self.rag:
-            search_results = self.rag.search_by_image(image_data, top_k=5)
-            if search_results and len(search_results) > 0:
-                top_dish = search_results[0]
-                dish_name = top_dish["dish_name"]
-                confidence = top_dish.get("score", 0)
+            search_results = self.rag.search_by_text(dish_name, top_k=1)
+            if search_results:
+                dish_data = search_results[0]
+                logger.info(f"✅ RAG found nutrition data for: {dish_name}")
 
-                logger.info(f"✅ RAG Top-5: {[r['dish_name'] for r in search_results]}")
+        # 영양 분석 수행 (RAG 데이터 또는 추정치 사용)
+        result = await self._analyze_dish_with_rag_data(dish_name, dish_data)
 
-                # 후보 목록 생성
-                candidates = [
-                    {
-                        "dish_name": r["dish_name"],
-                        "confidence": round(r.get("score", 0) * 100, 1),
-                        "dish_data": r
-                    }
-                    for r in search_results
-                ]
+        # 응답에 인식 정보 추가
+        recognition_info = f"📸 **{dish_name}**(으)로 인식되었습니다. (신뢰도: {round(confidence * 100)}%)\n\n"
 
-                # 대화 상태 업데이트
-                self._update_conversation_state(session_id, {
-                    "state": "awaiting_dish_selection",
-                    "pending_candidates": candidates,
-                    "last_image_data": image_data,
-                    "last_analysis_type": "dish"
-                })
-
-                return {
-                    "response": (
-                        f"업로드하신 것은 **{dish_name}**(으)로 보입니다 (유사도: {round(confidence * 100, 1)}%).\n\n"
-                        f"맞다면 '네'라고 해주세요."
-                    ),
-                    "nutritionData": None,
-                    "dishCandidates": candidates,
-                    "analysisType": "dish"
-                }
-
-        # RAG 실패 시 OpenAI Vision으로 대체 (fallback)
-        primary_item = classification.get("primaryItem", "분석된 요리")
         return {
-            "response": f"업로드하신 것은 **{primary_item}**(으)로 보입니다. 맞다면 '네'라고 해주세요.",
-            "nutritionData": None,
-            "dishCandidates": [
-                {
-                    "dish_name": primary_item,
-                    "confidence": round(classification.get("confidence", 0.8) * 100, 1),
-                    "dish_data": {}
-                }
-            ],
-            "analysisType": "dish"
+            "response": recognition_info + result["response"],
+            "nutritionData": result.get("nutritionData"),
+            "analysisType": "dish",
+            "recognizedDish": dish_name,
+            "recognizedIngredients": ingredients,
+            "confidence": confidence
         }
 
     async def _handle_case_ingredient_single(
@@ -704,13 +948,17 @@ class NutritionAgent(BaseAgent):
             except Exception as e:
                 logger.warning(f"MongoDB lookup failed: {e}")
 
-        # MongoDB 데이터가 있으면 우선 사용, 없으면 RAG 데이터 사용
+        # MongoDB 데이터가 있으면 우선 사용, 없으면 RAG 데이터 사용, 둘 다 없으면 OpenAI 추정
         if mongodb_nutrition:
             nutrition = mongodb_nutrition["nutrients"]
             logger.info(f"📊 Using MongoDB nutrition data: {nutrition}")
-        else:
+        elif dish_data.get("nutrition"):
             nutrition = dish_data.get("nutrition", {})
             logger.info(f"📊 Using RAG nutrition data: {nutrition}")
+        else:
+            # OpenAI로 영양소 추정
+            nutrition = await self._estimate_nutrition_with_openai(dish_name)
+            logger.info(f"📊 Using OpenAI estimated nutrition data: {nutrition}")
 
         ingredients = dish_data.get("ingredients", [])
         recipe = dish_data.get("recipe", "")
@@ -825,27 +1073,72 @@ class NutritionAgent(BaseAgent):
             "guideline": f"신장병 환자 식사 원칙: 나트륨·칼륨·인 최대한 줄이기, 단백질은 적당히, 수분도 조심!\n\n주재료: {', '.join(ingredients[:5]) if ingredients else '정보 없음'}\n조리 팁: {recipe[:100] if recipe else '데치기나 삶기로 조리하면 칼륨이 줄어들어요'}...\n\n⚠️ 반드시 전문 영양사나 의료진과 상담하세요"
         }
 
-        # 동적 응답 생성 (하드코딩 제거)
+        # 동적 응답 생성 - 실제 영양소 수치 포함
         response_parts = []
 
-        # 위험 영양소 확인
+        # 1. 영양소 상태 확인
         danger_nutrients = [n for n in nutrition_data["nutrients"] if n["status"] == "danger"]
         warning_nutrients = [n for n in nutrition_data["nutrients"] if n["status"] == "warning"]
+        safe_nutrients = [n for n in nutrition_data["nutrients"] if n["status"] == "safe"]
 
+        # 2. 전체 안전 상태 판정
         if danger_nutrients:
             nutrient_names = ", ".join([n["name"] for n in danger_nutrients])
-            response_parts.append(f"⚠️ {dish_name}는 {nutrient_names} 함량이 높아 주의가 필요해요.")
+            response_parts.append(f"⚠️ **{dish_name}** - {nutrient_names} 함량이 높아 주의가 필요해요.\n")
         elif warning_nutrients:
             nutrient_names = ", ".join([n["name"] for n in warning_nutrients])
-            response_parts.append(f"💡 {dish_name}는 {nutrient_names} 함량이 조금 높으니 양을 줄이거나 대체 방법을 확인하세요.")
+            response_parts.append(f"💡 **{dish_name}** - {nutrient_names} 함량이 조금 높으니 양을 조절하세요.\n")
         else:
-            response_parts.append(f"✅ {dish_name}는 신장병 환자분이 드셔도 비교적 안전한 메뉴예요!")
+            response_parts.append(f"✅ **{dish_name}** - 신장병 환자분이 드셔도 비교적 안전해요!\n")
 
+        # 3. 1끼 영양소 분석표 생성
+        response_parts.append("\n📊 **1끼 영양소 분석** (1인분 기준)\n")
+        response_parts.append("| 영양소 | 섭취량 | 1끼 제한 | 상태 |\n")
+        response_parts.append("|--------|--------|----------|------|\n")
+
+        status_emoji = {"safe": "✅ 안전", "warning": "⚠️ 주의", "danger": "🚫 초과"}
+        for nutrient in nutrition_data["nutrients"]:
+            name = nutrient["name"]
+            value = nutrient["value"]
+            max_val = nutrient["max"]
+            unit = nutrient["unit"]
+            status = status_emoji.get(nutrient["status"], "❓")
+            response_parts.append(f"| {name} | {value}{unit} | {max_val}{unit} | {status} |\n")
+
+        # 4. 초과 영양소 상세 설명
+        if danger_nutrients or warning_nutrients:
+            response_parts.append("\n⚠️ **주의가 필요한 영양소:**\n")
+            for n in danger_nutrients + warning_nutrients:
+                percent = round((n["value"] / n["max"]) * 100)
+                response_parts.append(f"- **{n['name']}**: {n['value']}{n['unit']} (제한의 {percent}%)\n")
+
+        # 5. 대체 재료 추천
         if alternatives:
-            response_parts.append("아래 더 안전한 대체 방법도 확인해 보세요.")
+            response_parts.append("\n🔄 **대체 재료 추천:**\n")
+            for alt in alternatives[:3]:
+                original = alt.get("original", "")
+                substitute = alt.get("substitute", "")
+                reason = alt.get("reason", "")
+                if original and substitute:
+                    response_parts.append(f"- {original} → **{substitute}** ({reason})\n")
+
+        # 6. 대체 레시피 추천
+        if alternative_recipes:
+            response_parts.append("\n🍳 **대체 레시피 추천:**\n")
+            for recipe_item in alternative_recipes[:2]:
+                recipe_name = recipe_item.get("name", "")
+                recipe_desc = recipe_item.get("description", "")
+                if recipe_name:
+                    response_parts.append(f"- **{recipe_name}**: {recipe_desc}\n")
+
+        # 7. 조리 팁
+        if recipe:
+            response_parts.append(f"\n💡 **조리 팁:** {recipe[:150]}...\n")
+
+        response_parts.append("\n⚠️ *개인 건강 상태에 따라 다를 수 있으니 담당 의료진과 상담하세요.*")
 
         return {
-            "response": " ".join(response_parts),
+            "response": "".join(response_parts),
             "nutritionData": nutrition_data
         }
 
@@ -1014,6 +1307,77 @@ class NutritionAgent(BaseAgent):
             return "warning"
         else:
             return "danger"
+
+    async def _estimate_nutrition_with_openai(self, dish_name: str) -> Dict[str, float]:
+        """
+        OpenAI로 음식 영양소 추정 (1인분 기준, CKD 환자용)
+
+        Args:
+            dish_name: 음식명
+
+        Returns:
+            Dict: {sodium, potassium, phosphorus, protein, calcium, calories}
+        """
+        try:
+            response = await self.client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": """당신은 영양학 전문가입니다. 한국 음식의 1인분 기준 영양소 함량을 추정해주세요.
+신장병(CKD) 환자에게 중요한 영양소를 정확히 추정해야 합니다.
+
+반드시 아래 JSON 형식으로만 응답하세요:
+{"sodium": 숫자, "potassium": 숫자, "phosphorus": 숫자, "protein": 숫자, "calcium": 숫자, "calories": 숫자}
+
+- sodium: 나트륨 (mg)
+- potassium: 칼륨 (mg)
+- phosphorus: 인 (mg)
+- protein: 단백질 (g)
+- calcium: 칼슘 (mg)
+- calories: 칼로리 (kcal)"""
+                    },
+                    {
+                        "role": "user",
+                        "content": f"'{dish_name}' 1인분의 영양소 함량을 추정해주세요."
+                    }
+                ],
+                max_tokens=200,
+                temperature=0.3
+            )
+
+            content = response.choices[0].message.content
+            nutrition = self._extract_json(content)
+
+            # 기본값 설정 (추정 실패 시)
+            default_nutrition = {
+                "sodium": 800,
+                "potassium": 600,
+                "phosphorus": 250,
+                "protein": 20,
+                "calcium": 50,
+                "calories": 400
+            }
+
+            # 유효한 값만 사용, 나머지는 기본값
+            for key in default_nutrition:
+                if key not in nutrition or not isinstance(nutrition.get(key), (int, float)):
+                    nutrition[key] = default_nutrition[key]
+
+            logger.info(f"✅ OpenAI estimated nutrition for {dish_name}: {nutrition}")
+            return nutrition
+
+        except Exception as e:
+            logger.error(f"OpenAI nutrition estimation failed: {e}")
+            # 기본 추정값 반환 (한국 음식 평균)
+            return {
+                "sodium": 1200,
+                "potassium": 800,
+                "phosphorus": 300,
+                "protein": 25,
+                "calcium": 60,
+                "calories": 450
+            }
 
     async def _handle_text_input(
         self,

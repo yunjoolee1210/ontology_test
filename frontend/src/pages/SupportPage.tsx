@@ -187,7 +187,7 @@ export function SupportPage() {
                 <div className="card text-center">
                   <Mail size={32} color="#00C8B4" className="mx-auto mb-3" />
                   <h3 className="mb-2" style={{ fontSize: '16px', color: '#1F2937' }}>이메일</h3>
-                  <p style={{ fontSize: '13px', color: '#6B7280' }}>support@careplus.com</p>
+                  <p style={{ fontSize: '13px', color: '#6B7280' }}>support@carekidney.com</p>
                 </div>
                 <div className="card text-center">
                   <Phone size={32} color="#00C8B4" className="mx-auto mb-3" />
