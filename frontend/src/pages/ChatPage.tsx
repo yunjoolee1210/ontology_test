@@ -263,7 +263,8 @@ export function ChatPage() {
   const tabs = [
     { id: 'medical' as AgentTab, label: '의료 복지', icon: Stethoscope },
     { id: 'nutrition' as AgentTab, label: '식이 영양', icon: Utensils },
-    { id: 'research' as AgentTab, label: '연구 논문', icon: FileText }
+    // 논문검색(연구 논문) 기능 비활성화 - 메뉴 제거 (재활성화 시 아래 주석 해제)
+    // { id: 'research' as AgentTab, label: '연구 논문', icon: FileText }
   ];
 
   const ActiveIcon = tabs.find(t => t.id === activeTab)?.icon || Stethoscope;
@@ -279,7 +280,8 @@ export function ChatPage() {
     if (state?.initialMessage && sessionId) {
       handleSendMessage(state.initialMessage);
     }
-    if (state?.tab) {
+    // 논문검색(연구 논문) 비활성화 - research 탭으로의 외부 진입 차단
+    if (state?.tab && state.tab !== 'research') {
       setActiveTab(state.tab);
     }
   }, [location, sessionId]);
