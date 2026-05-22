@@ -77,13 +77,16 @@ app = FastAPI(
 )
 
 # CORS 설정
+# 기본값은 로컬 개발 서버, 배포 시 ALLOWED_ORIGINS(콤마 구분)로 운영 도메인 추가
+_default_origins = [
+    "http://localhost:5173",  # Vite 개발 서버 (localhost)
+    "http://127.0.0.1:5173",
+    "http://192.168.129.32:5173",  # Vite 개발 서버 (네트워크 IP)
+]
+_env_origins = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",  # Vite 개발 서버 (localhost)
-        "http://127.0.0.1:5173",
-        "http://192.168.129.32:5173",  # Vite 개발 서버 (네트워크 IP)
-    ],
+    allow_origins=_default_origins + _env_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

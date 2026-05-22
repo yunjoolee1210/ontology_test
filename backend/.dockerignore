@@ -1,0 +1,15 @@
+# 이미지 크기 축소 / 시크릿 제외
+.venv
+venv*/
+**/__pycache__/
+*.pyc
+*.pyo
+embedding_cache/
+uploads/
+tests/
+*.ipynb
+*.md
+.env
+.env.*
+.DS_Store
+.git
