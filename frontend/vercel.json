@@ -2,5 +2,8 @@
   "buildCommand": "vite build",
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "crons": [
+    { "path": "/api/news", "schedule": "0 0 * * *" }
   ]
 }
