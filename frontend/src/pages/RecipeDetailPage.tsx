@@ -96,15 +96,6 @@ export function RecipeDetailPage() {
               ))}
             </div>
 
-            {/* 대체 포인트 — 질환식 핵심 강조 박스 */}
-            <div className="rounded-2xl p-4 mb-6 border" style={{ background: 'linear-gradient(135deg,#F0FDFA,#F5F3FF)', borderColor: '#CCFBF1' }}>
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles size={18} className="text-[#00C9B7]" />
-                <h3 className="font-bold text-[#0F766E]">대체 포인트 (질환식 핵심)</h3>
-              </div>
-              <p className="text-sm text-[#374151] leading-relaxed">{recipe.substitutePoint}</p>
-            </div>
-
             {/* 영양정보 */}
             <h3 className="font-bold text-[#1F2937] mb-3">영양정보 <span className="text-xs font-normal text-gray-400">(1인분 기준)</span></h3>
             <div className="grid grid-cols-5 gap-2 mb-7">
@@ -140,9 +131,27 @@ export function RecipeDetailPage() {
               ))}
             </ol>
 
-            <div className="flex items-start gap-2 rounded-xl bg-[#FFFBEB] border border-[#FDE68A] p-3 text-xs text-[#92400E]">
-              <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
-              <span>개인의 신장 기능 단계와 처방에 따라 적정 섭취량이 다를 수 있습니다. 식단 적용 전 의료진·영양사와 상담하세요.</span>
+            {/* 대체 포인트 — 질환식 핵심 (조리법 하단) */}
+            <div className="rounded-2xl p-4 mb-4 border" style={{ background: 'linear-gradient(135deg,#F0FDFA,#F5F3FF)', borderColor: '#CCFBF1' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles size={18} className="text-[#00C9B7]" />
+                <h3 className="font-bold text-[#0F766E]">대체 포인트 (질환식 핵심)</h3>
+              </div>
+              <p className="text-sm text-[#374151] leading-relaxed">{recipe.substitutePoint}</p>
+            </div>
+
+            {/* 질환식 조리법 주의사항 */}
+            <div className="rounded-2xl bg-[#FFFBEB] border border-[#FDE68A] p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertCircle size={18} className="text-[#D97706]" />
+                <h3 className="font-bold text-[#92400E]">질환식 조리법 주의사항</h3>
+              </div>
+              <ul className="text-xs text-[#92400E] leading-relaxed space-y-1 list-disc pl-4">
+                <li>채소·고기는 데쳐서 우러난 물을 버려 칼륨을 줄이세요.</li>
+                <li>국물은 적게 드시고, 소금·간장 등 나트륨 사용은 최소화하세요.</li>
+                <li>인이 많은 가공식품·유제품·견과류는 피하세요.</li>
+                <li>개인의 신장 기능 단계·처방에 따라 적정 섭취량이 다릅니다. 식단 적용 전 반드시 의료진·영양사와 상담하세요.</li>
+              </ul>
             </div>
           </div>
         </div>
