@@ -19,14 +19,30 @@ const SOURCES = [
 // 신장 관련 키워드 (공식기관 일반 보도자료에서 신장 관련만 추림)
 const KIDNEY_RE = /(신장|콩팥|투석|신부전|CKD|혈액투석|복막투석|신증|사구체|네프론|만성콩팥|kidney|dialysis|nephro)/i;
 
-// 카테고리별 고정 썸네일 (명세서 5종, frontend/public/thumbnails/news/)
-const CATEGORY_IMG: Record<string, string> = {
-  policy: '/thumbnails/news/news_institution_thumbnail.jpg',        // 기관/복지/정책
-  medical: '/thumbnails/news/news_hospital-paper_thumbnail.jpg',    // 치료/의학/신약
-  news: '/thumbnails/news/news_research_thumbnail.jpg',             // 연구/학술/국제뉴스
-  nutrition: '/thumbnails/news/news_food-ingredients_thumbnail.jpg',// 식이관리/영양
+// 명세서 5종 고정 썸네일 (frontend/public/thumbnails/news/)
+const THUMBS = {
+  food: '/thumbnails/news/news_food-ingredients_thumbnail.jpg',          // 식이/영양
+  institution: '/thumbnails/news/news_institution_thumbnail.jpg',        // 기관/복지/정책
+  examination: '/thumbnails/news/news_hospital-examination_thumbnail.jpg',// 검사/진료
+  paper: '/thumbnails/news/news_hospital-paper_thumbnail.jpg',           // 치료/의학/신약
+  research: '/thumbnails/news/news_research_thumbnail.jpg',              // 연구/학술
 };
-const DEFAULT_THUMB = '/thumbnails/news/news_research_thumbnail.jpg';
+const THUMB_LIST = [THUMBS.food, THUMBS.institution, THUMBS.examination, THUMBS.paper, THUMBS.research];
+
+// 기사 내용(제목+요약) 키워드로 5종 썸네일 중 가장 맞는 것 선택.
+// 매칭 없으면 5종을 순환 적용해 다양성 확보(한 이미지로 몰리지 않게).
+const THUMB_RULES: Array<[RegExp, string]> = [
+  [/식단|음식|영양|칼륨|나트륨|단백질|식이|과일|채소|저염|저칼륨|레시피|먹거리/, THUMBS.food],
+  [/복지|정책|지원|보험|급여|제도|예산|보건복지부|장애|등록|혜택|기관|법안|국회/, THUMBS.institution],
+  [/검사|진단|진료|외래|건강검진|수치|크레아티닌|eGFR|선별/, THUMBS.examination],
+  [/신약|치료|약물|이식|수술|투석|임상|요법|의약품|허가|처방/, THUMBS.paper],
+  [/연구|논문|학회|발표|저널|규명|개발|효과|study|research/i, THUMBS.research],
+];
+const pickThumb = (title: string, desc: string, idx: number): string => {
+  const t = `${title} ${desc}`;
+  for (const [re, img] of THUMB_RULES) if (re.test(t)) return img;
+  return THUMB_LIST[idx % THUMB_LIST.length];
+};
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
 
@@ -108,7 +124,7 @@ export default async function handler(_req: any, res: any) {
       url: x.link,
       time: relTime(x.pub),
       published_at: x.pub ? new Date(x.pub).toISOString() : null,
-      image: CATEGORY_IMG[x.category] || DEFAULT_THUMB,  // 카테고리 고정 썸네일 적용
+      image: pickThumb(x.title, x.desc, i),  // 기사 내용 기반 5종 썸네일 선택(다양성)
       relevance_score: 1,
       keywords: [] as string[],
     }));
