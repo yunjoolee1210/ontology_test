@@ -36,12 +36,40 @@ const containsProfanity = (nickname: string): boolean => {
   return PROFANITY_LIST.some(word => lowerNickname.includes(word.toLowerCase()));
 };
 
+// 약관 기본값 (백엔드 없이 동작 — /api/terms/all 미배포 대응)
+const DEFAULT_TERMS: TermsData = {
+  service_terms: {
+    title: '서비스 이용약관',
+    required: true,
+    content:
+      '본 약관은 CareKidney(케어가이드) 서비스 이용에 관한 조건·절차와 회원·회사의 권리·의무를 규정합니다. 본 서비스는 만성콩팥병 환자를 위한 정보 제공을 목적으로 하며, 제공되는 정보는 의학적 진단·처방을 대체하지 않습니다. 회원은 관련 법령과 본 약관을 준수해야 합니다.',
+  },
+  privacy_required: {
+    title: '개인정보 수집·이용 동의 (필수)',
+    required: true,
+    content:
+      '회원가입 및 서비스 제공을 위해 이메일, 닉네임, 성별, 생년월일, 신체정보(키/체중), 질환정보를 수집·이용합니다. 수집된 정보는 서비스 제공 목적 외로 사용하지 않으며, 회원 탈퇴 시 관련 법령에 따라 파기합니다.',
+  },
+  privacy_optional: {
+    title: '개인정보 수집·이용 동의 (선택)',
+    required: false,
+    content:
+      '맞춤형 콘텐츠 제공 및 통계 분석을 위한 선택적 개인정보 수집·이용에 동의합니다. 동의하지 않아도 기본 서비스 이용이 가능합니다.',
+  },
+  marketing: {
+    title: '마케팅 정보 수신 동의 (선택)',
+    required: false,
+    content:
+      '이벤트, 신규 기능, 건강 정보 등의 마케팅 알림 수신에 동의합니다. 동의하지 않아도 서비스 이용이 가능하며, 언제든지 수신을 거부할 수 있습니다.',
+  },
+};
+
 export function SignupPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<Step>(0);
 
   // Step 0: Terms Agreement
-  const [termsData, setTermsData] = useState<TermsData | null>(null);
+  const [termsData, setTermsData] = useState<TermsData | null>(DEFAULT_TERMS);
   const [agreements, setAgreements] = useState({
     all: false,
     service: false,
