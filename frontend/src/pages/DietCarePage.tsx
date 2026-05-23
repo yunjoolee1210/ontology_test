@@ -202,7 +202,7 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
       onClick={() => navigate(`/recipe/${recipe.slug}`)}
       className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow flex flex-col"
     >
-      <div className="relative w-full h-32 overflow-hidden flex-shrink-0">
+      <div className="relative w-full aspect-[3/2] overflow-hidden flex-shrink-0">
         <img
           src={recipe.imageUrl}
           alt={recipe.name}
