@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp, Apple, Utensils, ShoppingBag, Plus, X, Camera, Loader2, Volume2, VolumeX, Bookmark, ChefHat } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import { listDietLogs, addDietLog } from '../services/dietApi';
+import { listRecipes, Recipe } from '../services/recipeApi';
 import {
   FoodItem,
   LOW_POTASSIUM_INGREDIENTS,
@@ -189,57 +190,44 @@ function FoodSection({ title, icon, lowItems, highItems, nutrientType }: FoodSec
 }
 
 // 레시피 카드 컴포넌트
-interface RecipeCardProps {
-  recipe: RecipeData;
-  onFavorite: (id: string) => void;
-  isFavorite: boolean;
-}
+const tagColor = (t: string) =>
+  t.includes('나트륨') ? 'bg-blue-100 text-blue-700'
+    : t.includes('칼륨') ? 'bg-green-100 text-green-700'
+      : 'bg-amber-100 text-amber-700';
 
-function RecipeCard({ recipe, onFavorite, isFavorite }: RecipeCardProps) {
+function RecipeCard({ recipe }: { recipe: Recipe }) {
   const navigate = useNavigate();
-
   return (
     <div
       onClick={() => navigate(`/recipe/${recipe.slug}`)}
-      className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+      className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow flex flex-col"
     >
-      <div className="relative">
+      <div className="relative w-full h-32 overflow-hidden flex-shrink-0">
         <img
-          src={recipe.image_url}
+          src={recipe.imageUrl}
           alt={recipe.name}
-          className="w-full h-32 object-cover"
+          className="w-full h-full object-cover"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = `https://placehold.co/400x200/E8F5E9/2E7D32?text=${encodeURIComponent(recipe.name)}`;
+            (e.target as HTMLImageElement).src = `https://placehold.co/400x225/E8F5E9/2E7D32?text=${encodeURIComponent(recipe.name)}`;
           }}
         />
-        <div className="absolute top-2 left-2">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-            recipe.category === 'low-potassium'
-              ? 'bg-green-100 text-green-700'
-              : 'bg-blue-100 text-blue-700'
-          }`}>
-            {recipe.category === 'low-potassium' ? '저칼륨' : '저인'}
-          </span>
-        </div>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onFavorite(recipe.id);
-          }}
-          className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 hover:bg-white transition-colors"
-        >
-          <Bookmark
-            size={18}
-            className={isFavorite ? 'fill-[#00C9B7] text-[#00C9B7]' : 'text-gray-400'}
-          />
-        </button>
+        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[11px] font-medium bg-white/90 text-[#00A99A]">
+          {recipe.categoryLabel}
+        </span>
       </div>
-      <div className="p-3">
-        <h4 className="font-medium text-[#1F2937] mb-1">{recipe.name}</h4>
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <span>{recipe.cooking_time}</span>
+      <div className="p-3 flex-1 flex flex-col">
+        {/* 원래 요리 → 대체 레시피 강조 */}
+        <div className="text-[11px] text-gray-400 line-through mb-0.5">{recipe.originalDish}</div>
+        <h4 className="font-bold text-[#1F2937] text-sm leading-snug mb-2 line-clamp-2">{recipe.name}</h4>
+        <div className="flex flex-wrap gap-1 mb-2">
+          {recipe.tags.map((t) => (
+            <span key={t} className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${tagColor(t)}`}>{t}</span>
+          ))}
+        </div>
+        <div className="mt-auto flex items-center gap-2 text-[11px] text-gray-500">
+          <span>나트륨 {recipe.nutrients.sodium}mg</span>
           <span>·</span>
-          <span>{recipe.servings}</span>
+          <span>{recipe.nutrients.kcal}kcal</span>
         </div>
       </div>
     </div>
@@ -645,7 +633,7 @@ export function DietCarePage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   // 레시피 코치 상태
-  const [recipes, setRecipes] = useState<RecipeData[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(false);
   const [favoriteRecipes, setFavoriteRecipes] = useState<string[]>([]);
 
@@ -654,11 +642,7 @@ export function DietCarePage() {
     const fetchRecipes = async () => {
       setIsLoadingRecipes(true);
       try {
-        const response = await fetch('/api/recipes');
-        if (response.ok) {
-          const data = await response.json();
-          setRecipes(data.recipes || []);
-        }
+        setRecipes(await listRecipes());
       } catch (err) {
         console.error('Failed to load recipes:', err);
       } finally {
@@ -920,11 +904,10 @@ export function DietCarePage() {
               <div className="flex items-start gap-3">
                 <ChefHat size={24} className="text-[#00C9B7] flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-[#1F2937] mb-1">CKD 환자를 위한 질환식 레시피</h4>
+                  <h4 className="font-medium text-[#1F2937] mb-1">신장질환식 대체 레시피 30선</h4>
                   <p className="text-sm text-gray-600">
-                    칼륨과 인 함량이 낮은 요리 레시피를 확인하세요.
-                    <span className="text-[#9F7AEA]"> 🔊 음성으로 듣기</span> 기능과
-                    <span className="text-[#00C9B7]"> 🔖 즐겨찾기</span> 기능을 활용해보세요.
+                    좋아하던 요리를 <span className="text-[#00C9B7] font-medium">저염·저칼륨·저인</span>으로 바꾼
+                    <span className="font-medium"> 대체 레시피</span>입니다. 카드를 누르면 대체 포인트와 질환식 조리법을 볼 수 있어요.
                   </p>
                 </div>
               </div>
@@ -938,12 +921,7 @@ export function DietCarePage() {
             ) : recipes.length > 0 ? (
               <div className="grid grid-cols-2 gap-3">
                 {recipes.map((recipe) => (
-                  <RecipeCard
-                    key={recipe.id}
-                    recipe={recipe}
-                    onFavorite={handleFavoriteToggle}
-                    isFavorite={favoriteRecipes.includes(recipe.id)}
-                  />
+                  <RecipeCard key={recipe.id} recipe={recipe} />
                 ))}
               </div>
             ) : (
