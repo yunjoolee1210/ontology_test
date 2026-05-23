@@ -68,6 +68,16 @@ const relTime = (d: string | null): string => {
   return new Date(d).toLocaleDateString('ko-KR');
 };
 
+// 실제 배포 일시 (KST, "YYYY.MM.DD HH:mm")
+const fmtDateTime = (d: string | null): string => {
+  if (!d) return '';
+  const dt = new Date(d);
+  if (isNaN(dt.getTime())) return '';
+  const k = new Date(dt.getTime() + 9 * 3600 * 1000); // UTC→KST
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${k.getUTCFullYear()}.${p(k.getUTCMonth() + 1)}.${p(k.getUTCDate())} ${p(k.getUTCHours())}:${p(k.getUTCMinutes())}`;
+};
+
 const pick = (v: any): string => (typeof v === 'string' ? v : (v?.['#text'] ?? '')).toString();
 
 export default async function handler(_req: any, res: any) {
@@ -81,20 +91,24 @@ export default async function handler(_req: any, res: any) {
         let items = doc?.rss?.channel?.item ?? doc?.feed?.entry ?? [];
         if (!Array.isArray(items)) items = [items];
         return items.map((it: any) => {
-          const title = stripHtml(pick(it.title));
+          let title = stripHtml(pick(it.title));
           let link = '';
           if (typeof it.link === 'string') link = it.link;
           else if (Array.isArray(it.link)) link = it.link[0]?.['@_href'] || pick(it.link[0]);
           else link = it.link?.['@_href'] || pick(it.link) || pick(it.guid);
           const desc = stripHtml(pick(it.description) || pick(it.summary)).slice(0, 200);
           const pub = pick(it.pubDate) || pick(it.published) || pick(it.updated) || null;
-          const image =
-            it['media:content']?.['@_url'] ||
-            it['media:thumbnail']?.['@_url'] ||
-            it.enclosure?.['@_url'] ||
-            extractImg(pick(it.description)) ||
-            null;
-          return { source: s.name, category: s.category, title, link, desc, pub, image };
+
+          // 출처: Google News는 실제 언론사명 사용 (<source> 태그 또는 제목의 ' - 언론사' 접미사)
+          let outlet = s.name;
+          if (s.name === 'Google News') {
+            const realSrc = pick(it.source).trim();
+            const m = title.match(/^(.*)\s[-–—]\s([^-–—]+)$/);
+            if (realSrc) { outlet = realSrc; if (m) title = m[1].trim(); }
+            else if (m) { title = m[1].trim(); outlet = m[2].trim(); }
+          }
+
+          return { source: outlet, category: s.category, title, link, desc, pub };
         });
       })
     );
@@ -104,6 +118,8 @@ export default async function handler(_req: any, res: any) {
 
     // 신장 관련만, 유효 링크/제목만
     all = all.filter((x) => x.title && x.link && KIDNEY_RE.test(`${x.title} ${x.desc}`));
+    // 베트남 매체/기사 제외
+    all = all.filter((x) => !/vietnam|베트남|\.vn\b/i.test(`${x.source} ${x.title} ${x.link}`));
     // url 중복 제거
     const seen = new Set<string>();
     all = all.filter((x) => (seen.has(x.link) ? false : (seen.add(x.link), true)));
@@ -118,7 +134,7 @@ export default async function handler(_req: any, res: any) {
       source: x.source,
       category: x.category,
       url: x.link,
-      time: relTime(x.pub),
+      time: fmtDateTime(x.pub),
       published_at: x.pub ? new Date(x.pub).toISOString() : null,
       image: pickThumb(x.title, x.desc, i),  // 기사 내용 기반 5종 썸네일 선택(다양성)
       relevance_score: 1,
