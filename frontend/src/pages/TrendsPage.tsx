@@ -223,7 +223,7 @@ export function TrendsPage() {
                   }}
                 >
                   {/* Image Section - always show */}
-                  <div className="relative w-full md:w-[200px] h-[180px] md:h-auto flex-shrink-0">
+                  <div className="relative w-full md:w-[200px] h-[180px] flex-shrink-0 overflow-hidden">
                     <ImageWithFallback
                       src={news.image || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=250&fit=crop'}
                       alt={news.title}

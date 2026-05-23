@@ -19,26 +19,25 @@ const SOURCES = [
 // 신장 관련 키워드 (공식기관 일반 보도자료에서 신장 관련만 추림)
 const KIDNEY_RE = /(신장|콩팥|투석|신부전|CKD|혈액투석|복막투석|신증|사구체|네프론|만성콩팥|kidney|dialysis|nephro)/i;
 
-// 명세서 5종 고정 썸네일 (frontend/public/thumbnails/news/)
-const THUMBS = {
-  food: '/thumbnails/news/news_food-ingredients_thumbnail.jpg',          // 식이/영양
-  institution: '/thumbnails/news/news_institution_thumbnail.jpg',        // 기관/복지/정책
-  examination: '/thumbnails/news/news_hospital-examination_thumbnail.jpg',// 검사/진료
-  paper: '/thumbnails/news/news_hospital-paper_thumbnail.jpg',           // 치료/의학/신약
-  research: '/thumbnails/news/news_research_thumbnail.jpg',              // 연구/학술
+// 썸네일 풀 (frontend/public/thumbnails/news/, 전부 640×360) — 콘텐츠 그룹별 다수 보유
+const TN = (n: string) => `/thumbnails/news/${n}`;
+const THUMB_GROUPS = {
+  food: ['news_food-ingredients_thumbnail.jpg', 'news_food_thumbnail.jpg', 'news_fruit_thumbnail.jpg'].map(TN),
+  institution: ['news_institution_thumbnail.jpg'].map(TN),
+  exam: ['news_hospital-examination_thumbnail.jpg', 'news_hospital-patient_thumbnail.jpg', 'news_patient_thumbnail.jpg', 'news_patient-in-hospital_thumbnail.jpg'].map(TN),
+  treat: ['news_hospital-paper_thumbnail.jpg', 'news_hospital_thumbnail.jpg', 'news_hospital-treatment_thumbnail.jpg', 'news_medicine_thumbnail.jpg', 'news_home-medicine_thumbnail.jpg'].map(TN),
+  research: ['news_research_thumbnail.jpg', 'news_research-hospital_thumbnail.jpg', 'news_research-paper_thumbnail.jpg', 'news_research-people_thumbnail.jpg'].map(TN),
 };
-// 기사 내용으로 썸네일 선택. 뚜렷한 카테고리(식이/복지/연구/검사)는 매칭하고,
-// 나머지 '의료 일반'(투석/치료/이식/병원 등 대다수)은 의료계열 3종을 순환시켜
-// 한 이미지로 몰리지 않게 다양성을 확보한다.
+// 기사 내용(제목+요약)으로 그룹 선택 후, 그룹 내에서 인덱스로 순환 → 같은 주제도 다양한 썸네일.
 const pickThumb = (title: string, desc: string, idx: number): string => {
   const t = `${title} ${desc}`;
-  if (/식단|음식|영양|칼륨|나트륨|단백질|식이|과일|채소|저염|저칼륨|레시피|먹거리/.test(t)) return THUMBS.food;
-  if (/복지|정책|지원|보험|급여|제도|예산|보건복지부|장애|등록|혜택|국회|법안/.test(t)) return THUMBS.institution;
-  if (/연구|논문|학회|발표|저널|규명|study|research/i.test(t)) return THUMBS.research;
-  if (/검사|진단|건강검진|크레아티닌|eGFR|선별/.test(t)) return THUMBS.examination;
-  // 의료 일반 → 3종 순환 (치료/검사/연구 썸네일 번갈아)
-  const rotate = [THUMBS.paper, THUMBS.examination, THUMBS.research];
-  return rotate[idx % rotate.length];
+  let g = THUMB_GROUPS.research;
+  if (/식단|음식|영양|칼륨|나트륨|단백질|식이|과일|채소|저염|저칼륨|레시피|먹거리/.test(t)) g = THUMB_GROUPS.food;
+  else if (/복지|정책|지원|보험|급여|제도|예산|보건복지부|장애|등록|혜택|국회|법안/.test(t)) g = THUMB_GROUPS.institution;
+  else if (/연구|논문|학회|발표|저널|규명|study|research/i.test(t)) g = THUMB_GROUPS.research;
+  else if (/검사|진단|건강검진|크레아티닌|eGFR|환자|난민/.test(t)) g = THUMB_GROUPS.exam;
+  else if (/신약|치료|약물|이식|수술|투석|임상|요법|의약품|허가|처방|병원/.test(t)) g = THUMB_GROUPS.treat;
+  return g[idx % g.length];
 };
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
