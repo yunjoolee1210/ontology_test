@@ -27,21 +27,18 @@ const THUMBS = {
   paper: '/thumbnails/news/news_hospital-paper_thumbnail.jpg',           // 치료/의학/신약
   research: '/thumbnails/news/news_research_thumbnail.jpg',              // 연구/학술
 };
-const THUMB_LIST = [THUMBS.food, THUMBS.institution, THUMBS.examination, THUMBS.paper, THUMBS.research];
-
-// 기사 내용(제목+요약) 키워드로 5종 썸네일 중 가장 맞는 것 선택.
-// 매칭 없으면 5종을 순환 적용해 다양성 확보(한 이미지로 몰리지 않게).
-const THUMB_RULES: Array<[RegExp, string]> = [
-  [/식단|음식|영양|칼륨|나트륨|단백질|식이|과일|채소|저염|저칼륨|레시피|먹거리/, THUMBS.food],
-  [/복지|정책|지원|보험|급여|제도|예산|보건복지부|장애|등록|혜택|기관|법안|국회/, THUMBS.institution],
-  [/검사|진단|진료|외래|건강검진|수치|크레아티닌|eGFR|선별/, THUMBS.examination],
-  [/신약|치료|약물|이식|수술|투석|임상|요법|의약품|허가|처방/, THUMBS.paper],
-  [/연구|논문|학회|발표|저널|규명|개발|효과|study|research/i, THUMBS.research],
-];
+// 기사 내용으로 썸네일 선택. 뚜렷한 카테고리(식이/복지/연구/검사)는 매칭하고,
+// 나머지 '의료 일반'(투석/치료/이식/병원 등 대다수)은 의료계열 3종을 순환시켜
+// 한 이미지로 몰리지 않게 다양성을 확보한다.
 const pickThumb = (title: string, desc: string, idx: number): string => {
   const t = `${title} ${desc}`;
-  for (const [re, img] of THUMB_RULES) if (re.test(t)) return img;
-  return THUMB_LIST[idx % THUMB_LIST.length];
+  if (/식단|음식|영양|칼륨|나트륨|단백질|식이|과일|채소|저염|저칼륨|레시피|먹거리/.test(t)) return THUMBS.food;
+  if (/복지|정책|지원|보험|급여|제도|예산|보건복지부|장애|등록|혜택|국회|법안/.test(t)) return THUMBS.institution;
+  if (/연구|논문|학회|발표|저널|규명|study|research/i.test(t)) return THUMBS.research;
+  if (/검사|진단|건강검진|크레아티닌|eGFR|선별/.test(t)) return THUMBS.examination;
+  // 의료 일반 → 3종 순환 (치료/검사/연구 썸네일 번갈아)
+  const rotate = [THUMBS.paper, THUMBS.examination, THUMBS.research];
+  return rotate[idx % rotate.length];
 };
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
