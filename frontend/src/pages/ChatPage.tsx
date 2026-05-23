@@ -335,36 +335,14 @@ export function ChatPage() {
       return result;
     };
 
-    try {
-      const response = await axios.post(`${API_BASE_URL}/api/session/create`, {
-        user_id: 'user_' + Date.now(),
-        metadata: {
-          platform: 'web',
-          page: 'chat'
-        }
-      });
+    // 백엔드 세션 서버 없이 클라이언트 세션 사용 (Supabase + Vercel 스택)
+    const clientSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    setSessionId(clientSessionId);
 
-      if (response.data.session_id) {
-        setSessionId(response.data.session_id);
-        console.log('✅ Session created:', response.data.session_id);
-
-        // 모든 agent에 대한 환영 메시지 초기화
-        const allWelcomeMessages = createWelcomeMessages();
-        setAgentMessages(allWelcomeMessages);
-        // 현재 활성 agent의 메시지 설정
-        setMessages(allWelcomeMessages[activeTab]);
-      }
-    } catch (error) {
-      console.error('❌ Failed to create session:', error);
-      // Generate fallback session ID
-      const fallbackId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      setSessionId(fallbackId);
-
-      // 모든 agent에 대한 환영 메시지 초기화
-      const allWelcomeMessages = createWelcomeMessages();
-      setAgentMessages(allWelcomeMessages);
-      setMessages(allWelcomeMessages[activeTab]);
-    }
+    // 모든 agent에 대한 환영 메시지 초기화
+    const allWelcomeMessages = createWelcomeMessages();
+    setAgentMessages(allWelcomeMessages);
+    setMessages(allWelcomeMessages[activeTab]);
   };
 
   // Send message to agent
@@ -461,12 +439,18 @@ export function ChatPage() {
         updatedContext.image_data = base64Data;
       }
 
-      // Call agent API
-      const response = await axios.post(`${API_BASE_URL}/api/agent/chat`, {
+      // 최근 대화 history (welcome/loading/빈값 제외)
+      const chatHistory = messages
+        .filter(m => !m.isLoading && m.content)
+        .slice(-8)
+        .map(m => ({ role: m.type === 'user' ? 'user' : 'assistant', content: m.content }));
+
+      // Vercel 서버리스 함수(/api/chat)가 OpenAI를 호출해 AI 답변 생성
+      const response = await axios.post(`/api/chat`, {
         message: messageText || '이미지를 분석해 주세요',
         agent_type: activeTab,
-        session_id: sessionId,
-        context: updatedContext
+        history: chatHistory,
+        user_profile: selectedProfile
       });
 
       console.log('📨 Agent response:', response.data);
