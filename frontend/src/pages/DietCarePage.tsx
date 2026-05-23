@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp, Apple, Utensils, ShoppingBag, Plus, X, Camera, Loader2, Volume2, VolumeX, Bookmark, ChefHat } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
+import { listDietLogs, addDietLog } from '../services/dietApi';
 import {
   FoodItem,
   LOW_POTASSIUM_INGREDIENTS,
@@ -462,35 +463,20 @@ function MealRecordModal({ isOpen, onClose, onSuccess }: MealRecordModalProps) {
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', selectedImage);
-      formData.append('meal_type', mealType);
-      if (dishName.trim()) {
-        formData.append('dish_name', dishName.trim());
-      }
-
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/diet-log/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
+      // Supabase: 이미지 Storage 업로드 + diet_logs 기록 (AI 영양분석은 추후 서버리스로)
+      const saved = await addDietLog({
+        mealType,
+        dishName: dishName.trim() || undefined,
+        imageFile: selectedImage,
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        setResult(data);
-        setTimeout(() => {
-          onSuccess();
-          handleClose();
-        }, 2000);
-      } else {
-        setError(data.error || '업로드에 실패했습니다.');
-      }
-    } catch (err) {
-      setError('네트워크 오류가 발생했습니다.');
+      setResult({ success: true, dish_name: saved.dish_name });
+      setTimeout(() => {
+        onSuccess();
+        handleClose();
+      }, 1500);
+    } catch (err: any) {
+      setError(err?.message || '저장에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -761,16 +747,8 @@ export function DietCarePage() {
   const fetchDietLogs = async () => {
     setIsLoadingLogs(true);
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/diet-log/list?limit=20', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      if (data.success) {
-        setDietLogs(data.results);
-      }
+      const results = await listDietLogs(20);
+      setDietLogs(results);
     } catch (err) {
       console.error('Failed to fetch diet logs:', err);
     } finally {
