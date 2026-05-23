@@ -5,7 +5,7 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  publicDir: '../rsc/static',  // static 파일 서빙 경로 (rsc/static → /)
+  publicDir: 'public',  // static 파일 (frontend/public → /). Vercel 배포에 포함되도록 frontend 내부로. (원본: rsc/static)
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
