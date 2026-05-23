@@ -166,7 +166,7 @@ export function CommunityPage() {
         {/* Category Tabs */}
         <div className="border-b mb-6" style={{ borderColor: '#E5E7EB' }}>
           <div className="flex gap-6">
-            {(['전체', '자유', '챌린지', '설문조사'] as const).map((cat) => (
+            {(['전체', '자유', '챌린지'] as const).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}

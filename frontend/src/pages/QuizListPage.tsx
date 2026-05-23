@@ -1,224 +1,129 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trophy, Star, Clock, ChevronRight, CheckCircle } from 'lucide-react';
+import { Trophy, Star, ChevronRight, Loader2, ListChecks, CircleDot } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
-
-interface QuizItem {
-  id: string;
-  title: string;
-  description: string;
-  questions: number;
-  points: number;
-  completed: boolean;
-  level: string;
-  type: 'OX';
-}
-
-const quizList: QuizItem[] = [
-  {
-    id: 'ox-1',
-    title: '신장병 기본 상식',
-    description: '만성콩팥병의 정의와 주요 원인에 대해 알아봅니다.',
-    questions: 10,
-    points: 100,
-    completed: true,
-    level: '1레벨',
-    type: 'OX'
-  },
-  {
-    id: 'ox-2',
-    title: '칼륨이 많은 과일',
-    description: '어떤 과일에 칼륨이 많은지 퀴즈로 확인해보세요.',
-    questions: 10,
-    points: 100,
-    completed: false,
-    level: '2레벨',
-    type: 'OX'
-  },
-  {
-    id: 'ox-3',
-    title: '투석 환자 식단',
-    description: '투석 환자에게 올바른 식단인지 O/X로 풀어보세요.',
-    questions: 10,
-    points: 100,
-    completed: false,
-    level: '3레벨',
-    type: 'OX'
-  },
-  {
-    id: 'ox-4',
-    title: '나트륨 섭취 줄이기',
-    description: '일상 생활에서 나트륨을 줄이는 올바른 방법은?',
-    questions: 10,
-    points: 100,
-    completed: false,
-    level: '4레벨',
-    type: 'OX'
-  },
-  {
-    id: 'ox-5',
-    title: '고인산혈증 예방',
-    description: '인 섭취를 줄이기 위한 올바른 식습관 O/X',
-    questions: 10,
-    points: 100,
-    completed: false,
-    level: '5레벨',
-    type: 'OX'
-  }
-];
+import { listQuizzes, QuizSet } from '../services/quizApi';
 
 export function QuizListPage() {
   const navigate = useNavigate();
-  
-  const totalPoints = quizList.reduce((sum, quiz) => sum + (quiz.completed ? quiz.points : 0), 0);
-  const completedCount = quizList.filter(q => q.completed).length;
-  
+  const [quizzes, setQuizzes] = useState<QuizSet[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setQuizzes(await listQuizzes());
+      } catch (e) {
+        console.error('퀴즈 불러오기 실패:', e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const totalPoints = quizzes.reduce((s, q) => s + q.points, 0);
+  const levels = [1, 2, 3]
+    .map((order) => ({
+      order,
+      level: quizzes.find((q) => q.levelOrder === order)?.level || ['', '초급', '중급', '고급'][order],
+      items: quizzes.filter((q) => q.levelOrder === order),
+    }))
+    .filter((g) => g.items.length > 0);
+
   return (
     <div className="flex flex-col h-full bg-white">
-      {/* Mobile Header */}
       <div className="lg:hidden">
-        <MobileHeader 
-          title="퀴즈미션" 
-          showMenu={true} 
-          showProfile={true}
-        />
+        <MobileHeader title="퀴즈미션" showMenu={true} showProfile={true} />
       </div>
-
-      {/* Desktop Header Title Removed from Body */}
 
       <div className="flex-1 overflow-y-auto p-5 lg:p-10 pb-24 lg:pb-10">
         <div className="lg:max-w-[832px] mx-auto">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white" style={{ boxShadow: 'none' }}>
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+            <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white">
               <div className="flex items-center gap-2 mb-2">
                 <Trophy size={20} className="text-[#00C9B7]" strokeWidth={2} />
-                <span className="text-sm text-[#666666] font-medium">완료한 퀴즈</span>
+                <span className="text-sm text-[#666666] font-medium">전체 퀴즈</span>
               </div>
-              <div className="text-2xl font-bold text-[#1F2937]">
-                {completedCount}<span className="text-base font-normal text-[#999999]">/{quizList.length}</span>
-              </div>
+              <div className="text-2xl font-bold text-[#1F2937]">{quizzes.length}개</div>
             </div>
-            
-            <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white" style={{ boxShadow: 'none' }}>
+            <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white">
               <div className="flex items-center gap-2 mb-2">
                 <Star size={20} className="text-[#FFB84D]" strokeWidth={2} />
-                <span className="text-sm text-[#666666] font-medium">지식 레벨</span>
+                <span className="text-sm text-[#666666] font-medium">난이도</span>
               </div>
-              <div className="text-2xl font-bold text-[#1F2937]">
-                레벨 {completedCount > 0 ? completedCount : 1}
-              </div>
+              <div className="text-2xl font-bold text-[#1F2937]">{levels.length}단계</div>
             </div>
-            
-            <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white" style={{ boxShadow: 'none' }}>
+            <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white">
               <div className="flex items-center gap-2 mb-2">
-                <Clock size={20} className="text-[#9F7AEA]" strokeWidth={2} />
-                <span className="text-sm text-[#666666] font-medium">획득 포인트</span>
+                <Star size={20} className="text-[#9F7AEA]" strokeWidth={2} />
+                <span className="text-sm text-[#666666] font-medium">총 포인트</span>
               </div>
-              <div className="text-2xl font-bold text-[#9F7AEA]">
-                {totalPoints}P
-              </div>
+              <div className="text-2xl font-bold text-[#9F7AEA]">{totalPoints}P</div>
             </div>
           </div>
-          
-          {/* Level Test Section */}
-          <h2 className="text-lg font-bold text-[#1F2937] mb-4">레벨 테스트</h2>
 
-          {/* First Quiz - Level Test */}
-          <div className="grid gap-4 mb-8">
-            <button
-              onClick={() => navigate(`/quiz/${quizList[0].id}`)}
-              className="w-full text-left p-5 rounded-xl border border-[#E0E0E0] bg-white hover:bg-gray-50 transition-colors relative group"
-              style={{ boxShadow: 'none' }}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-[16px] font-bold text-[#1F2937]">
-                      {quizList[0].title}
-                    </h3>
-                    {quizList[0].completed && (
-                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#E6F9F7] text-[#00C9B7] text-[11px] font-medium">
-                        <CheckCircle size={12} strokeWidth={2} />
-                        완료
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-[#666666] mb-3 leading-relaxed">
-                    {quizList[0].description}
-                  </p>
-                  <div className="flex items-center gap-3 text-xs">
-                    <span className="px-2 py-1 rounded-md bg-[#F2FFFD] text-[#00C9B7] font-medium">
-                      {quizList[0].level}
-                    </span>
-                    <span className="text-[#999999]">
-                      문제 {quizList[0].questions}개
-                    </span>
-                    <span className="flex items-center gap-1 text-[#9F7AEA] font-medium">
-                      <Star size={12} strokeWidth={2} />
-                      {quizList[0].points}P
-                    </span>
-                  </div>
+          {loading ? (
+            <div className="flex justify-center py-16">
+              <Loader2 className="animate-spin text-[#00C9B7]" size={32} />
+            </div>
+          ) : levels.length === 0 ? (
+            <div className="text-center text-[#999999] py-16">
+              퀴즈 콘텐츠가 아직 없습니다. (DB 세팅 필요)
+            </div>
+          ) : (
+            levels.map((g) => (
+              <div key={g.order} className="mb-8">
+                <h2 className="text-lg font-bold text-[#1F2937] mb-4">
+                  {g.level} <span className="text-sm font-normal text-[#999999]">레벨</span>
+                </h2>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {g.items.map((quiz) => (
+                    <button
+                      key={quiz.id}
+                      onClick={() => navigate(`/quiz/${quiz.id}`)}
+                      className="text-left p-5 rounded-xl border border-[#E0E0E0] bg-white hover:bg-gray-50 transition-colors group"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span
+                              className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium"
+                              style={
+                                quiz.type === 'OX'
+                                  ? { background: '#EFE9FF', color: '#7C3AED' }
+                                  : { background: '#E6F9F7', color: '#00A99A' }
+                              }
+                            >
+                              {quiz.type === 'OX' ? <CircleDot size={12} /> : <ListChecks size={12} />}
+                              {quiz.typeLabel}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md bg-[#F2FFFD] text-[#00C9B7] text-[11px] font-medium">
+                              {quiz.level}
+                            </span>
+                          </div>
+                          <h3 className="text-[15px] font-bold text-[#1F2937] mb-1">{quiz.title}</h3>
+                          <p className="text-sm text-[#666666] mb-3 leading-relaxed line-clamp-2">{quiz.description}</p>
+                          <div className="flex items-center gap-3 text-xs">
+                            <span className="text-[#999999]">문제 {quiz.questionCount}개</span>
+                            <span className="flex items-center gap-1 text-[#9F7AEA] font-medium">
+                              <Star size={12} strokeWidth={2} />
+                              {quiz.points}P
+                            </span>
+                          </div>
+                        </div>
+                        <ChevronRight
+                          size={22}
+                          className="text-[#CCCCCC] group-hover:text-[#00C9B7] transition-colors flex-shrink-0"
+                          strokeWidth={2}
+                        />
+                      </div>
+                    </button>
+                  ))}
                 </div>
-                <ChevronRight
-                  size={24}
-                  className="text-[#CCCCCC] group-hover:text-[#00C9B7] transition-colors"
-                  strokeWidth={2}
-                />
               </div>
-            </button>
-          </div>
-
-          {/* Daily Quiz Section */}
-          <h2 className="text-lg font-bold text-[#1F2937] mb-4">오늘의 한입 퀴즈</h2>
-
-          {/* Remaining Quizzes */}
-          <div className="grid gap-4">
-            {quizList.slice(1).map((quiz) => (
-              <button
-                key={quiz.id}
-                onClick={() => navigate(`/quiz/${quiz.id}`)}
-                className="w-full text-left p-5 rounded-xl border border-[#E0E0E0] bg-white hover:bg-gray-50 transition-colors relative group"
-                style={{ boxShadow: 'none' }}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-[16px] font-bold text-[#1F2937]">
-                        {quiz.title}
-                      </h3>
-                      {quiz.completed && (
-                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#E6F9F7] text-[#00C9B7] text-[11px] font-medium">
-                          <CheckCircle size={12} strokeWidth={2} />
-                          완료
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-[#666666] mb-3 leading-relaxed">
-                      {quiz.description}
-                    </p>
-                    <div className="flex items-center gap-3 text-xs">
-                      <span className="px-2 py-1 rounded-md bg-[#F2FFFD] text-[#00C9B7] font-medium">
-                        {quiz.level}
-                      </span>
-                      <span className="text-[#999999]">
-                        문제 {quiz.questions}개
-                      </span>
-                      <span className="flex items-center gap-1 text-[#9F7AEA] font-medium">
-                        <Star size={12} strokeWidth={2} />
-                        {quiz.points}P
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronRight
-                    size={24}
-                    className="text-[#CCCCCC] group-hover:text-[#00C9B7] transition-colors"
-                    strokeWidth={2}
-                  />
-                </div>
-              </button>
-            ))}
-          </div>
+            ))
+          )}
         </div>
       </div>
     </div>
