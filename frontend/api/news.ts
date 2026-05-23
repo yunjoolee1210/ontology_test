@@ -1,5 +1,5 @@
 // Vercel 서버리스 함수 — '새소식' (Supabase DB 적재 기반)
-// 동작: ① Supabase news 테이블에서 읽어 반환  ② 마지막 적재가 오래됐으면(>6h)
+// 동작: ① Supabase news 테이블에서 읽어 반환  ② 마지막 적재가 오래됐으면(>12h)
 //       RSS를 수집해 cg_upsert_news RPC로 적재(url 중복 무시) 후 다시 읽어 반환.
 // → 한번 적재한 기사는 사라지지 않고 누적. (FastAPI/AI 불필요)
 // 사전세팅: supabase_news_setup.sql 1회 실행 필요.
@@ -133,7 +133,7 @@ export default async function handler(_req: any, res: any) {
         if (error) throw error;
         const fresh =
           rows && rows.length > 0 &&
-          rows.some((r: any) => r.scraped_at && Date.now() - new Date(r.scraped_at).getTime() < 6 * 3600 * 1000);
+          rows.some((r: any) => r.scraped_at && Date.now() - new Date(r.scraped_at).getTime() < 12 * 3600 * 1000);
         if (!fresh) {
           const items = await buildItems();
           if (items.length) {
