@@ -37,7 +37,8 @@ const rowToRecipe = (r: any): Recipe => ({
   ingredients: r.ingredients || [],
   nutrients: r.nutrients || { kcal: 0, protein: 0, sodium: 0, potassium: 0, phosphorus: 0 },
   steps: r.steps || [],
-  imageUrl: r.image_url || '',
+  // 요리명 매칭 썸네일(frontend/public/recipes/recipe-{no}.jpg). DB image_url 대신 사용.
+  imageUrl: `/recipes/recipe-${r.recipe_no}.jpg`,
 });
 
 export const listRecipes = async (): Promise<Recipe[]> => {

@@ -119,11 +119,11 @@ export function RecipeDetailPage() {
 
             {/* 재료 */}
             <h3 className="font-bold text-[#1F2937] mb-3 flex items-center gap-2"><Users size={16} className="text-[#00C9B7]" />재료</h3>
-            <div className="rounded-2xl border border-[#EEF0F2] divide-y divide-[#F3F4F6] mb-7">
+            <div className="grid grid-cols-2 gap-2 mb-7">
               {recipe.ingredients.map((ing, i) => (
-                <div key={i} className="flex items-center px-4 py-2.5 text-sm text-[#374151]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#00C9B7] mr-3 flex-shrink-0" />
-                  {ing}
+                <div key={i} className="flex items-center rounded-xl border border-[#EEF0F2] px-3 py-2.5 text-sm text-[#374151]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00C9B7] mr-2 flex-shrink-0" />
+                  <span className="truncate">{ing}</span>
                 </div>
               ))}
             </div>
