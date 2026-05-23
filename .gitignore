@@ -337,7 +337,12 @@ backend/app/api/chat/parlant/parlant-data/
 parlant-data/
 embedding_cache/
 
-frontend/  
+# frontend: 소스코드는 git에 추적한다. 빌드 산출물/비밀키/로컬설정만 제외.
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+frontend/.vercel
 
 # dependencies
 node_modules/

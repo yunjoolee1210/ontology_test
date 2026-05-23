@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FileText, LogOut, XCircle, User, Star, Coins, CreditCard, ChevronRight, Bell, UserCircle, Heart, Target, Bookmark } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import { useLayout } from '../components/LayoutContext';
+import { getMyProfile } from '../services/profileApi';
 
 export function MyPage() {
   const navigate = useNavigate();
@@ -42,42 +43,21 @@ export function MyPage() {
           return;
         }
 
-        const response = await fetch('/api/user/profile', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-
+        const profile = await getMyProfile();
+        if (profile) {
           // 계정 정보 설정
           setAccountInfo({
-            email: data.email || '',
-            userType: data.profile === 'patient' ? '신장병 환우' :
-                      data.profile === 'researcher' ? '연구자' : '일반인'
+            email: profile.email || '',
+            userType: profile.userType === 'patient' ? '신장병 환우' :
+                      profile.userType === 'researcher' ? '연구자' : '일반인'
           });
 
           // 개인 정보 설정
           setPersonalInfo({
-            nickname: data.nickname || data.name || ''
+            nickname: profile.nickname || profile.name || ''
           });
 
-          // 사용자 통계 정보 설정
-          setUserStats({
-            points: data.points || 0,
-            knowledgeLevel: data.knowledge_level || 0,
-            tokens: data.tokens || 1500,
-            tokensUsed: data.tokens_used || 0,
-            subscription: data.subscription || null,
-            role: data.role || 'user'
-          });
-        } else if (response.status === 401) {
-          // 토큰 만료 시 로그인 페이지로
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          localStorage.removeItem('isLoggedIn');
-          navigate('/login');
+          // points/tokens 등 게임화 필드는 현재 Supabase 스키마 외 → 기본값 유지
         }
       } catch (error) {
         console.error('Failed to fetch user profile:', error);

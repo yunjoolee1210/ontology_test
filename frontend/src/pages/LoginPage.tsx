@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { Logo } from '../components/Logo';
 import { useLayout } from '../components/LayoutContext';
+import { supabase } from '../lib/supabase';
 
 export function LoginPage(props: { onLogin?: () => void }) {
   const navigate = useNavigate();
@@ -16,39 +17,24 @@ export function LoginPage(props: { onLogin?: () => void }) {
     setIsLoading(true);
 
     try {
-      // 1. 먼저 이메일이 등록되어 있는지 확인
-      const checkResponse = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
-      const checkData = await checkResponse.json();
+      // Supabase Auth 로그인
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-      if (checkData.available) {
-        // 이메일이 등록되어 있지 않음
-        alert('회원에 등록되어 있지 않습니다. 회원가입을 통해 등록한 후 로그인 해주세요.');
+      if (error) {
+        alert(error.message === 'Invalid login credentials'
+          ? '이메일 또는 비밀번호가 올바르지 않습니다.'
+          : (error.message || '로그인에 실패했습니다.'));
         setIsLoading(false);
         return;
       }
 
-      // 2. 로그인 시도
-      const loginResponse = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const loginData = await loginResponse.json();
-
-      if (!loginResponse.ok) {
-        alert(loginData.detail || '로그인에 실패했습니다.');
-        setIsLoading(false);
-        return;
-      }
-
-      // 로그인 성공
+      // 로그인 성공 — 기존 코드(localStorage 토큰 사용처) 호환을 위해 같은 키에 저장
       localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('accessToken', loginData.access_token);
-      localStorage.setItem('refreshToken', loginData.refresh_token);
-      localStorage.setItem('user', JSON.stringify(loginData.user));
+      if (data.session) {
+        localStorage.setItem('accessToken', data.session.access_token);
+        localStorage.setItem('refreshToken', data.session.refresh_token);
+      }
+      if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
 
       // LayoutContext 상태 업데이트
       login();

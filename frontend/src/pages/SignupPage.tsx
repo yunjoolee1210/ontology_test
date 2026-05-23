@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { Logo } from '../components/Logo';
+import { supabase } from '../lib/supabase';
+import { upsertMyProfile } from '../services/profileApi';
 
 type Step = 0 | 1 | 2 | 3;
 
@@ -196,66 +198,60 @@ export function SignupPage() {
     setIsSubmitting(true);
 
     try {
-      // 회원가입 API 호출
-      const signupData = {
+      // Supabase Auth 회원가입
+      const { data: signUpResult, error: signUpError } = await supabase.auth.signUp({
         email: accountInfo.id,
         password: accountInfo.password,
+        options: {
+          data: { name: personalInfo.nickname, nickname: personalInfo.nickname },
+        },
+      });
+
+      if (signUpError) {
+        alert(signUpError.message || '회원가입에 실패했습니다.');
+        return;
+      }
+
+      // 프로필(개인정보/질환정보/약관) 저장 — 세션이 있어야 RLS 통과
+      const profilePayload = {
+        email: accountInfo.id,
         name: personalInfo.nickname,
         nickname: personalInfo.nickname,
-        profile: personalInfo.userType || 'general',
-        disease_info: {
+        userType: personalInfo.userType || 'general',
+        gender: personalInfo.gender,
+        birthDate: personalInfo.birthDate,
+        height: personalInfo.height ? Number(personalInfo.height) : undefined,
+        weight: personalInfo.weight ? Number(personalInfo.weight) : undefined,
+        diseaseInfo: {
           diagnosisType,
           ckdStage,
           dialysisType,
           baseConditions,
-          otherConditionMemo: baseConditions.includes('OTHER') ? otherConditionMemo : undefined
+          otherConditionMemo: baseConditions.includes('OTHER') ? otherConditionMemo : undefined,
         },
-        personal_info: {
-          gender: personalInfo.gender,
-          birthDate: personalInfo.birthDate,
-          height: personalInfo.height ? Number(personalInfo.height) : undefined,
-          weight: personalInfo.weight ? Number(personalInfo.weight) : undefined
-        },
-        // 약관 동의 정보
-        terms_agreement: {
+        terms: {
           service_terms: agreements.service,
           privacy_required: agreements.privacyRequired,
           privacy_optional: agreements.privacyOptional,
-          marketing: agreements.marketing
-        }
+          marketing: agreements.marketing,
+        },
       };
 
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(signupData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // detail이 객체인 경우 처리 (Pydantic validation error)
-        let errorMessage = '회원가입에 실패했습니다.';
-        if (data.detail) {
-          if (typeof data.detail === 'string') {
-            errorMessage = data.detail;
-          } else if (Array.isArray(data.detail)) {
-            // Pydantic validation errors는 배열로 올 수 있음
-            errorMessage = data.detail.map((err: { msg?: string; loc?: string[] }) =>
-              err.msg || JSON.stringify(err)
-            ).join('\n');
-          } else if (typeof data.detail === 'object') {
-            errorMessage = data.detail.msg || data.detail.message || JSON.stringify(data.detail);
-          }
+      if (signUpResult.session) {
+        // 즉시 세션 생성됨(이메일 인증 OFF) → 프로필 저장 후 로그인 페이지로
+        try {
+          await upsertMyProfile(profilePayload);
+        } catch (e) {
+          console.error('프로필 저장 실패:', e);
         }
-        alert(errorMessage);
-        return;
+        alert('회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.');
+        navigate('/login');
+      } else {
+        // 이메일 인증 필요(세션 없음) → 인증 후 첫 로그인 시 저장하도록 보관
+        localStorage.setItem('pendingProfile', JSON.stringify(profilePayload));
+        alert('가입 확인 이메일을 보냈습니다. 이메일 인증 후 로그인해 주세요.');
+        navigate('/login');
       }
-
-      alert('회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.');
-      navigate('/login');
     } catch (error) {
       console.error('Signup error:', error);
       alert('회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.');
