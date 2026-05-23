@@ -19,12 +19,14 @@ const SOURCES = [
 // 신장 관련 키워드 (공식기관 일반 보도자료에서 신장 관련만 추림)
 const KIDNEY_RE = /(신장|콩팥|투석|신부전|CKD|혈액투석|복막투석|신증|사구체|네프론|만성콩팥|kidney|dialysis|nephro)/i;
 
+// 카테고리별 고정 썸네일 (명세서 5종, frontend/public/thumbnails/news/)
 const CATEGORY_IMG: Record<string, string> = {
-  policy: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=640&h=360&fit=crop',
-  medical: 'https://images.unsplash.com/photo-1581595219315-a187dd40c322?w=640&h=360&fit=crop',
-  news: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=640&h=360&fit=crop',
-  nutrition: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=640&h=360&fit=crop',
+  policy: '/thumbnails/news/news_institution_thumbnail.jpg',        // 기관/복지/정책
+  medical: '/thumbnails/news/news_hospital-paper_thumbnail.jpg',    // 치료/의학/신약
+  news: '/thumbnails/news/news_research_thumbnail.jpg',             // 연구/학술/국제뉴스
+  nutrition: '/thumbnails/news/news_food-ingredients_thumbnail.jpg',// 식이관리/영양
 };
+const DEFAULT_THUMB = '/thumbnails/news/news_research_thumbnail.jpg';
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
 
@@ -106,7 +108,7 @@ export default async function handler(_req: any, res: any) {
       url: x.link,
       time: relTime(x.pub),
       published_at: x.pub ? new Date(x.pub).toISOString() : null,
-      image: x.image || CATEGORY_IMG[x.category] || null,
+      image: CATEGORY_IMG[x.category] || DEFAULT_THUMB,  // 카테고리 고정 썸네일 적용
       relevance_score: 1,
       keywords: [] as string[],
     }));
