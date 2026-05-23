@@ -67,13 +67,13 @@ export function TrendsPage() {
   const fetchNews = async () => {
     setLoadingNews(true);
     try {
-      const response = await fetch('/api/trends/news', {
+      const response = await fetch('/api/news', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          limit: 10,
+          limit: 24,
         }),
       });
 
@@ -191,28 +191,7 @@ export function TrendsPage() {
                 />
               )}
             </button>
-            <button
-              onClick={() => setActiveTab('clinical-trials')}
-              className="relative pb-3 transition-all duration-200"
-              style={{
-                color: activeTab === 'clinical-trials' ? '#00C9B7' : '#9CA3AF',
-                fontSize: '15px',
-                fontWeight: activeTab === 'clinical-trials' ? 'bold' : 'normal',
-                fontFamily: 'Noto Sans KR, sans-serif'
-              }}
-            >
-              임상시험
-              {activeTab === 'clinical-trials' && (
-                <div
-                  className="absolute bottom-[-1px] left-0 right-0"
-                  style={{
-                    height: '2px',
-                    background: '#9F7AEA',
-                    width: '100%'
-                  }}
-                />
-              )}
-            </button>
+            {/* 임상시험 탭 제거됨 (사용자 요청) */}
           </div>
         </div>
         
