@@ -124,32 +124,40 @@ const rowToNews = (r: any) => ({
 
 export default async function handler(_req: any, res: any) {
   try {
-    // Supabase 미설정 시: 라이브 RSS로라도 동작(임시)
-    if (!sb) {
-      const items = await buildItems();
-      res.setHeader('Cache-Control', 's-maxage=3600');
-      res.status(200).json({ success: true, news: items.slice(0, 24).map((x, i) => ({ ...rowToNews({ ...x, id: `live_${i}` }) })) });
-      return;
-    }
+    let dbRows: any[] | null = null;
 
-    // 1) DB에서 읽기
-    let { data: rows } = await sb.from('news').select('*').order('published_at', { ascending: false }).limit(24);
-
-    // 2) 최근 적재가 6시간 넘었거나 비어있으면 RSS 수집 후 적재
-    const fresh =
-      rows && rows.length > 0 &&
-      rows.some((r: any) => r.scraped_at && Date.now() - new Date(r.scraped_at).getTime() < 6 * 3600 * 1000);
-
-    if (!fresh) {
-      const items = await buildItems();
-      if (items.length) {
-        await sb.rpc('cg_upsert_news', { p_items: items });
-        ({ data: rows } = await sb.from('news').select('*').order('published_at', { ascending: false }).limit(24));
+    // DB 사용 시도 (테이블/RPC 없으면 라이브로 폴백)
+    if (sb) {
+      try {
+        let { data: rows, error } = await sb.from('news').select('*').order('published_at', { ascending: false }).limit(24);
+        if (error) throw error;
+        const fresh =
+          rows && rows.length > 0 &&
+          rows.some((r: any) => r.scraped_at && Date.now() - new Date(r.scraped_at).getTime() < 6 * 3600 * 1000);
+        if (!fresh) {
+          const items = await buildItems();
+          if (items.length) {
+            const { error: upErr } = await sb.rpc('cg_upsert_news', { p_items: items });
+            if (upErr) throw upErr;
+            ({ data: rows } = await sb.from('news').select('*').order('published_at', { ascending: false }).limit(24));
+          }
+        }
+        dbRows = rows || null;
+      } catch {
+        dbRows = null; // news 테이블/RPC 미설정 → 라이브 폴백
       }
     }
 
-    res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400');
-    res.status(200).json({ success: true, news: (rows || []).map(rowToNews) });
+    if (dbRows && dbRows.length) {
+      res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400');
+      res.status(200).json({ success: true, news: dbRows.map(rowToNews) });
+      return;
+    }
+
+    // 폴백: DB 미설정/비어있음 → 라이브 RSS (SQL 실행 전에도 새소식이 보이게)
+    const items = await buildItems();
+    res.setHeader('Cache-Control', 's-maxage=1800');
+    res.status(200).json({ success: true, news: items.slice(0, 24).map((x, i) => rowToNews({ ...x, id: `live_${i}` })) });
   } catch (e: any) {
     res.status(200).json({ success: false, news: [], error: e?.message || 'unknown' });
   }
