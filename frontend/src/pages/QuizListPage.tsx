@@ -9,6 +9,7 @@ export function QuizListPage() {
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState<QuizSet[]>([]);
   const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState({ points: 0, completedCount: 0, level: 0 });
 
   useEffect(() => {
     (async () => {
@@ -20,9 +21,9 @@ export function QuizListPage() {
         setLoading(false);
       }
     })();
+    getQuizProgress().then(setProgress).catch(() => {});
   }, []);
 
-  const progress = getQuizProgress();
   const levels = [1, 2, 3]
     .map((order) => ({
       order,

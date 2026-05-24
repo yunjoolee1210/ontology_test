@@ -70,10 +70,11 @@ export function MyPage() {
     fetchUserProfile();
   }, [navigate]);
 
-  // 퀴즈미션 획득 포인트/레벨을 마이페이지에도 동일하게 표시
+  // 퀴즈미션 획득 포인트/레벨(계정 연동)을 마이페이지에 표시
   useEffect(() => {
-    const qp = getQuizProgress();
-    setUserStats(prev => ({ ...prev, points: qp.points, knowledgeLevel: qp.level }));
+    getQuizProgress()
+      .then(qp => setUserStats(prev => ({ ...prev, points: qp.points, knowledgeLevel: qp.level })))
+      .catch(() => {});
   }, []);
 
   const handleLogout = () => {
