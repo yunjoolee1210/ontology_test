@@ -51,6 +51,18 @@ export async function getQuizProgress(): Promise<QuizProgress> {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
+      // 게스트(localStorage) 진행도를 계정으로 1회 병합 → 로그인 후에도 점수 유지
+      const local = readLocal();
+      const keys = Object.keys(local).filter(k => /^[0-9a-fA-F-]{36}$/.test(k));
+      if (keys.length) {
+        try {
+          const rows = keys.map(k => ({
+            user_id: user.id, quiz_id: k, points: Number(local[k]) || 0, updated_at: new Date().toISOString(),
+          }));
+          await supabase.from('quiz_results').upsert(rows, { onConflict: 'user_id,quiz_id' });
+          localStorage.removeItem(KEY);
+        } catch (e) { console.error('진행도 병합 실패:', e); }
+      }
       const { data, error } = await supabase.from('quiz_results').select('points').eq('user_id', user.id);
       if (!error && data) {
         const points = data.reduce((a, r: any) => a + (r.points || 0), 0);

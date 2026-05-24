@@ -150,11 +150,6 @@ export function TestResultsAddPage() {
       return;
     }
 
-    if (!ocrResult?.temp_id) {
-      alert('OCR 결과가 없습니다. 다시 업로드해주세요.');
-      return;
-    }
-
     setSaving(true);
 
     try {
@@ -247,6 +242,14 @@ export function TestResultsAddPage() {
           </>
         )}
       </button>
+
+      {/* 이미지 없이 직접 입력 */}
+      <button
+        onClick={() => { setOcrResult(null); setEditedResults({}); setStep('review'); }}
+        className="w-full py-3 rounded-xl font-medium border border-[#E5E7EB] text-[#374151]"
+      >
+        직접 입력하기 (이미지 없이)
+      </button>
     </div>
   );
 
@@ -296,51 +299,46 @@ export function TestResultsAddPage() {
 
       {/* 검사 항목별 결과 */}
       <div className="space-y-6">
-        {Object.entries(LAB_CATEGORIES).map(([category, fields]) => {
-          const hasResults = fields.some(f => editedResults[f]?.value !== undefined);
-          if (!hasResults) return null;
-
-          return (
-            <div key={category}>
-              <h3 className="font-semibold text-[#1F2937] mb-3 pb-2 border-b border-[#E5E7EB]">
-                {category}
-              </h3>
-              <div className="space-y-3">
-                {fields.map(fieldName => {
-                  const result = editedResults[fieldName];
-                  if (!result || result.value === undefined) return null;
-
-                  return (
-                    <div key={fieldName} className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <span className="text-sm text-[#374151]">
-                          {LAB_ITEM_LABELS[fieldName] || fieldName}
-                        </span>
-                        {result.is_abnormal && (
-                          <span className="ml-2 text-xs text-red-500">이상</span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          step="0.1"
-                          value={result.value ?? ''}
-                          onChange={(e) => handleValueChange(fieldName, e.target.value)}
-                          className={`w-24 px-3 py-2 text-right rounded-lg border ${
-                            result.is_abnormal ? 'border-red-300 bg-red-50' : 'border-[#E5E7EB]'
-                          } focus:border-[#00C9B7] outline-none`}
-                        />
-                        <span className="text-sm text-[#6B7280] w-16">
-                          {result.unit}
-                        </span>
-                      </div>
+        {Object.entries(LAB_CATEGORIES).map(([category, fields]) => (
+          <div key={category}>
+            <h3 className="font-semibold text-[#1F2937] mb-3 pb-2 border-b border-[#E5E7EB]">
+              {category}
+            </h3>
+            <div className="space-y-3">
+              {fields.map(fieldName => {
+                const result = editedResults[fieldName];
+                return (
+                  <div key={fieldName} className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <span className="text-sm text-[#374151]">
+                        {LAB_ITEM_LABELS[fieldName] || fieldName}
+                      </span>
+                      {result?.is_abnormal && (
+                        <span className="ml-2 text-xs text-red-500">이상</span>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        step="0.1"
+                        inputMode="decimal"
+                        placeholder="-"
+                        value={result?.value ?? ''}
+                        onChange={(e) => handleValueChange(fieldName, e.target.value)}
+                        className={`w-24 px-3 py-2 text-right rounded-lg border ${
+                          result?.is_abnormal ? 'border-red-300 bg-red-50' : 'border-[#E5E7EB]'
+                        } focus:border-[#00C9B7] outline-none`}
+                      />
+                      <span className="text-sm text-[#6B7280] w-16">
+                        {result?.unit || ''}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
       {/* 저장 버튼 */}
