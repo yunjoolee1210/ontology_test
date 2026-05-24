@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Send, Stethoscope, Utensils, FileText } from 'lucide-react';
+import { Send, Stethoscope, Utensils, FileText, User } from 'lucide-react';
+import { useLayout } from '../components/LayoutContext';
 
 // Brand logo from rsc/static/brand/ (PRD 9.1 참조)
 // publicDir: '../rsc/static' → /brand/logo-main.gif
@@ -11,6 +12,7 @@ export function MainPage() {
   const [fadeIn, setFadeIn] = useState(false);
   const [displayedLogoText, setDisplayedLogoText] = useState('');
   const navigate = useNavigate();
+  const { isLoggedIn } = useLayout();
 
   const logoText = 'CareKidney';
 
@@ -56,6 +58,15 @@ export function MainPage() {
         background: 'linear-gradient(to bottom, #FFFFFF 0%, #FFFFFF 40%, rgb(242, 255, 253) 100%)'
       }}
     >
+      {/* 우측 상단 마이페이지 아이콘 (로그인 시 마이페이지, 비로그인 시 로그인) */}
+      <button
+        onClick={() => navigate(isLoggedIn ? '/mypage' : '/login')}
+        aria-label={isLoggedIn ? '마이페이지' : '로그인'}
+        className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur border border-[#E5E7EB] flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+      >
+        <User size={20} color="#666666" strokeWidth={2} />
+      </button>
+
       <div className="min-h-screen flex flex-col items-center justify-center p-6">
         <div className={`w-full max-w-2xl space-y-6 transition-opacity duration-1000 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
           {/* Logo with Typewriter Effect */}

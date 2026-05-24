@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Menu, User, LogIn } from 'lucide-react';
+import { ChevronLeft, Menu, User } from 'lucide-react';
 import { useLayout } from './LayoutContext';
 
 export function MobileHeader({ 
@@ -58,14 +58,11 @@ export function MobileHeader({
           rightAction
         ) : showProfile ? (
           <button onClick={handleProfileClick} className="p-1 -mr-1 relative" aria-label={isLoggedIn ? "마이페이지" : "로그인"}>
-            {isLoggedIn ? (
-              <>
-                <User size={24} color="#999999" strokeWidth={2} />
-                {/* Notification Badge */}
-                <span className="absolute top-0 right-0 w-2 h-2 rounded-full" style={{ background: '#00C9B7' }}></span>
-              </>
-            ) : (
-               <LogIn size={24} color="#999999" strokeWidth={2} />
+            {/* 항상 마이페이지(사람) 아이콘 — 로그아웃처럼 보이는 LogIn 아이콘 제거 */}
+            <User size={24} color="#999999" strokeWidth={2} />
+            {isLoggedIn && (
+              /* 로그인 시 알림 배지 */
+              <span className="absolute top-0 right-0 w-2 h-2 rounded-full" style={{ background: '#00C9B7' }}></span>
             )}
           </button>
         ) : null}
