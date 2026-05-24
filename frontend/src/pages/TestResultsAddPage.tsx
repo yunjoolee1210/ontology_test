@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Upload, X, Loader2, Check, AlertCircle } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
+import { analyzeImage, saveTestResult } from '../services/testResultsApi';
 
 interface LabResult {
   value: number | null;
@@ -116,35 +117,13 @@ export function TestResultsAddPage() {
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      files.forEach(file => {
-        formData.append('files', file);
-      });
-
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/test-results/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.detail || 'OCR 처리에 실패했습니다.');
-      }
-
-      if (data.success) {
-        setOcrResult(data);
-        setEditedResults(data.lab_results || {});
-        setTestDate(data.test_date || '');
-        setHospitalName(data.hospital_name || '');
-        setStep('review');
-      } else {
-        alert(data.error || 'OCR 처리에 실패했습니다.');
-      }
+      // 첫 이미지를 OpenAI 비전으로 OCR 분석
+      const data = await analyzeImage(files[0]);
+      setOcrResult(data);
+      setEditedResults(data.lab_results || {});
+      setTestDate(data.test_date || '');
+      setHospitalName(data.hospital_name || '');
+      setStep('review');
     } catch (error: any) {
       console.error('Upload error:', error);
       alert(error.message || '업로드 중 오류가 발생했습니다.');
@@ -179,28 +158,12 @@ export function TestResultsAddPage() {
     setSaving(true);
 
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/test-results/confirm', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          temp_id: ocrResult.temp_id,
-          test_date: testDate,
-          hospital_name: hospitalName || null,
-          lab_results: editedResults,
-        }),
+      await saveTestResult({
+        test_date: testDate,
+        hospital_name: hospitalName || null,
+        lab_results: editedResults,
+        imageFile: files[0],
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.detail || '저장에 실패했습니다.');
-      }
-
-      // 저장 완료 후 검진결과 목록 페이지로 이동
       navigate('/mypage/test-results');
     } catch (error: any) {
       console.error('Save error:', error);

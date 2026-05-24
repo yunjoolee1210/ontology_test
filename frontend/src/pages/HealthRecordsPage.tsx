@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, ChevronLeft, Loader2 } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { listTestResults, deleteTestResult } from '../services/testResultsApi';
 
 interface LabResults {
   creatinine?: { value: number; unit: string };
@@ -35,25 +36,7 @@ export function HealthRecordsPage() {
   const fetchRecords = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('accessToken');
-      const response = await fetch('/api/test-results/list', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          navigate('/login');
-          return;
-        }
-        throw new Error('데이터를 불러오는데 실패했습니다.');
-      }
-
-      const data = await response.json();
-      if (data.success) {
-        setRecords(data.results || []);
-      }
+      setRecords((await listTestResults()) as TestResult[]);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -72,19 +55,8 @@ export function HealthRecordsPage() {
   const handleDelete = async (id: string) => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-        const token = localStorage.getItem('accessToken');
-        const response = await fetch(`/api/test-results/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          setRecords(records.filter(r => r.id !== id));
-        } else {
-          alert('삭제에 실패했습니다.');
-        }
+        await deleteTestResult(id);
+        setRecords(records.filter(r => r.id !== id));
       } catch (err) {
         alert('삭제 중 오류가 발생했습니다.');
       }
