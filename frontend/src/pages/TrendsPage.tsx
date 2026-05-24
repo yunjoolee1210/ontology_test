@@ -6,6 +6,7 @@ import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { MobileHeader } from '../components/MobileHeader';
 import { ClinicalTrialCard } from '../components/ClinicalTrialCard';
 import { ClinicalTrialDetailModal } from '../components/ClinicalTrialDetailModal';
+import { listNews } from '../services/newsApi';
 
 type TabType = 'news' | 'dashboard' | 'clinical-trials';
 
@@ -67,22 +68,15 @@ export function TrendsPage() {
   const fetchNews = async () => {
     setLoadingNews(true);
     try {
-      const response = await fetch('/api/news', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          limit: 24,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch news');
+      // Supabase news 테이블 직접 조회(빠름). RSS 수집은 백그라운드 cron이 담당.
+      let items: any[] = await listNews(24);
+      if (!items.length) {
+        // DB가 비어있을 때만 1회 수집 폴백
+        const r = await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        const d = await r.json();
+        items = d.news || [];
       }
-
-      const data = await response.json();
-      setNewsItems(data.news);
+      setNewsItems(items);
     } catch (error) {
       console.error('Error fetching news:', error);
     } finally {
