@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Trophy, Star, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import { getQuiz, QuizSet } from '../services/quizApi';
+import { addQuizResult } from '../services/quizProgress';
 
 export function QuizPage() {
   const { id } = useParams<{ id: string }>();
@@ -70,6 +71,7 @@ export function QuizPage() {
       setSelected(null);
       setShowResult(false);
     } else {
+      addQuizResult(quiz.id, points); // 획득 포인트 저장(마이페이지 공유)
       setFinished(true);
     }
   };

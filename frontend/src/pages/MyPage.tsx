@@ -4,6 +4,7 @@ import { FileText, LogOut, XCircle, User, Star, Coins, CreditCard, ChevronRight,
 import { MobileHeader } from '../components/MobileHeader';
 import { useLayout } from '../components/LayoutContext';
 import { getMyProfile } from '../services/profileApi';
+import { getQuizProgress } from '../services/quizProgress';
 
 export function MyPage() {
   const navigate = useNavigate();
@@ -68,6 +69,12 @@ export function MyPage() {
 
     fetchUserProfile();
   }, [navigate]);
+
+  // 퀴즈미션 획득 포인트/레벨을 마이페이지에도 동일하게 표시
+  useEffect(() => {
+    const qp = getQuizProgress();
+    setUserStats(prev => ({ ...prev, points: qp.points, knowledgeLevel: qp.level }));
+  }, []);
 
   const handleLogout = () => {
     logout();

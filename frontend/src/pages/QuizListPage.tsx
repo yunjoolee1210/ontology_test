@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Trophy, Star, ChevronRight, Loader2, ListChecks, CircleDot } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import { listQuizzes, QuizSet } from '../services/quizApi';
+import { getQuizProgress } from '../services/quizProgress';
 
 export function QuizListPage() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export function QuizListPage() {
     })();
   }, []);
 
-  const totalPoints = quizzes.reduce((s, q) => s + q.points, 0);
+  const progress = getQuizProgress();
   const levels = [1, 2, 3]
     .map((order) => ({
       order,
@@ -43,23 +44,23 @@ export function QuizListPage() {
             <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white">
               <div className="flex items-center gap-2 mb-2">
                 <Trophy size={20} className="text-[#00C9B7]" strokeWidth={2} />
-                <span className="text-sm text-[#666666] font-medium">전체 퀴즈</span>
+                <span className="text-sm text-[#666666] font-medium">완료 퀴즈</span>
               </div>
-              <div className="text-2xl font-bold text-[#1F2937]">{quizzes.length}개</div>
+              <div className="text-2xl font-bold text-[#1F2937]">{progress.completedCount}<span className="text-base font-normal text-[#999999]">/{quizzes.length}</span></div>
             </div>
             <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white">
               <div className="flex items-center gap-2 mb-2">
                 <Star size={20} className="text-[#FFB84D]" strokeWidth={2} />
-                <span className="text-sm text-[#666666] font-medium">난이도</span>
+                <span className="text-sm text-[#666666] font-medium">지식 레벨</span>
               </div>
-              <div className="text-2xl font-bold text-[#1F2937]">{levels.length}단계</div>
+              <div className="text-2xl font-bold text-[#1F2937]">Lv {progress.level}</div>
             </div>
             <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white">
               <div className="flex items-center gap-2 mb-2">
                 <Star size={20} className="text-[#9F7AEA]" strokeWidth={2} />
-                <span className="text-sm text-[#666666] font-medium">총 포인트</span>
+                <span className="text-sm text-[#666666] font-medium">획득 포인트</span>
               </div>
-              <div className="text-2xl font-bold text-[#9F7AEA]">{totalPoints}P</div>
+              <div className="text-2xl font-bold text-[#9F7AEA]">{progress.points}P</div>
             </div>
           </div>
 
