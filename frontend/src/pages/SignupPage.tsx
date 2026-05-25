@@ -732,7 +732,7 @@ export function SignupPage() {
                   {[
                     { label: '일반인', value: 'general' },
                     { label: '신장병 환우', value: 'patient' },
-                    { label: '연구자', value: 'researcher' }
+                    { label: '간병인', value: 'researcher' }
                   ].map((type) => (
                     <button
                       key={type.value}
@@ -790,7 +790,7 @@ export function SignupPage() {
                   성별 <span style={{ color: '#EF4444' }}>*</span>
                 </label>
                 <div className="flex gap-2">
-                  {['남성', '여성', '기타'].map((gender) => (
+                  {['남성', '여성'].map((gender) => (
                     <button
                       key={gender}
                       type="button"
