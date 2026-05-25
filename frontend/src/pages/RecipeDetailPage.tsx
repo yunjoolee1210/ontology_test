@@ -1,13 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Loader2, ArrowRight, Sparkles, Clock, Users, AlertCircle, ThumbsUp, ThumbsDown, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, Loader2, ArrowRight, Sparkles, Clock, Users, AlertCircle, ThumbsUp, ThumbsDown, ShoppingCart, Send, Pencil, Trash2 } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
-import { getRecipeBySlug, listProducts, getUserVotes, voteRecipe, Recipe, RecipeProduct } from '../services/recipeApi';
+import {
+  getRecipeBySlug, listProducts, getUserVotes, voteRecipe,
+  listComments, addComment, updateComment, deleteComment,
+  Recipe, RecipeProduct, RecipeComment,
+} from '../services/recipeApi';
+import { supabase } from '../lib/supabase';
 
 const tagColor = (t: string) =>
-  t.includes('나트륨') ? 'bg-blue-50 text-blue-700 border-blue-200'
-    : t.includes('칼륨') ? 'bg-green-50 text-green-700 border-green-200'
-      : 'bg-amber-50 text-amber-700 border-amber-200';
+  t.includes('나트륨') ? 'bg-blue-500/80 text-white border-blue-400'
+    : t.includes('칼륨') ? 'bg-green-500/80 text-white border-green-400'
+      : 'bg-amber-500/80 text-white border-amber-400';
+
+function formatDate(iso: string) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+}
 
 export function RecipeDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -19,6 +29,16 @@ export function RecipeDetailPage() {
   const [userVote, setUserVote] = useState<'like' | 'dislike' | null>(null);
   const [isVoting, setIsVoting] = useState(false);
 
+  // comments
+  const [comments, setComments] = useState<RecipeComment[]>([]);
+  const [commentText, setCommentText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState('');
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  const commentInputRef = useRef<HTMLTextAreaElement>(null);
+
   const isLoggedIn = !!localStorage.getItem('accessToken');
 
   useEffect(() => {
@@ -28,14 +48,19 @@ export function RecipeDetailPage() {
           slug ? getRecipeBySlug(slug) : null,
           listProducts(),
         ]);
-        if (r) setRecipe(r);
+        if (r) {
+          setRecipe(r);
+          const [cmts, votes] = await Promise.all([
+            listComments(r.id),
+            isLoggedIn ? getUserVotes() : Promise.resolve({} as Record<string, 'like' | 'dislike'>),
+          ]);
+          setComments(cmts);
+          if (isLoggedIn) setUserVote(votes[r.id] ?? null);
+        }
         setProducts(p);
 
-        // 로그인 사용자 투표 현황
-        if (r && isLoggedIn) {
-          const votes = await getUserVotes();
-          setUserVote(votes[r.id] ?? null);
-        }
+        const { data: { user } } = await supabase.auth.getUser();
+        setCurrentUserId(user?.id ?? null);
       } catch (e) {
         console.error('레시피 불러오기 실패:', e);
       } finally {
@@ -47,11 +72,8 @@ export function RecipeDetailPage() {
   const handleVote = async (type: 'like' | 'dislike') => {
     if (!recipe || !isLoggedIn || isVoting) return;
     setIsVoting(true);
-
     const isToggle = userVote === type;
     const prevVote = userVote;
-
-    // 낙관적 업데이트
     setUserVote(isToggle ? null : type);
     setRecipe((prev) => {
       if (!prev) return prev;
@@ -59,7 +81,6 @@ export function RecipeDetailPage() {
       const dislikesDelta = type === 'dislike' ? (isToggle ? -1 : 1) : (prevVote === 'dislike' ? -1 : 0);
       return { ...prev, likesCount: prev.likesCount + likesDelta, dislikesCount: prev.dislikesCount + dislikesDelta };
     });
-
     try {
       await voteRecipe(recipe.id, type);
     } catch {
@@ -71,7 +92,41 @@ export function RecipeDetailPage() {
     }
   };
 
-  // 재료 문자열이 제품 키워드를 포함하는지 체크
+  const handleAddComment = async () => {
+    if (!recipe || !commentText.trim() || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const c = await addComment(recipe.id, commentText.trim());
+      setComments((prev) => [...prev, c]);
+      setCommentText('');
+    } catch (e: any) {
+      alert(e.message || '댓글 등록 실패');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEditSave = async (id: string) => {
+    if (!editText.trim()) return;
+    try {
+      await updateComment(id, editText.trim());
+      setComments((prev) => prev.map((c) => c.id === id ? { ...c, content: editText.trim(), updatedAt: new Date().toISOString() } : c));
+      setEditingId(null);
+    } catch (e: any) {
+      alert(e.message || '수정 실패');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('댓글을 삭제하시겠습니까?')) return;
+    try {
+      await deleteComment(id);
+      setComments((prev) => prev.filter((c) => c.id !== id));
+    } catch (e: any) {
+      alert(e.message || '삭제 실패');
+    }
+  };
+
   const findProduct = (ingredient: string): RecipeProduct | undefined =>
     products.find((p) => ingredient.includes(p.ingredientKeyword));
 
@@ -116,87 +171,97 @@ export function RecipeDetailPage() {
 
       <div className="flex-1 overflow-y-auto pb-24 lg:pb-10">
         <div className="max-w-2xl mx-auto">
-          {/* Hero 이미지 */}
-          <div className="relative w-full aspect-[16/9] bg-gray-100 overflow-hidden">
-            <img src={recipe.imageUrl} alt={recipe.name}
+
+          {/* ── Hero: 이미지 + 딤 오버레이 ── */}
+          <div className="relative w-full aspect-[16/9] bg-gray-200 overflow-hidden">
+            <img
+              src={recipe.imageUrl}
+              alt={recipe.name}
               className="absolute inset-0 w-full h-full object-cover"
-              onError={(e) => { (e.target as HTMLImageElement).src = `https://placehold.co/640x360/E8F5E9/2E7D32?text=${encodeURIComponent(recipe.name)}`; }} />
-            <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-medium bg-white/90 text-[#00A99A]">
+              onError={(e) => {
+                (e.target as HTMLImageElement).src =
+                  `https://placehold.co/640x360/E8F5E9/2E7D32?text=${encodeURIComponent(recipe.name)}`;
+              }}
+            />
+            {/* 딤 그라디언트 */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+            {/* 카테고리 배지 (좌상단) */}
+            <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 backdrop-blur-sm text-white border border-white/30">
               {recipe.categoryLabel}
             </span>
             {recipe.isUserSubmitted && (
-              <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium bg-[#9F7AEA]/90 text-white">
+              <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium bg-[#9F7AEA]/80 text-white">
                 사용자 레시피
               </span>
             )}
+
+            {/* 하단 오버레이 텍스트 */}
+            <div className="absolute bottom-0 left-0 right-0 px-5 pb-4 pt-8">
+              {/* 원래 요리 → 대체 레시피 */}
+              <div className="flex items-center gap-1.5 mb-1.5 text-xs text-white/80">
+                <span>{recipe.originalDish}</span>
+                <ArrowRight size={12} className="text-[#00C9B7]" />
+                <span className="text-[#00C9B7] font-semibold">대체 레시피</span>
+              </div>
+
+              {/* 음식명 */}
+              <h1 className="text-xl font-bold text-white leading-snug mb-2 drop-shadow">
+                {recipe.name}
+              </h1>
+
+              {/* 태그 */}
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {recipe.tags.map((t) => (
+                  <span key={t} className={`px-2 py-0.5 rounded-full text-[11px] font-semibold border ${tagColor(t)}`}>
+                    #{t}
+                  </span>
+                ))}
+              </div>
+
+              {/* 좋아요 / 싫어요 */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-white/70 mr-0.5">도움이 됐나요?</span>
+                <button
+                  onClick={() => handleVote('like')}
+                  disabled={!isLoggedIn || isVoting}
+                  title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors backdrop-blur-sm border ${
+                    userVote === 'like'
+                      ? 'bg-[#00C9B7] text-white border-[#00C9B7]'
+                      : isLoggedIn
+                        ? 'bg-white/20 text-white border-white/40 hover:bg-[#00C9B7]/60'
+                        : 'bg-white/10 text-white/50 border-white/20 cursor-not-allowed'
+                  }`}
+                >
+                  <ThumbsUp size={12} className={userVote === 'like' ? 'fill-white' : ''} />
+                  <span>{recipe.likesCount}</span>
+                </button>
+                <button
+                  onClick={() => handleVote('dislike')}
+                  disabled={!isLoggedIn || isVoting}
+                  title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors backdrop-blur-sm border ${
+                    userVote === 'dislike'
+                      ? 'bg-red-400 text-white border-red-400'
+                      : isLoggedIn
+                        ? 'bg-white/20 text-white border-white/40 hover:bg-red-400/60'
+                        : 'bg-white/10 text-white/50 border-white/20 cursor-not-allowed'
+                  }`}
+                >
+                  <ThumbsDown size={12} className={userVote === 'dislike' ? 'fill-white' : ''} />
+                  <span>{recipe.dislikesCount}</span>
+                </button>
+                {!isLoggedIn && (
+                  <span className="text-[10px] text-white/50">로그인 후 평가 가능</span>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="p-5 lg:p-7">
-            {/* 원래 요리 → 대체 레시피 */}
-            <div className="flex items-center gap-2 mb-2 text-sm">
-              <span className="text-gray-600 font-medium">{recipe.originalDish}</span>
-              <ArrowRight size={16} className="text-[#00C9B7]" />
-              <span className="text-[#00C9B7] font-bold">대체 레시피</span>
-            </div>
-            <h1 className="text-2xl font-bold text-[#1F2937] mb-3 leading-snug">{recipe.name}</h1>
 
-            <div className="flex flex-wrap gap-2 mb-4">
-              {recipe.tags.map((t) => (
-                <span key={t} className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${tagColor(t)}`}>#{t}</span>
-              ))}
-            </div>
-
-            {/* 좋아요 / 싫어요 */}
-            <div className="flex items-center gap-3 mb-6 p-3 bg-gray-50 rounded-xl">
-              <p className="text-sm text-gray-500 mr-1">이 레시피가 도움이 됐나요?</p>
-              <button
-                onClick={() => handleVote('like')}
-                disabled={!isLoggedIn || isVoting}
-                title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  userVote === 'like'
-                    ? 'bg-[#00C9B7] text-white'
-                    : isLoggedIn
-                      ? 'bg-white border border-gray-200 text-gray-600 hover:border-[#00C9B7] hover:text-[#00C9B7]'
-                      : 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                <ThumbsUp size={15} className={userVote === 'like' ? 'fill-white' : ''} />
-                <span>{recipe.likesCount}</span>
-              </button>
-              <button
-                onClick={() => handleVote('dislike')}
-                disabled={!isLoggedIn || isVoting}
-                title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  userVote === 'dislike'
-                    ? 'bg-red-400 text-white'
-                    : isLoggedIn
-                      ? 'bg-white border border-gray-200 text-gray-600 hover:border-red-400 hover:text-red-400'
-                      : 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                <ThumbsDown size={15} className={userVote === 'dislike' ? 'fill-white' : ''} />
-                <span>{recipe.dislikesCount}</span>
-              </button>
-              {!isLoggedIn && (
-                <span className="text-xs text-gray-400">로그인 후 평가 가능</span>
-              )}
-            </div>
-
-            {/* 영양정보 */}
-            <h3 className="font-bold text-[#1F2937] mb-3">영양정보 <span className="text-xs font-normal text-gray-400">(1인분 기준)</span></h3>
-            <div className="grid grid-cols-5 gap-2 mb-7">
-              {nutrientItems.map((it) => (
-                <div key={it.label} className="text-center rounded-xl border border-[#EEF0F2] py-3">
-                  <div className="text-[11px] text-gray-500 mb-1">{it.label}</div>
-                  <div className="font-bold text-sm" style={{ color: it.color }}>{it.value}</div>
-                  <div className="text-[10px] text-gray-400">{it.unit}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* 재료 (제품 링크 포함) */}
+            {/* 재료 */}
             <h3 className="font-bold text-[#1F2937] mb-3 flex items-center gap-2">
               <Users size={16} className="text-[#00C9B7]" />재료
             </h3>
@@ -225,7 +290,7 @@ export function RecipeDetailPage() {
               })}
             </div>
 
-            {/* 추천 제품 (재료 매칭 제품이 있을 때만 표시) */}
+            {/* 추천 제품 */}
             {recipe.ingredients.some((ing) => findProduct(ing)) && (
               <div className="mb-7 p-3 bg-orange-50 rounded-xl border border-orange-100">
                 <p className="text-xs font-semibold text-orange-700 mb-2 flex items-center gap-1">
@@ -262,15 +327,17 @@ export function RecipeDetailPage() {
             <ol className="space-y-3 mb-7">
               {recipe.steps.map((step, i) => (
                 <li key={i} className="flex gap-3">
-                  <span className="flex-shrink-0 w-7 h-7 rounded-full text-white text-sm font-bold flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}>{i + 1}</span>
+                  <span
+                    className="flex-shrink-0 w-7 h-7 rounded-full text-white text-sm font-bold flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}
+                  >{i + 1}</span>
                   <p className="text-sm text-[#374151] leading-relaxed pt-0.5">{step}</p>
                 </li>
               ))}
             </ol>
 
             {/* 대체 포인트 */}
-            <div className="rounded-2xl p-4 mb-4 border" style={{ background: 'linear-gradient(135deg,#F0FDFA,#F5F3FF)', borderColor: '#CCFBF1' }}>
+            <div className="rounded-2xl p-4 mb-6 border" style={{ background: 'linear-gradient(135deg,#F0FDFA,#F5F3FF)', borderColor: '#CCFBF1' }}>
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles size={18} className="text-[#00C9B7]" />
                 <h3 className="font-bold text-[#0F766E]">대체 포인트 (질환식 핵심)</h3>
@@ -279,7 +346,7 @@ export function RecipeDetailPage() {
             </div>
 
             {/* 주의사항 */}
-            <div className="rounded-2xl bg-[#FFFBEB] border border-[#FDE68A] p-4">
+            <div className="rounded-2xl bg-[#FFFBEB] border border-[#FDE68A] p-4 mb-6">
               <div className="flex items-center gap-2 mb-2">
                 <AlertCircle size={18} className="text-[#D97706]" />
                 <h3 className="font-bold text-[#92400E]">질환식 조리법 주의사항</h3>
@@ -291,6 +358,111 @@ export function RecipeDetailPage() {
                 <li>개인의 신장 기능 단계·처방에 따라 적정 섭취량이 다릅니다. 식단 적용 전 반드시 의료진·영양사와 상담하세요.</li>
               </ul>
             </div>
+
+            {/* 영양정보 (주의사항 하단) */}
+            <h3 className="font-bold text-[#1F2937] mb-3">영양정보 <span className="text-xs font-normal text-gray-400">(1인분 기준)</span></h3>
+            <div className="grid grid-cols-5 gap-2 mb-8">
+              {nutrientItems.map((it) => (
+                <div key={it.label} className="text-center rounded-xl border border-[#EEF0F2] py-3">
+                  <div className="text-[11px] text-gray-500 mb-1">{it.label}</div>
+                  <div className="font-bold text-sm" style={{ color: it.color }}>{it.value}</div>
+                  <div className="text-[10px] text-gray-400">{it.unit}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* ── 댓글 ── */}
+            <div className="border-t border-[#EEF0F2] pt-6">
+              <h3 className="font-bold text-[#1F2937] mb-4">
+                댓글 <span className="text-sm font-normal text-gray-400">{comments.length}개</span>
+              </h3>
+
+              {/* 댓글 목록 */}
+              {comments.length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-6">첫 번째 댓글을 남겨보세요!</p>
+              ) : (
+                <ul className="space-y-3 mb-5">
+                  {comments.map((c) => (
+                    <li key={c.id} className="bg-gray-50 rounded-xl p-3">
+                      {editingId === c.id ? (
+                        <div className="space-y-2">
+                          <textarea
+                            value={editText}
+                            onChange={(e) => setEditText(e.target.value)}
+                            maxLength={500}
+                            rows={2}
+                            className="w-full text-sm border border-[#00C9B7] rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-[#00C9B7]"
+                          />
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              onClick={() => setEditingId(null)}
+                              className="text-xs text-gray-500 px-3 py-1 rounded-lg border border-gray-200 hover:bg-gray-100"
+                            >취소</button>
+                            <button
+                              onClick={() => handleEditSave(c.id)}
+                              className="text-xs text-white bg-[#00C9B7] px-3 py-1 rounded-lg hover:bg-[#00A99A]"
+                            >저장</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <span className="text-xs font-semibold text-[#374151]">{c.authorName}</span>
+                              <span className="text-[10px] text-gray-400 ml-2">{formatDate(c.createdAt)}</span>
+                            </div>
+                            {currentUserId === c.userId && (
+                              <div className="flex gap-1 flex-shrink-0">
+                                <button
+                                  onClick={() => { setEditingId(c.id); setEditText(c.content); }}
+                                  className="p-1 text-gray-400 hover:text-[#00C9B7] rounded"
+                                ><Pencil size={13} /></button>
+                                <button
+                                  onClick={() => handleDelete(c.id)}
+                                  className="p-1 text-gray-400 hover:text-red-400 rounded"
+                                ><Trash2 size={13} /></button>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-sm text-[#374151] mt-1 leading-relaxed whitespace-pre-wrap">{c.content}</p>
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {/* 댓글 작성 */}
+              {isLoggedIn ? (
+                <div className="flex gap-2 items-end">
+                  <textarea
+                    ref={commentInputRef}
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
+                    placeholder="댓글을 입력하세요 (최대 500자)"
+                    maxLength={500}
+                    rows={2}
+                    className="flex-1 text-sm border border-[#E5E7EB] rounded-xl px-3 py-2.5 resize-none focus:outline-none focus:ring-1 focus:ring-[#00C9B7] focus:border-[#00C9B7]"
+                  />
+                  <button
+                    onClick={handleAddComment}
+                    disabled={!commentText.trim() || isSubmitting}
+                    className="flex-shrink-0 p-2.5 rounded-xl bg-[#00C9B7] text-white hover:bg-[#00A99A] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                  </button>
+                </div>
+              ) : (
+                <p className="text-center text-sm text-gray-400 py-4">
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="text-[#00C9B7] underline font-medium"
+                  >로그인</button> 후 댓글을 작성할 수 있습니다.
+                </p>
+              )}
+            </div>
+
           </div>
         </div>
       </div>

@@ -185,6 +185,72 @@ export const submitUserRecipe = async (input: NewRecipeInput): Promise<Recipe> =
   return rowToRecipe(data);
 };
 
+// ----------------------------------------------------------------
+// 댓글 (recipe_comments)
+// ----------------------------------------------------------------
+export interface RecipeComment {
+  id: string;
+  recipeId: string;
+  userId: string;
+  authorName: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const listComments = async (recipeId: string): Promise<RecipeComment[]> => {
+  const { data, error } = await supabase
+    .from('recipe_comments')
+    .select('*')
+    .eq('recipe_id', recipeId)
+    .order('created_at', { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data || []).map((r: any) => ({
+    id: r.id,
+    recipeId: r.recipe_id,
+    userId: r.user_id,
+    authorName: r.author_name,
+    content: r.content,
+    createdAt: r.created_at,
+    updatedAt: r.updated_at,
+  }));
+};
+
+export const addComment = async (recipeId: string, content: string): Promise<RecipeComment> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('로그인 필요');
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('name')
+    .eq('id', user.id)
+    .maybeSingle();
+  const authorName = profile?.name || user.email?.split('@')[0] || '익명';
+  const { data, error } = await supabase
+    .from('recipe_comments')
+    .insert({ recipe_id: recipeId, user_id: user.id, author_name: authorName, content })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return {
+    id: data.id, recipeId: data.recipe_id, userId: data.user_id,
+    authorName: data.author_name, content: data.content,
+    createdAt: data.created_at, updatedAt: data.updated_at,
+  };
+};
+
+export const updateComment = async (commentId: string, content: string): Promise<void> => {
+  const { error } = await supabase
+    .from('recipe_comments')
+    .update({ content, updated_at: new Date().toISOString() })
+    .eq('id', commentId);
+  if (error) throw new Error(error.message);
+};
+
+export const deleteComment = async (commentId: string): Promise<void> => {
+  const { error } = await supabase.from('recipe_comments').delete().eq('id', commentId);
+  if (error) throw new Error(error.message);
+};
+
 // 사용자 레시피 이미지 Supabase Storage 업로드
 export const uploadRecipeImage = async (file: File): Promise<string> => {
   const ext = file.name.split('.').pop() || 'jpg';
