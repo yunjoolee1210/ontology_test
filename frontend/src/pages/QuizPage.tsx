@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Trophy, Star, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import { getQuiz, QuizSet } from '../services/quizApi';
@@ -8,6 +8,8 @@ import { saveQuizResult } from '../services/quizProgress';
 export function QuizPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromCommunity = (location.state as any)?.from === 'community';
 
   const [quiz, setQuiz] = useState<QuizSet | null>(null);
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,9 @@ export function QuizPage() {
     })();
   }, [id]);
 
-  const back = () => navigate('/dialysis-care');
+  const back = () => fromCommunity
+    ? navigate('/community', { state: { tab: '퀴즈' } })
+    : navigate('/dialysis-care');
 
   if (loading) {
     return (

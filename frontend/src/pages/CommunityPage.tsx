@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Heart, MessageCircle, Share2, Plus, Edit2, Trash2, Loader2, Trophy, Star, Users, ChevronRight, ListChecks, CircleDot, Zap } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import { useLayout } from '../components/LayoutContext';
@@ -139,7 +139,7 @@ function QuizTab() {
                         </span>
                       </div>
                       <button
-                        onClick={() => navigate(`/quiz/${quiz.id}`)}
+                        onClick={() => navigate(`/quiz/${quiz.id}`, { state: { from: 'community' } })}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold text-white transition-opacity hover:opacity-80"
                         style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}
                       >
@@ -168,6 +168,12 @@ export function CommunityPage() {
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const location = useLocation();
+  useEffect(() => {
+    const tab = (location.state as any)?.tab as CategoryType | undefined;
+    if (tab) setSelectedCategory(tab);
+  }, []);
 
   const getCurrentUserId = () => {
     const token = localStorage.getItem('accessToken');
