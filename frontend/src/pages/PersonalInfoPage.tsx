@@ -30,7 +30,7 @@ export function PersonalInfoPage() {
         if (profile) {
           setUserType(
             profile.userType === 'patient' ? '신장병 환우' :
-            profile.userType === 'researcher' ? '연구자' : '일반인'
+            profile.userType === 'researcher' ? '간병인' : '일반인'
           );
           setPersonalInfo({
             nickname: profile.nickname || profile.name || '',
@@ -60,7 +60,7 @@ export function PersonalInfoPage() {
       }
 
       const profileValue = userType === '신장병 환우' ? 'patient' :
-                           userType === '연구자' ? 'researcher' : 'general';
+                           userType === '간병인' ? 'researcher' : 'general';
 
       await upsertMyProfile({
         nickname: personalInfo.nickname,
@@ -121,7 +121,7 @@ export function PersonalInfoPage() {
               <div>
                 <label className="block text-sm font-bold text-[#374151] mb-2">사용자 유형</label>
                 <div className="flex gap-3">
-                  {['일반인', '신장병 환우', '연구자'].map((type) => (
+                  {['일반인', '신장병 환우', '간병인'].map((type) => (
                     <button
                       key={type}
                       onClick={() => setUserType(type)}
