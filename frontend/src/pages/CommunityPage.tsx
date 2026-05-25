@@ -51,39 +51,22 @@ function QuizTab() {
             이번 주 콩팥 퀴즈<br />함께 풀고 포인트 받기!
           </h2>
           <div className="flex items-center gap-3 mt-3">
-            <div className="flex items-center gap-1 bg-white/20 rounded-full px-3 py-1">
-              <Users size={13} className="text-white" />
-              <span className="text-xs text-white font-medium">현재 {totalParticipants}명 참여 중</span>
+            <div className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1.5">
+              <Trophy size={13} className="text-white" />
+              <span className="text-xs text-white font-medium">
+                완료 퀴즈 {progress.completedCount}/{quizzes.length}
+              </span>
             </div>
-            <div className="flex items-center gap-1 bg-white/20 rounded-full px-3 py-1">
+            <div className="flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1.5">
               <Star size={13} className="text-white" />
-              <span className="text-xs text-white font-medium">내 포인트 {progress.points}P</span>
+              <span className="text-xs text-white/70 font-medium">획득 포인트</span>
+              <span className="text-sm text-white font-bold">{progress.points}P</span>
             </div>
           </div>
         </div>
         {/* 장식 */}
         <div className="absolute right-4 top-4 w-20 h-20 rounded-full bg-white/10" />
         <div className="absolute right-8 bottom-2 w-12 h-12 rounded-full bg-white/10" />
-      </div>
-
-      {/* 내 진행 현황 */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <div className="p-4 rounded-xl border border-[#E0E0E0] bg-white flex items-center gap-3">
-          <Trophy size={22} className="text-[#00C9B7]" />
-          <div>
-            <div className="text-xs text-[#999]">완료 퀴즈</div>
-            <div className="text-lg font-bold text-[#1F2937]">
-              {progress.completedCount}<span className="text-sm font-normal text-[#999]">/{quizzes.length}</span>
-            </div>
-          </div>
-        </div>
-        <div className="p-4 rounded-xl border border-[#E0E0E0] bg-white flex items-center gap-3">
-          <Star size={22} className="text-[#9F7AEA]" />
-          <div>
-            <div className="text-xs text-[#999]">획득 포인트</div>
-            <div className="text-lg font-bold text-[#9F7AEA]">{progress.points}P</div>
-          </div>
-        </div>
       </div>
 
       {/* 퀴즈 피드 */}
