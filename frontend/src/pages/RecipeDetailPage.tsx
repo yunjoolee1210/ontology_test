@@ -36,6 +36,7 @@ export function RecipeDetailPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState('');
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
 
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -70,7 +71,8 @@ export function RecipeDetailPage() {
   }, [slug]);
 
   const handleVote = async (type: 'like' | 'dislike') => {
-    if (!recipe || !isLoggedIn || isVoting) return;
+    if (!recipe || isVoting) return;
+    if (!isLoggedIn) { setShowLoginPopup(true); return; }
     setIsVoting(true);
     const isToggle = userVote === type;
     const prevVote = userVote;
@@ -338,14 +340,11 @@ export function RecipeDetailPage() {
               <p className="text-sm text-gray-500 mr-1">이 레시피가 도움이 됐나요?</p>
               <button
                 onClick={() => handleVote('like')}
-                disabled={!isLoggedIn || isVoting}
-                title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
+                disabled={isVoting}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   userVote === 'like'
                     ? 'bg-[#00C9B7] text-white'
-                    : isLoggedIn
-                      ? 'bg-white border border-gray-200 text-gray-600 hover:border-[#00C9B7] hover:text-[#00C9B7]'
-                      : 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-white border border-gray-200 text-gray-600 hover:border-[#00C9B7] hover:text-[#00C9B7]'
                 }`}
               >
                 <ThumbsUp size={15} className={userVote === 'like' ? 'fill-white' : ''} />
@@ -353,23 +352,37 @@ export function RecipeDetailPage() {
               </button>
               <button
                 onClick={() => handleVote('dislike')}
-                disabled={!isLoggedIn || isVoting}
-                title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
+                disabled={isVoting}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   userVote === 'dislike'
                     ? 'bg-red-400 text-white'
-                    : isLoggedIn
-                      ? 'bg-white border border-gray-200 text-gray-600 hover:border-red-400 hover:text-red-400'
-                      : 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-white border border-gray-200 text-gray-600 hover:border-red-400 hover:text-red-400'
                 }`}
               >
                 <ThumbsDown size={15} className={userVote === 'dislike' ? 'fill-white' : ''} />
                 <span>{recipe.dislikesCount}</span>
               </button>
-              {!isLoggedIn && (
-                <span className="text-xs text-gray-400">로그인 후 평가 가능</span>
-              )}
             </div>
+
+            {/* 로그인 유도 팝업 */}
+            {showLoginPopup && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowLoginPopup(false)}>
+                <div className="bg-white rounded-2xl p-6 mx-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                  <p className="text-[#1F2937] font-semibold text-center mb-1">로그인이 필요해요</p>
+                  <p className="text-sm text-gray-500 text-center mb-5">평가는 로그인 후 이용할 수 있습니다.</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setShowLoginPopup(false)}
+                      className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50"
+                    >취소</button>
+                    <button
+                      onClick={() => navigate('/login')}
+                      className="flex-1 py-2.5 rounded-xl bg-[#00C9B7] text-white text-sm font-medium hover:bg-[#00A99A]"
+                    >로그인</button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* ── 댓글 ── */}
             <div className="border-t border-[#EEF0F2] pt-6">
