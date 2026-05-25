@@ -153,7 +153,7 @@ export function PersonalInfoPage() {
               <div>
                 <label className="block text-sm font-bold text-[#374151] mb-2">성별</label>
                 <div className="flex gap-3">
-                  {['남성', '여성', '기타'].map((gender) => (
+                  {['남성', '여성'].map((gender) => (
                     <button
                       key={gender}
                       onClick={() => setPersonalInfo({...personalInfo, gender})}
