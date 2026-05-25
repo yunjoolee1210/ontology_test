@@ -669,7 +669,21 @@ export function DietCarePage() {
         {/* ── 레시피 코치 ───────────────────────────────────────────────────── */}
         {activeTab === 'recipe-coach' && (
           <div className="space-y-4">
-            {/* 헤더: 필터 + 등록 버튼 */}
+            {/* 안내 메시지 — 최상단 */}
+            <div className="bg-gradient-to-r from-[#F0FDF4] to-[#EFF6FF] rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <ChefHat size={24} className="text-[#00C9B7] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-[#1F2937] mb-1">신장질환식 대체 레시피</h4>
+                  <p className="text-sm text-gray-600">
+                    평소에 자주 먹는 음식을 <span className="text-[#00C9B7] font-medium">저염·저칼륨·저인</span> 식재료로 대체한 레시피 추천을 공유합니다.
+                    마음에 드는 요리는 <span className="font-medium">'좋아요'</span>로 평가해 주세요.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 필터 + 등록 버튼 */}
             <div className="flex items-center justify-between gap-3 flex-wrap">
               {/* 저감 영양소 필터 */}
               <div className="flex items-center gap-2 flex-wrap">
@@ -699,25 +713,6 @@ export function DietCarePage() {
                 <PenLine size={13} />
                 레시피 등록
               </button>
-            </div>
-
-            {/* 안내 배너 */}
-            <div className="bg-gradient-to-r from-[#F0FDF4] to-[#EFF6FF] rounded-xl p-4">
-              <div className="flex items-start gap-3">
-                <ChefHat size={24} className="text-[#00C9B7] flex-shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-[#1F2937] mb-1">
-                    신장질환식 대체 레시피
-                    {filterTags.length > 0 && (
-                      <span className="ml-2 text-sm text-[#00C9B7]">· {filterTags.join(' + ')} 필터 적용 중</span>
-                    )}
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    좋아하던 요리를 <span className="text-[#00C9B7] font-medium">저염·저칼륨·저인</span>으로 바꾼 대체 레시피입니다.
-                    카드를 누르면 대체 포인트와 질환식 조리법을 볼 수 있어요.
-                  </p>
-                </div>
-              </div>
             </div>
 
             {/* 레시피 그리드 */}
