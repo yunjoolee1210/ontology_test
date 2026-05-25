@@ -1078,61 +1078,6 @@ export function SignupPage() {
                 </div>
               </div>
 
-              {/* 4. 기저질환 (baseConditions) - 체크박스 (복수 선택 가능) */}
-              <div>
-                <label className="block mb-3" style={{ fontSize: '14px', color: '#374151', fontWeight: '600' }}>
-                  기저질환 <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: '400' }}>(복수 선택 가능)</span>
-                </label>
-                <div className="space-y-2">
-                  {baseConditionOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-200"
-                      style={{
-                        borderColor: baseConditions.includes(option.value) ? '#00C9B7' : '#E5E7EB',
-                        backgroundColor: baseConditions.includes(option.value) ? '#F0FDFA' : 'white'
-                      }}
-                    >
-                      <div className="relative flex items-center justify-center">
-                        <input
-                          type="checkbox"
-                          checked={baseConditions.includes(option.value)}
-                          onChange={() => handleBaseConditionToggle(option.value)}
-                          className="w-5 h-5 appearance-none rounded border-2 cursor-pointer transition-all duration-200"
-                          style={{
-                            borderColor: baseConditions.includes(option.value) ? '#00C9B7' : '#D1D5DB',
-                            backgroundColor: baseConditions.includes(option.value) ? '#00C9B7' : 'white'
-                          }}
-                        />
-                        {baseConditions.includes(option.value) && (
-                          <Check
-                            size={14}
-                            color="#FFFFFF"
-                            strokeWidth={3}
-                            className="absolute pointer-events-none"
-                          />
-                        )}
-                      </div>
-                      <span style={{ fontSize: '14px', color: '#1F2937' }}>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-
-                {/* 기타 선택 시 메모 입력 필드 */}
-                {baseConditions.includes('OTHER') && (
-                  <div className="mt-3">
-                    <input
-                      type="text"
-                      value={otherConditionMemo}
-                      onChange={(e) => setOtherConditionMemo(e.target.value)}
-                      placeholder="기타 질환을 입력해주세요"
-                      className="w-full px-4 py-3 rounded-lg border"
-                      style={{ borderColor: '#E5E7EB', fontSize: '14px' }}
-                    />
-                  </div>
-                )}
-              </div>
-
               {/* 5. 하단 안내 문구 */}
               <div
                 className="p-3 rounded-lg"
