@@ -51,13 +51,6 @@ export function QuizListPage() {
             </div>
             <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white">
               <div className="flex items-center gap-2 mb-2">
-                <Star size={20} className="text-[#FFB84D]" strokeWidth={2} />
-                <span className="text-sm text-[#666666] font-medium">지식 레벨</span>
-              </div>
-              <div className="text-2xl font-bold text-[#1F2937]">Lv {progress.level}</div>
-            </div>
-            <div className="p-5 rounded-xl border border-[#E0E0E0] bg-white">
-              <div className="flex items-center gap-2 mb-2">
                 <Star size={20} className="text-[#9F7AEA]" strokeWidth={2} />
                 <span className="text-sm text-[#666666] font-medium">획득 포인트</span>
               </div>

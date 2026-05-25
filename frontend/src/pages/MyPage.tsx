@@ -130,17 +130,6 @@ export function MyPage() {
                 <span className="text-sm font-bold text-[#1F2937]">{userStats.points}P</span>
               </div>
 
-              {/* Level */}
-              <div className="flex items-center gap-1.5">
-                <div className="w-3.5 h-3.5 rounded bg-[#9F7AEA] flex items-center justify-center">
-                  <span className="text-[8px] text-white font-bold">L</span>
-                </div>
-                <span className="text-xs text-[#666666]">지식레벨</span>
-                <span className="text-sm font-bold text-[#1F2937]">
-                  {userStats.knowledgeLevel > 0 ? `Lv${userStats.knowledgeLevel}` : '-'}
-                </span>
-              </div>
-
               {/* Tokens */}
               <div className="flex items-center gap-1.5">
                 <Coins size={14} className="text-[#00C9B7]" strokeWidth={2} />
