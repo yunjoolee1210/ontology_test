@@ -166,7 +166,7 @@ export function RecipeDetailPage() {
       <div className="lg:hidden"><MobileHeader title={recipe.name} showProfile={false} showMenu={false} onBack={back} /></div>
       <div className="hidden lg:flex items-center h-14 px-6 border-b border-[#E5E7EB]">
         <button onClick={back} className="p-2 hover:bg-gray-100 rounded-full"><ChevronLeft size={22} /></button>
-        <span className="ml-2 font-medium text-[#1F2937]">레시피 코치</span>
+        <span className="ml-2 font-medium text-[#1F2937]">레시피 추천</span>
       </div>
 
       <div className="flex-1 overflow-y-auto pb-24 lg:pb-10">

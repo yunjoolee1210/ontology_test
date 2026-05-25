@@ -625,7 +625,7 @@ export function DietCarePage() {
         {/* 탭 */}
         <div className="border-b mb-6" style={{ borderColor: '#E5E7EB' }}>
           <div className="flex gap-6">
-            {([['nutri-coach', '영양 코치'], ['recipe-coach', '레시피 코치'], ['diet-log', '식단 로그']] as const).map(([key, label]) => (
+            {([['nutri-coach', '영양 코치'], ['recipe-coach', '레시피 추천'], ['diet-log', '식단 로그']] as const).map(([key, label]) => (
               <div key={key} onClick={() => setActiveTab(key)}
                 className="relative pb-3 cursor-pointer transition-all duration-200"
                 style={{ color: activeTab === key ? '#00C9B7' : '#9CA3AF', fontSize: '15px', fontWeight: activeTab === key ? 'bold' : 'normal' }}>
