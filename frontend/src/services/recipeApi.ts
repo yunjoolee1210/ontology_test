@@ -64,11 +64,13 @@ const rowToRecipe = (r: any): Recipe => ({
   ingredients: r.ingredients || [],
   nutrients: r.nutrients || { kcal: 0, protein: 0, sodium: 0, potassium: 0, phosphorus: 0 },
   steps: r.steps || [],
-  // 표준 레시피(recipe_no 있음): 요리명 매칭 로컬 이미지 고정
-  // 사용자 등록 레시피: DB image_url 사용
-  imageUrl: r.is_user_submitted
-    ? (r.image_url || '')
-    : `/recipes/recipe-${r.recipe_no}.jpg`,
+  // DB image_url이 있으면 우선 사용 (Supabase Storage 고정 이미지)
+  // 없으면 표준 레시피는 로컬 파일, 사용자 레시피는 빈 문자열
+  imageUrl: r.image_url
+    ? r.image_url
+    : r.recipe_no
+      ? `/recipes/recipe-${r.recipe_no}.jpg`
+      : '',
   likesCount: r.likes_count ?? 0,
   dislikesCount: r.dislikes_count ?? 0,
   isUserSubmitted: r.is_user_submitted ?? false,
