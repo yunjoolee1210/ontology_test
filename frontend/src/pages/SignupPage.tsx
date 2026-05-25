@@ -103,7 +103,7 @@ export function SignupPage() {
   // Step 3: Disease Info (명세서 v3 기준 - 순서 및 코드값 변경 금지)
   const [diagnosisType, setDiagnosisType] = useState<string>('UNKNOWN');
   const [ckdStage, setCkdStage] = useState<string>('NONE');
-  const [dialysisType, setDialysisType] = useState<string>('NONE');
+  const [dialysisType, setDialysisType] = useState<string>('');
   const [baseConditions, setBaseConditions] = useState<string[]>([]);
   const [otherConditionMemo, setOtherConditionMemo] = useState<string>('');
 
@@ -132,7 +132,6 @@ export function SignupPage() {
 
   // 3. 투석 여부 옵션 (순서 변경 금지, ckdStage와 독립적)
   const dialysisOptions = [
-    { label: '투석 전', value: 'NONE' },
     { label: '혈액투석 중', value: 'HD' },
     { label: '복막투석 중', value: 'PD' }
   ];
@@ -142,7 +141,6 @@ export function SignupPage() {
     { label: '당뇨병', value: 'DM' },
     { label: '고혈압', value: 'HTN' },
     { label: '심부전', value: 'HF' },
-    { label: '통풍', value: 'GOUT' },
     { label: '기타', value: 'OTHER' }
   ];
 
@@ -1046,7 +1044,7 @@ export function SignupPage() {
               {/* 3. 투석 여부 (dialysisType) - 라디오버튼 (항상 표시, ckdStage와 독립적) */}
               <div>
                 <label className="block mb-3" style={{ fontSize: '14px', color: '#374151', fontWeight: '600' }}>
-                  투석 여부 {isPatient && <span style={{ color: '#EF4444' }}>*</span>}
+                  투석 여부 <span style={{ color: '#6B7280', fontWeight: 400, fontSize: '12px' }}>(선택)</span>
                 </label>
                 <div className="space-y-2">
                   {dialysisOptions.map((option) => (
