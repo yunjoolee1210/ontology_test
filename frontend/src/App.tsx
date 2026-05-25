@@ -93,7 +93,7 @@ function AppContent() {
           <Route path="/diet-care/nutri-coach" element={<NutriCoachPage />} />
           <Route path="/diet-care/diet-log" element={<DietLogPage />} />
           <Route path="/recipe/:slug" element={<RecipeDetailPage />} />
-          <Route path="/quiz/list" element={<QuizListPage />} />
+          <Route path="/dialysis-care" element={<QuizListPage />} />
           <Route path="/quiz/:id" element={<QuizPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/community/detail/:id" element={<CommunityDetailPage />} />

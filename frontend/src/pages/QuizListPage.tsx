@@ -35,7 +35,7 @@ export function QuizListPage() {
   return (
     <div className="flex flex-col h-full bg-white">
       <div className="lg:hidden">
-        <MobileHeader title="퀴즈미션" showMenu={true} showProfile={true} />
+        <MobileHeader title="투석케어" showMenu={true} showProfile={true} />
       </div>
 
       <div className="flex-1 overflow-y-auto p-5 lg:p-10 pb-24 lg:pb-10">

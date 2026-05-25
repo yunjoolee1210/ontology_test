@@ -30,7 +30,7 @@ export function QuizPage() {
     })();
   }, [id]);
 
-  const back = () => navigate('/quiz/list');
+  const back = () => navigate('/dialysis-care');
 
   if (loading) {
     return (

@@ -26,7 +26,7 @@ export function Header({ onMenuClick, isLoggedIn = false, userType }: HeaderProp
     } else if (path.startsWith('/diet-care')) {
       setPageTitle('식단케어');
     } else if (path.startsWith('/quiz')) {
-      setPageTitle('퀴즈미션');
+      setPageTitle('투석케어');
     } else if (path.startsWith('/community')) {
       setPageTitle('커뮤니티');
     } else if (path.startsWith('/dashboard')) {
