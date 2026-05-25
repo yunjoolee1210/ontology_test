@@ -105,10 +105,10 @@ export function MainPage() {
           </div>
         
           {/* Quick Action Buttons */}
-          <div className="flex flex-wrap gap-3 justify-center mb-8">
+          <div className="flex gap-3 justify-center mb-8">
             <button
               onClick={() => navigate('/chat', { state: { tab: 'medical' } })}
-              className="group flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all duration-200 whitespace-nowrap"
+              className="group flex items-center gap-2 px-7 py-2.5 rounded-xl border transition-all duration-200 whitespace-nowrap"
               style={{
                 borderColor: '#E5E7EB',
                 background: 'var(--color-bg-white)',
@@ -135,7 +135,7 @@ export function MainPage() {
             </button>
             <button
               onClick={() => navigate('/chat', { state: { tab: 'nutrition' } })}
-              className="group flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all duration-200 whitespace-nowrap"
+              className="group flex items-center gap-2 px-7 py-2.5 rounded-xl border transition-all duration-200 whitespace-nowrap"
               style={{
                 borderColor: '#E5E7EB',
                 background: 'var(--color-bg-white)',
@@ -159,33 +159,6 @@ export function MainPage() {
             >
               <Utensils size={16} className="group-hover:stroke-[#00C9B7] transition-all" color="#4B5563" />
               식이영양
-            </button>
-            <button
-              onClick={() => navigate('/chat', { state: { tab: 'research' } })}
-              className="group flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all duration-200 whitespace-nowrap"
-              style={{
-                borderColor: '#E5E7EB',
-                background: 'var(--color-bg-white)',
-                color: '#4B5563',
-                fontSize: '14px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(white, white) padding-box, linear-gradient(to right, #00C9B7, #9F7AEA) border-box';
-                e.currentTarget.style.border = '2px solid transparent';
-                e.currentTarget.style.color = '#00C9B7';
-                e.currentTarget.style.fontWeight = 'bold';
-                e.currentTarget.style.boxShadow = '0 0 10px rgba(0, 201, 183, 0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'var(--color-bg-white)';
-                e.currentTarget.style.border = '1px solid #E5E7EB';
-                e.currentTarget.style.color = '#4B5563';
-                e.currentTarget.style.fontWeight = 'normal';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              <FileText size={16} className="group-hover:stroke-[#00C9B7] transition-all" color="#4B5563" />
-              연구논문
             </button>
           </div>
         
