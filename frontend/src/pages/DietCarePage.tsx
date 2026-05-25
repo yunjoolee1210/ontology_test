@@ -722,8 +722,7 @@ export function DietCarePage() {
               </div>
             ) : filteredRecipes.length > 0 ? (
               <>
-                <p className="text-xs text-gray-400">{filteredRecipes.length}개 레시피</p>
-                <div className="grid grid-cols-2 gap-3">
+<div className="grid grid-cols-2 gap-3">
                   {filteredRecipes.map((recipe) => (
                     <RecipeCard
                       key={recipe.id}
