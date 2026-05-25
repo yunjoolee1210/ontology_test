@@ -211,50 +211,12 @@ export function RecipeDetailPage() {
               </h1>
 
               {/* 태그 */}
-              <div className="flex flex-wrap gap-1.5 mb-3">
+              <div className="flex flex-wrap gap-1.5">
                 {recipe.tags.map((t) => (
                   <span key={t} className={`px-2 py-0.5 rounded-full text-[11px] font-semibold border ${tagColor(t)}`}>
                     #{t}
                   </span>
                 ))}
-              </div>
-
-              {/* 좋아요 / 싫어요 */}
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-white/70 mr-0.5">도움이 됐나요?</span>
-                <button
-                  onClick={() => handleVote('like')}
-                  disabled={!isLoggedIn || isVoting}
-                  title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors backdrop-blur-sm border ${
-                    userVote === 'like'
-                      ? 'bg-[#00C9B7] text-white border-[#00C9B7]'
-                      : isLoggedIn
-                        ? 'bg-white/20 text-white border-white/40 hover:bg-[#00C9B7]/60'
-                        : 'bg-white/10 text-white/50 border-white/20 cursor-not-allowed'
-                  }`}
-                >
-                  <ThumbsUp size={12} className={userVote === 'like' ? 'fill-white' : ''} />
-                  <span>{recipe.likesCount}</span>
-                </button>
-                <button
-                  onClick={() => handleVote('dislike')}
-                  disabled={!isLoggedIn || isVoting}
-                  title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors backdrop-blur-sm border ${
-                    userVote === 'dislike'
-                      ? 'bg-red-400 text-white border-red-400'
-                      : isLoggedIn
-                        ? 'bg-white/20 text-white border-white/40 hover:bg-red-400/60'
-                        : 'bg-white/10 text-white/50 border-white/20 cursor-not-allowed'
-                  }`}
-                >
-                  <ThumbsDown size={12} className={userVote === 'dislike' ? 'fill-white' : ''} />
-                  <span>{recipe.dislikesCount}</span>
-                </button>
-                {!isLoggedIn && (
-                  <span className="text-[10px] text-white/50">로그인 후 평가 가능</span>
-                )}
               </div>
             </div>
           </div>
@@ -361,7 +323,7 @@ export function RecipeDetailPage() {
 
             {/* 영양정보 (주의사항 하단) */}
             <h3 className="font-bold text-[#1F2937] mb-3">영양정보 <span className="text-xs font-normal text-gray-400">(1인분 기준)</span></h3>
-            <div className="grid grid-cols-5 gap-2 mb-8">
+            <div className="grid grid-cols-5 gap-2 mb-6">
               {nutrientItems.map((it) => (
                 <div key={it.label} className="text-center rounded-xl border border-[#EEF0F2] py-3">
                   <div className="text-[11px] text-gray-500 mb-1">{it.label}</div>
@@ -369,6 +331,44 @@ export function RecipeDetailPage() {
                   <div className="text-[10px] text-gray-400">{it.unit}</div>
                 </div>
               ))}
+            </div>
+
+            {/* 도움이 됐나요? (좋아요 / 싫어요) */}
+            <div className="flex items-center gap-3 mb-6 p-3 bg-gray-50 rounded-xl border border-[#EEF0F2]">
+              <p className="text-sm text-gray-500 mr-1">이 레시피가 도움이 됐나요?</p>
+              <button
+                onClick={() => handleVote('like')}
+                disabled={!isLoggedIn || isVoting}
+                title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  userVote === 'like'
+                    ? 'bg-[#00C9B7] text-white'
+                    : isLoggedIn
+                      ? 'bg-white border border-gray-200 text-gray-600 hover:border-[#00C9B7] hover:text-[#00C9B7]'
+                      : 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                <ThumbsUp size={15} className={userVote === 'like' ? 'fill-white' : ''} />
+                <span>{recipe.likesCount}</span>
+              </button>
+              <button
+                onClick={() => handleVote('dislike')}
+                disabled={!isLoggedIn || isVoting}
+                title={!isLoggedIn ? '로그인 후 이용 가능' : undefined}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  userVote === 'dislike'
+                    ? 'bg-red-400 text-white'
+                    : isLoggedIn
+                      ? 'bg-white border border-gray-200 text-gray-600 hover:border-red-400 hover:text-red-400'
+                      : 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                <ThumbsDown size={15} className={userVote === 'dislike' ? 'fill-white' : ''} />
+                <span>{recipe.dislikesCount}</span>
+              </button>
+              {!isLoggedIn && (
+                <span className="text-xs text-gray-400">로그인 후 평가 가능</span>
+              )}
             </div>
 
             {/* ── 댓글 ── */}
