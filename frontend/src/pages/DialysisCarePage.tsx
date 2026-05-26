@@ -30,8 +30,8 @@ function CoachTab() {
         <div className="space-y-3 text-sm text-[#374151] leading-relaxed">
           <p>신장은 혈액 속 노폐물과 과잉 수분을 걸러 소변으로 내보내는 장기입니다. 만성신장병 말기(5기)에 이르면 신장이 이 기능을 충분히 수행하지 못해 <strong>투석</strong>이 필요합니다.</p>
           <p>투석은 신장 기능을 인공적으로 대체하여 혈액 내 요독·수분·전해질을 조절하는 치료법입니다.</p>
-          <div className="p-3 rounded-xl bg-[#F0FDFA] border border-[#CCFBF1]">
-            <p className="font-semibold text-[#0F766E] mb-1">주요 적용 기준</p>
+          <div className="p-3 rounded-xl bg-[#F2FFFD] border border-[#CCFBF1]">
+            <p className="font-semibold text-[#00C9B7] mb-1">주요 적용 기준</p>
             <ul className="list-disc pl-4 space-y-1 text-xs">
               <li>GFR(사구체여과율) 10 mL/min/1.73㎡ 미만</li>
               <li>심각한 요독 증상(오심, 구토, 의식 저하)</li>
@@ -83,7 +83,7 @@ function CoachTab() {
       content: (
         <div className="space-y-3">
           {[
-            { name: '동정맥루 (AVF)', desc: '자신의 동맥과 정맥을 연결해 만든 접근로. 가장 권장되는 방법으로 혈류량이 풍부하고 감염·혈전 위험이 낮습니다.', badge: '권장', badgeColor: 'bg-green-100 text-green-700' },
+            { name: '동정맥루 (AVF)', desc: '자신의 동맥과 정맥을 연결해 만든 접근로. 가장 권장되는 방법으로 혈류량이 풍부하고 감염·혈전 위험이 낮습니다.', badge: '권장', badgeColor: 'bg-[#F2FFFD] text-[#00C9B7] border border-[#CCFBF1]' },
             { name: '동정맥 이식편 (AVG)', desc: '인공혈관을 동맥과 정맥 사이에 이식합니다. 자신의 혈관이 불량할 때 사용하며 혈전 위험이 다소 높습니다.', badge: '차선', badgeColor: 'bg-yellow-100 text-yellow-700' },
             { name: '중심정맥 카테터 (CVC)', desc: '목이나 가슴의 큰 정맥에 삽입하는 카테터입니다. 즉시 사용 가능하나 감염 위험이 높아 임시 수단으로 사용됩니다.', badge: '임시', badgeColor: 'bg-red-100 text-red-700' },
           ].map(({ name, desc, badge, badgeColor }) => (
@@ -107,7 +107,7 @@ function CoachTab() {
           {[
             { icon: <Droplets size={20} className="text-[#2563EB]" />, title: '수분 관리', desc: '1일 소변량 + 500mL 이내로 제한. 투석 간 체중 증가 3% 미만 유지', bg: '#EFF6FF' },
             { icon: <Heart size={20} className="text-[#DC2626]" />, title: '식이 관리', desc: '칼륨·인 함량이 낮은 식품 선택. 저염식 (나트륨 2000mg/일 이하)', bg: '#FFF5F5' },
-            { icon: <Dumbbell size={20} className="text-[#16A34A]" />, title: '운동', desc: '주 3~5회 유산소 운동 30분 권장. 동정맥루 팔 과부하 주의', bg: '#F0FDF4' },
+            { icon: <Dumbbell size={20} className="text-[#9F7AEA]" />, title: '운동', desc: '주 3~5회 유산소 운동 30분 권장. 동정맥루 팔 과부하 주의', bg: '#F8F4FE' },
             { icon: <ShieldCheck size={20} className="text-[#D97706]" />, title: '감염 예방', desc: '투석 부위 청결 유지. 발열·발적 시 즉시 병원 방문', bg: '#FFFBEB' },
           ].map(({ icon, title, desc, bg }) => (
             <div key={title} className="p-3 rounded-xl border border-[#EEF0F2]" style={{ background: bg }}>
@@ -747,7 +747,7 @@ function HospitalTab() {
                       <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${filterDialysis ? 'translate-x-5' : 'translate-x-0'}`} />
                     </button>
                   </div>
-                  <p className="text-[10px] text-green-600/80 font-medium mt-1">투석기가 구비된 신장 치료 전문 투석실</p>
+                  <p className="text-[10px] text-gray-400 font-medium mt-1">투석기가 구비된 신장 치료 전문 투석실</p>
                 </div>
 
                 {/* 3) 병원 종류 구분 필터 */}
@@ -1215,19 +1215,19 @@ function HospitalTab() {
                   <Droplets size={14} className="text-[#00C9B7]" />
                   투석 의료 서비스 안내
                 </h3>
-                <div className="rounded-2xl border border-[#CCFBF1] bg-[#F0FDFA] p-4 space-y-3.5">
+                <div className="rounded-2xl border border-[#CCFBF1] bg-[#F2FFFD] p-4 space-y-3.5">
                   <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#0F766E] font-bold flex-shrink-0 mt-0.5">1</div>
+                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C9B7] font-bold flex-shrink-0 mt-0.5">1</div>
                     <div className="flex-1">
-                      <h4 className="text-xs font-extrabold text-[#0F766E]">투석실 Bed 보유 현황</h4>
+                      <h4 className="text-xs font-extrabold text-[#00C9B7]">투석실 Bed 보유 현황</h4>
                       <p className="text-xs text-[#1F2937] leading-relaxed mt-0.5">최신 혈액투석기 총 <strong>{selectedHospital.dialysis_machines}대</strong> 보유로 원활하고 대기 없는 스케줄 처리를 지원합니다.</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#0F766E] font-bold flex-shrink-0 mt-0.5">2</div>
+                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C9B7] font-bold flex-shrink-0 mt-0.5">2</div>
                     <div className="flex-1">
-                      <h4 className="text-xs font-extrabold text-[#0F766E]">야간 투석 치료실</h4>
+                      <h4 className="text-xs font-extrabold text-[#00C9B7]">야간 투석 치료실</h4>
                       <p className="text-xs text-[#1F2937] leading-relaxed mt-0.5">
                         {selectedHospital.night_dialysis 
                           ? `본 병원은 만성신부전 환자들의 사회 복귀를 돕기 위해 **매주 [${selectedHospital.dialysis_days}]요일 야간(23시까지)** 투석실을 연장 운영합니다.`
@@ -1238,9 +1238,9 @@ function HospitalTab() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#0F766E] font-bold flex-shrink-0 mt-0.5">3</div>
+                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C9B7] font-bold flex-shrink-0 mt-0.5">3</div>
                     <div className="flex-1">
-                      <h4 className="text-xs font-extrabold text-[#0F766E]">지원 투석 종류</h4>
+                      <h4 className="text-xs font-extrabold text-[#00C9B7]">지원 투석 종류</h4>
                       <div className="flex gap-1.5 mt-1.5">
                         {getSimulatedDetails(selectedHospital).dialysisMethods.map(m => (
                           <span key={m} className="text-[10px] px-2 py-0.5 bg-[#00C9B7] text-white font-bold rounded-md">
@@ -1447,7 +1447,7 @@ function LogTab() {
                     className="w-full px-3 py-2.5 rounded-xl border border-[#E5E7EB] text-sm focus:outline-none focus:ring-1 focus:ring-[#00C9B7]" />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-[#374151] mb-1 block flex items-center gap-1"><Scale size={12} className="text-[#16A34A]" />시작 체중 (kg)</label>
+                  <label className="text-xs font-semibold text-[#374151] mb-1 block flex items-center gap-1"><Scale size={12} className="text-[#9F7AEA]" />시작 체중 (kg)</label>
                   <input type="number" step="0.1" placeholder="예: 65.2"
                     value={form.weightBefore ?? ''}
                     onChange={e => setForm(p => ({ ...p, weightBefore: e.target.value ? +e.target.value : null }))}
