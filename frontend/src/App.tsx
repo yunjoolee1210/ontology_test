@@ -14,6 +14,7 @@ import { NutriCoachPage } from './pages/NutriCoachPage';
 import { DietLogPage } from './pages/DietLogPage';
 import { QuizPage } from './pages/QuizPage';
 import { QuizListPage } from './pages/QuizListPage';
+import { DialysisCarePage } from './pages/DialysisCarePage';
 import { CommunityPage } from './pages/CommunityPage';
 import { CommunityDetailPage } from './pages/CommunityDetailPage';
 import { CommunityCreatePage } from './pages/CommunityCreatePage';
@@ -93,7 +94,7 @@ function AppContent() {
           <Route path="/diet-care/nutri-coach" element={<NutriCoachPage />} />
           <Route path="/diet-care/diet-log" element={<DietLogPage />} />
           <Route path="/recipe/:slug" element={<RecipeDetailPage />} />
-          <Route path="/dialysis-care" element={<QuizListPage />} />
+          <Route path="/dialysis-care" element={<DialysisCarePage />} />
           <Route path="/quiz/:id" element={<QuizPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/community/detail/:id" element={<CommunityDetailPage />} />
