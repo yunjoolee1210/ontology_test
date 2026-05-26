@@ -34,8 +34,9 @@ const getFilteredFallbackHospitals = (filter: HospitalFilter): Hospital[] => {
   if (filter.nightDialysis) {
     result = result.filter(h => h.night_dialysis);
   }
-  if (filter.minMachines && filter.minMachines > 0) {
-    result = result.filter(h => h.dialysis_machines >= filter.minMachines);
+  const minMachines = filter.minMachines;
+  if (minMachines && minMachines > 0) {
+    result = result.filter(h => h.dialysis_machines >= minMachines);
   }
   if (filter.region && filter.region !== '전체') {
     result = result.filter(h => h.region === filter.region);
