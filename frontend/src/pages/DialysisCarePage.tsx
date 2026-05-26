@@ -602,7 +602,7 @@ function HospitalTab() {
                             setShowSearchSuggestions(false);
                             handleListCardClick(h);
                           }}
-                          className="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-[#F0FDFA] hover:text-[#00A99A] font-semibold text-[#374151] flex items-center gap-2 transition-colors"
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-[#F2FFFD] hover:text-[#00C9B7] font-semibold text-[#374151] flex items-center gap-2 transition-colors border border-transparent hover:border-[#CCFBF1]"
                         >
                           <Building2 size={13} className="text-[#00C9B7] flex-shrink-0" />
                           <span className="truncate">{h.name}</span>
@@ -622,7 +622,7 @@ function HospitalTab() {
             {/* 2) 현재 위치로 찾기 (GPS) */}
             <button
               onClick={handleGetCurrentLocation}
-              className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${userLocation ? 'bg-[#F2FFFD] border-[#00C9B7] text-[#00A99A]' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
+              className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${userLocation ? 'bg-[#F2FFFD] border-[#00C9B7] text-[#00C9B7]' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
             >
               <Compass size={14} className={userLocation ? 'animate-spin' : ''} />
               <span>현재 위치로 찾기</span>
@@ -631,7 +631,7 @@ function HospitalTab() {
             {/* 3) 상세 필터 접기/펼치기 토글 */}
             <button
               onClick={() => setShowFilters(p => !p)}
-              className={`px-3.5 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${showFilters ? 'bg-gradient-to-r from-[#00C9B7] to-[#9F7AEA] text-white border-transparent' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
+              className={`px-4 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${showFilters ? 'bg-gradient-to-r from-[#00C9B7] to-[#9F7AEA] text-white border-transparent' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
             >
               <SlidersHorizontal size={14} />
               <span>{showFilters ? '필터 접기' : '상세 필터'}</span>
@@ -795,7 +795,7 @@ function HospitalTab() {
                 <div className="flex flex-col justify-center">
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-xs font-bold text-gray-700">보유 투석기 최소 대수</span>
-                    <span className="text-xs font-extrabold text-[#00C9B7] bg-[#E6F9F7] px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-extrabold text-[#00C9B7] bg-[#F2FFFD] px-2 py-0.5 rounded-full border border-[#CCFBF1]">
                       {filterMinMachines > 0 ? `${filterMinMachines}대 이상` : '제한 없음'}
                     </span>
                   </div>
@@ -853,14 +853,14 @@ function HospitalTab() {
                     setSelectedDays([]);
                     setQuery('');
                   }}
-                  className="px-4 py-2 rounded-full border border-gray-200 bg-white text-xs font-semibold text-gray-500 flex items-center gap-1 hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-500 flex items-center gap-1 hover:bg-gray-50 transition-colors"
                 >
                   <RotateCcw size={12} />
                   초기화
                 </button>
                 <button
                   onClick={() => setShowFilters(false)}
-                  className="px-5 py-2 rounded-full bg-[#00C9B7] text-white text-xs font-semibold flex items-center gap-1 hover:bg-[#00B3A3] transition-colors shadow-sm"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00C9B7] to-[#9F7AEA] text-white text-xs font-bold flex items-center gap-1 hover:opacity-95 transition-all shadow-sm"
                 >
                   <Check size={12} />
                   적용하기
@@ -1003,7 +1003,7 @@ function HospitalTab() {
                     key={h.id}
                     ref={isSelected ? selectedCardRef : undefined}
                     onClick={() => handleListCardClick(h)}
-                    className={`p-4 rounded-2xl border transition-all duration-200 relative overflow-hidden flex flex-col gap-2 ${isSelected ? 'border-[#00C9B7] bg-[#F0FDFA] shadow-md' : 'border-[#EEF0F2] bg-white hover:border-[#00C9B7]/50 hover:shadow-xs'}`}
+                    className={`p-4 rounded-2xl border transition-all duration-200 relative overflow-hidden flex flex-col gap-2 ${isSelected ? 'border-[#00C9B7] bg-[#F2FFFD] shadow-md' : 'border-[#EEF0F2] bg-white hover:border-[#00C9B7]/50 hover:shadow-xs'}`}
                   >
                     
                     {/* 상단: 타이틀 / 종류 / 하트 */}
@@ -1153,7 +1153,7 @@ function HospitalTab() {
             <div className="p-5 pb-4 border-b border-gray-100 flex justify-between items-start flex-shrink-0">
               <div className="flex flex-col gap-0.5">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] font-bold text-[#00A99A] bg-[#E6F9F7] px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-bold text-[#00C9B7] bg-[#F2FFFD] px-2 py-0.5 rounded-md border border-[#CCFBF1]">
                     {selectedHospital.region}
                   </span>
                   {selectedHospital.night_dialysis && (
@@ -1318,23 +1318,31 @@ function HospitalTab() {
             </div>
 
             {/* 고정 하단 액션 버튼바 */}
-            <div className="p-4 border-t border-gray-100 bg-white flex justify-center gap-3 flex-shrink-0 w-full">
-              {/* 1) 전화하기 */}
+            <div className="p-5 border-t border-gray-100 bg-white flex justify-end gap-3 flex-shrink-0 w-full">
+              {/* 1) 뒤로가기 스타일의 닫기 버튼 */}
+              <button
+                onClick={() => setSelectedHospital(null)}
+                className="flex-1 max-w-[160px] py-3.5 rounded-xl border border-[#E5E7EB] bg-white text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
+              >
+                닫기
+              </button>
+
+              {/* 2) 저장 스타일의 그라데이션 전화 예약 버튼 */}
               <a
                 href={`tel:${selectedHospital.phone}`}
-                className="max-w-[200px] flex-1 py-3.5 rounded-full text-white text-xs font-bold text-center bg-[#00C9B7] hover:bg-[#00B3A3] transition-colors shadow-sm flex items-center justify-center gap-1.5"
+                className="flex-1 py-3.5 rounded-xl text-white text-sm font-bold text-center bg-[#00C9B7] hover:bg-[#00B3A3] transition-colors shadow-sm flex items-center justify-center gap-1.5"
               >
                 <Phone size={14} />
-                전화 예약 및 문의
+                전화 예약
               </a>
 
-              {/* 2) 네이버 길찾기 */}
+              {/* 3) 길찾기 버튼 (그라데이션 rounded-xl 형태) */}
               {selectedHospital.naver_map_url && (
                 <a
                   href={selectedHospital.naver_map_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="max-w-[200px] flex-1 py-3.5 rounded-full text-white text-xs font-bold text-center hover:opacity-95 transition-all shadow-sm flex items-center justify-center gap-1.5"
+                  className="flex-1 py-3.5 rounded-xl text-white text-sm font-bold text-center hover:opacity-95 transition-all shadow-sm flex items-center justify-center gap-1.5"
                   style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}
                 >
                   <Compass size={14} className="fill-white/10" />
@@ -1411,11 +1419,11 @@ function LogTab() {
 
   return (
     <div>
-      {/* 새 기록 버튼 */}
+      {/* 새 기록 작성 버튼 (첫 번째 스크린샷의 퀴즈 참여하기 버튼 규격으로 정교화) */}
       <div className="flex justify-center w-full mb-6">
         <button
           onClick={() => setShowForm(true)}
-          className="max-w-md w-full flex items-center justify-center gap-2 py-3 rounded-full text-white font-semibold hover:opacity-90 transition-opacity shadow-sm"
+          className="px-6 py-3 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm flex items-center justify-center gap-2"
           style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}
         >
           <Plus size={18} /> 새 투석 기록 작성
