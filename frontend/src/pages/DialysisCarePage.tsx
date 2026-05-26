@@ -1343,7 +1343,7 @@ function HospitalTab() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-3.5 rounded-xl text-white text-sm font-bold text-center hover:opacity-95 transition-all shadow-sm flex items-center justify-center gap-1.5"
-                  style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}
+                  style={{ background: 'linear-gradient(135deg,#00C9B7,#9F7AEA)' }}
                 >
                   <Compass size={14} className="fill-white/10" />
                   길찾기
@@ -1424,7 +1424,7 @@ function LogTab() {
         <button
           onClick={() => setShowForm(true)}
           className="px-6 py-3 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}
+          style={{ background: 'linear-gradient(135deg,#00C9B7,#9F7AEA)' }}
         >
           <Plus size={18} /> 새 투석 기록 작성
         </button>
@@ -1499,7 +1499,7 @@ function LogTab() {
               </button>
               <button onClick={handleSave} disabled={saving || !form.treatmentDate}
                 className="flex-1 py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}>
+                style={{ background: 'linear-gradient(135deg,#00C9B7,#9F7AEA)' }}>
                 {saving ? <Loader2 size={16} className="animate-spin mx-auto" /> : '저장'}
               </button>
             </div>
