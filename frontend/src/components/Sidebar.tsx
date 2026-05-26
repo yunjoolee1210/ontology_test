@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { UtensilsCrossed, Trophy, Users, TrendingUp, User, LogOut, LogIn, Bell, HelpCircle, FileText, Shield } from 'lucide-react';
+import { UtensilsCrossed, Droplets, Users, TrendingUp, User, LogOut, LogIn, Bell, HelpCircle, FileText, Shield } from 'lucide-react';
 import { useLayout } from './LayoutContext';
 
 // Chat icon SVG component from Figma
@@ -21,7 +21,7 @@ function ChatbotIcon({ size = 20 }: { size?: number }) {
 const menuItems = [
   { id: 'chat', label: 'AI챗봇', icon: ChatbotIcon, path: '/chat' },
   { id: 'diet', label: '식단케어', icon: UtensilsCrossed, path: '/diet-care' },
-  { id: 'quiz', label: '투석케어', icon: Trophy, path: '/dialysis-care' },
+  { id: 'quiz', label: '투석케어', icon: Droplets, path: '/dialysis-care' },
   { id: 'community', label: '커뮤니티', icon: Users, path: '/community' },
   { id: 'trends', label: '트렌드', icon: TrendingUp, path: '/trends' }
 ];

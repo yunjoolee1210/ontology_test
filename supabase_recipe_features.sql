@@ -95,3 +95,26 @@ create policy "recipes_insert_user" on public.recipes for insert
 --     - SELECT: 모든 사용자 허용 (public)
 --     - INSERT: authenticated 사용자만 허용
 --       조건: bucket_id = 'recipe-images'
+
+-- ----------------------------------------------------------------
+-- 7. recipe_comments (레시피 댓글)
+-- ----------------------------------------------------------------
+create table if not exists public.recipe_comments (
+  id          uuid default gen_random_uuid() primary key,
+  recipe_id   uuid not null references public.recipes(id) on delete cascade,
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  author_name text not null default '익명',
+  content     text not null check (char_length(content) >= 1 and char_length(content) <= 500),
+  created_at  timestamp with time zone default now(),
+  updated_at  timestamp with time zone default now()
+);
+
+alter table public.recipe_comments enable row level security;
+drop policy if exists "comments_select"        on public.recipe_comments;
+drop policy if exists "comments_insert"        on public.recipe_comments;
+drop policy if exists "comments_update_own"    on public.recipe_comments;
+drop policy if exists "comments_delete_own"    on public.recipe_comments;
+create policy "comments_select"     on public.recipe_comments for select using (true);
+create policy "comments_insert"     on public.recipe_comments for insert with check (auth.uid() = user_id);
+create policy "comments_update_own" on public.recipe_comments for update using (auth.uid() = user_id);
+create policy "comments_delete_own" on public.recipe_comments for delete using (auth.uid() = user_id);
