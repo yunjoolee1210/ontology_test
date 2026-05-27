@@ -25,13 +25,13 @@ function CoachTab() {
     {
       id: 'what',
       title: '투석이란?',
-      icon: <Droplets size={18} className="text-[#00C9B7]" />,
+      icon: <Droplets size={18} className="text-[#00C8B4]" />,
       content: (
         <div className="space-y-3 text-sm text-[#374151] leading-relaxed">
           <p>신장은 혈액 속 노폐물과 과잉 수분을 걸러 소변으로 내보내는 장기입니다. 만성신장병 말기(5기)에 이르면 신장이 이 기능을 충분히 수행하지 못해 <strong>투석</strong>이 필요합니다.</p>
           <p>투석은 신장 기능을 인공적으로 대체하여 혈액 내 요독·수분·전해질을 조절하는 치료법입니다.</p>
           <div className="p-3 rounded-xl bg-[#F2FFFD] border border-[#CCFBF1]">
-            <p className="font-semibold text-[#00C9B7] mb-1">주요 적용 기준</p>
+            <p className="font-semibold text-[#00C8B4] mb-1">주요 적용 기준</p>
             <ul className="list-disc pl-4 space-y-1 text-xs">
               <li>GFR(사구체여과율) 10 mL/min/1.73㎡ 미만</li>
               <li>심각한 요독 증상(오심, 구토, 의식 저하)</li>
@@ -51,7 +51,7 @@ function CoachTab() {
             <thead>
               <tr className="bg-[#F9FAFB]">
                 <th className="p-2.5 text-left border border-[#E5E7EB] text-[#374151] font-semibold">항목</th>
-                <th className="p-2.5 text-center border border-[#E5E7EB] text-[#00C9B7] font-semibold">혈액투석 (HD)</th>
+                <th className="p-2.5 text-center border border-[#E5E7EB] text-[#00C8B4] font-semibold">혈액투석 (HD)</th>
                 <th className="p-2.5 text-center border border-[#E5E7EB] text-[#9F7AEA] font-semibold">복막투석 (PD)</th>
               </tr>
             </thead>
@@ -83,7 +83,7 @@ function CoachTab() {
       content: (
         <div className="space-y-3">
           {[
-            { name: '동정맥루 (AVF)', desc: '자신의 동맥과 정맥을 연결해 만든 접근로. 가장 권장되는 방법으로 혈류량이 풍부하고 감염·혈전 위험이 낮습니다.', badge: '권장', badgeColor: 'bg-[#F2FFFD] text-[#00C9B7] border border-[#CCFBF1]' },
+            { name: '동정맥루 (AVF)', desc: '자신의 동맥과 정맥을 연결해 만든 접근로. 가장 권장되는 방법으로 혈류량이 풍부하고 감염·혈전 위험이 낮습니다.', badge: '권장', badgeColor: 'bg-[#F2FFFD] text-[#00C8B4] border border-[#CCFBF1]' },
             { name: '동정맥 이식편 (AVG)', desc: '인공혈관을 동맥과 정맥 사이에 이식합니다. 자신의 혈관이 불량할 때 사용하며 혈전 위험이 다소 높습니다.', badge: '차선', badgeColor: 'bg-yellow-100 text-yellow-700' },
             { name: '중심정맥 카테터 (CVC)', desc: '목이나 가슴의 큰 정맥에 삽입하는 카테터입니다. 즉시 사용 가능하나 감염 위험이 높아 임시 수단으로 사용됩니다.', badge: '임시', badgeColor: 'bg-red-100 text-red-700' },
           ].map(({ name, desc, badge, badgeColor }) => (
@@ -319,8 +319,8 @@ function HospitalTab() {
             
             const myMarkerHtml = `
               <div class="relative flex items-center justify-center">
-                <div class="absolute w-8 h-8 rounded-full bg-[#00C9B7]/20 animate-ping"></div>
-                <div class="w-5 h-5 rounded-full bg-[#00C9B7] border-2 border-white shadow-md flex items-center justify-center text-[10px] text-white">
+                <div class="absolute w-8 h-8 rounded-full bg-[#00C8B4]/20 animate-ping"></div>
+                <div class="w-5 h-5 rounded-full bg-[#00C8B4] border-2 border-white shadow-md flex items-center justify-center text-[10px] text-white">
                   📍
                 </div>
               </div>
@@ -492,10 +492,10 @@ function HospitalTab() {
       
       const markerHtml = `
         <div class="relative cursor-pointer transition-all duration-200" style="transform: ${isSelected ? 'scale(1.2)' : 'scale(1.0)'}; z-index: ${isSelected ? 50 : 10};">
-          <div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-lg ${isNight ? 'bg-[#9F7AEA] text-white' : 'bg-[#00C9B7] text-white'}">
+          <div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-lg text-white" style="background: ${isNight ? 'linear-gradient(135deg, #9F7AEA, #7C3AED)' : 'linear-gradient(135deg, #00C8B4, #9F7AEA)'};">
             ${isNight ? '🌙' : '💧'}
           </div>
-          <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 border-r border-b border-white shadow-md ${isNight ? 'bg-[#9F7AEA]' : 'bg-[#00C9B7]'}"></div>
+          <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 border-r border-b border-white shadow-md" style="background: ${isNight ? '#7C3AED' : '#9F7AEA'};"></div>
         </div>
       `;
 
@@ -552,7 +552,7 @@ function HospitalTab() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#F9FAFB] relative overflow-hidden select-none font-sans">
+    <div className="flex flex-col h-full bg-white relative overflow-hidden select-none font-sans">
       
       {/* ── 상단 고급 검색 & 필터 헤더 영역 (Starbucks 스타일) ── */}
       <div className="bg-white border-b border-[#E5E7EB] z-30 shadow-sm flex-shrink-0 px-4 py-3.5">
@@ -573,7 +573,7 @@ function HospitalTab() {
                   }}
                   onFocus={() => setShowSearchSuggestions(true)}
                   placeholder="병원명, 주소, 지역명 통합 검색..."
-                  className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-[#E5E7EB] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C9B7]/50 focus:border-[#00C9B7] transition-all bg-[#F9FAFB] hover:bg-gray-50"
+                  className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-[#E5E7EB] text-sm focus:outline-none focus:ring-2 focus:ring-[#00C8B4]/50 focus:border-[#00C8B4] transition-all bg-[#F9FAFB] hover:bg-gray-50"
                 />
                 {query && (
                   <button 
@@ -602,9 +602,9 @@ function HospitalTab() {
                             setShowSearchSuggestions(false);
                             handleListCardClick(h);
                           }}
-                          className="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-[#F2FFFD] hover:text-[#00C9B7] font-semibold text-[#374151] flex items-center gap-2 transition-colors border border-transparent hover:border-[#CCFBF1]"
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs hover:bg-[#F2FFFD] hover:text-[#00C8B4] font-semibold text-[#374151] flex items-center gap-2 transition-colors border border-transparent hover:border-[#CCFBF1]"
                         >
-                          <Building2 size={13} className="text-[#00C9B7] flex-shrink-0" />
+                          <Building2 size={13} className="text-[#00C8B4] flex-shrink-0" />
                           <span className="truncate">{h.name}</span>
                           <span className="text-[10px] text-gray-400 font-normal truncate ml-auto">{h.address}</span>
                         </button>
@@ -622,7 +622,7 @@ function HospitalTab() {
             {/* 2) 현재 위치로 찾기 (GPS) */}
             <button
               onClick={handleGetCurrentLocation}
-              className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${userLocation ? 'bg-[#F2FFFD] border-[#00C9B7] text-[#00C9B7]' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
+              className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${userLocation ? 'bg-[#F2FFFD] border-[#00C8B4] text-[#00C8B4]' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
             >
               <Compass size={14} className={userLocation ? 'animate-spin' : ''} />
               <span>현재 위치로 찾기</span>
@@ -631,29 +631,13 @@ function HospitalTab() {
             {/* 3) 상세 필터 접기/펼치기 토글 */}
             <button
               onClick={() => setShowFilters(p => !p)}
-              className={`px-4 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${showFilters ? 'bg-gradient-to-r from-[#00C9B7] to-[#9F7AEA] text-white border-transparent' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
+              className={`px-4 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${showFilters ? 'bg-gradient-to-r from-[#00C8B4] to-[#9F7AEA] text-white border-transparent' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
             >
               <SlidersHorizontal size={14} />
               <span>{showFilters ? '필터 접기' : '상세 필터'}</span>
             </button>
 
-            {/* 4) 모바일 전용: 지도보기 ↔ 리스트보기 플로팅 토글 */}
-            <div className="lg:hidden flex rounded-xl border border-[#E5E7EB] overflow-hidden shadow-sm">
-              <button 
-                onClick={() => setViewMode('map')}
-                className={`px-3.5 py-2.5 text-xs font-bold flex items-center gap-1 transition-colors ${viewMode === 'map' ? 'bg-[#00C9B7] text-white' : 'bg-white text-[#6B7280] hover:bg-gray-50'}`}
-              >
-                <MapIcon size={13} />
-                지도
-              </button>
-              <button 
-                onClick={() => setViewMode('list')}
-                className={`px-3.5 py-2.5 text-xs font-bold flex items-center gap-1 transition-colors ${viewMode === 'list' ? 'bg-[#00C9B7] text-white' : 'bg-white text-[#6B7280] hover:bg-gray-50'}`}
-              >
-                <List size={13} />
-                목록
-              </button>
-            </div>
+
           </div>
 
           {/* B. 지역 2단계 검색 드롭다운 & 인기 퀵 버튼 */}
@@ -666,7 +650,7 @@ function HospitalTab() {
               <select
                 value={region}
                 onChange={e => setRegion(e.target.value)}
-                className="px-2.5 py-1.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#00C9B7] text-[#374151]"
+                className="px-2.5 py-1.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#00C8B4] text-[#374151]"
               >
                 <option value="전체">시/도 (전체)</option>
                 {['서울', '경기', '인천', '부산', '대구', '대전', '광주', '울산', '세종', '강원', '충북', '충남', '경북', '전남', '전북', '경남', '제주'].map(r => (
@@ -679,7 +663,7 @@ function HospitalTab() {
                 value={selectedSiGunGu}
                 onChange={e => setSelectedSiGunGu(e.target.value)}
                 disabled={region === '전체'}
-                className="px-2.5 py-1.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#00C9B7] disabled:opacity-50 disabled:cursor-not-allowed text-[#374151]"
+                className="px-2.5 py-1.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#00C8B4] disabled:opacity-50 disabled:cursor-not-allowed text-[#374151]"
               >
                 <option value="전체">시/군/구 (전체)</option>
                 {availableSiGunGus().map(sg => (
@@ -688,26 +672,6 @@ function HospitalTab() {
               </select>
             </div>
 
-            {/* 자주 찾는 지역 퀵 버튼 */}
-            <div className="flex flex-wrap gap-1.5 items-center">
-              <span className="text-[11px] text-gray-400 mr-1">자주 찾는 지역:</span>
-              {[
-                { label: '서울 강남', siDo: '서울', siGunGu: '강남구' },
-                { label: '서울 송파', siDo: '서울', siGunGu: '송파구' },
-                { label: '경기 수원', siDo: '경기', siGunGu: '수원시' },
-                { label: '경기 성남', siDo: '경기', siGunGu: '성남시' },
-                { label: '인천 부평', siDo: '인천', siGunGu: '부평구' },
-                { label: '부산 해운대', siDo: '부산', siGunGu: '해운대구' },
-              ].map(item => (
-                <button
-                  key={item.label}
-                  onClick={() => applyQuickRegion(item.siDo, item.siGunGu)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${region === item.siDo && selectedSiGunGu === item.siGunGu ? 'bg-[#00C9B7] border-[#00C9B7] text-white' : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'}`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* C. 접고 펼쳐지는 고급 다중 필터 상세 영역 */}
@@ -736,13 +700,13 @@ function HospitalTab() {
                 {/* 2) 투석실 운영 스위치 */}
                 <div className="flex flex-col justify-center p-3 rounded-xl bg-[#F2FFFD] border border-[#CCFBF1]">
                   <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-xs font-bold text-[#00C9B7]">
-                      <Droplets size={15} className="text-[#00C9B7]" />
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-[#00C8B4]">
+                      <Droplets size={15} className="text-[#00C8B4]" />
                       투석 전용 병상/투석실 보유
                     </span>
                     <button
                       onClick={() => setFilterDialysis(p => !p)}
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${filterDialysis ? 'bg-[#00C9B7]' : 'bg-gray-200'}`}
+                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${filterDialysis ? 'bg-[#00C8B4]' : 'bg-gray-200'}`}
                     >
                       <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${filterDialysis ? 'translate-x-5' : 'translate-x-0'}`} />
                     </button>
@@ -760,7 +724,7 @@ function HospitalTab() {
                       <button
                         key={type}
                         onClick={() => setHospitalType(type)}
-                        className={`flex-1 py-1 text-center text-xs font-semibold rounded-md transition-colors ${hospitalType === type ? 'bg-[#00C9B7] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                        className={`flex-1 py-1 text-center text-xs font-semibold rounded-md transition-colors ${hospitalType === type ? 'bg-[#00C8B4] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
                       >
                         {type === '전체' ? '전체' : type === '병원' ? '대형/종합' : '클리닉/의원'}
                       </button>
@@ -777,7 +741,7 @@ function HospitalTab() {
                     value={distanceFilter}
                     onChange={e => setDistanceFilter(e.target.value)}
                     disabled={!userLocation}
-                    className="w-full px-3 py-1.5 bg-white border border-[#E5E7EB] rounded-lg text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#00C9B7] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-3 py-1.5 bg-white border border-[#E5E7EB] rounded-lg text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#00C8B4] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="전체">전체 반경 검색</option>
                     <option value="5">5 km 이내</option>
@@ -795,7 +759,7 @@ function HospitalTab() {
                 <div className="flex flex-col justify-center">
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-xs font-bold text-gray-700">보유 투석기 최소 대수</span>
-                    <span className="text-xs font-extrabold text-[#00C9B7] bg-[#F2FFFD] px-2 py-0.5 rounded-full border border-[#CCFBF1]">
+                    <span className="text-xs font-extrabold text-[#00C8B4] bg-[#F2FFFD] px-2 py-0.5 rounded-full border border-[#CCFBF1]">
                       {filterMinMachines > 0 ? `${filterMinMachines}대 이상` : '제한 없음'}
                     </span>
                   </div>
@@ -806,7 +770,7 @@ function HospitalTab() {
                     step={10}
                     value={filterMinMachines}
                     onChange={e => setFilterMinMachines(parseInt(e.target.value))}
-                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#00C9B7] outline-none"
+                    className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#00C8B4] outline-none"
                   />
                   <div className="flex justify-between text-[10px] text-gray-400 mt-1 font-semibold">
                     <span>전체</span>
@@ -860,7 +824,7 @@ function HospitalTab() {
                 </button>
                 <button
                   onClick={() => setShowFilters(false)}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00C9B7] to-[#9F7AEA] text-white text-xs font-bold flex items-center gap-1 hover:opacity-95 transition-all shadow-sm"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00C8B4] to-[#9F7AEA] text-white text-xs font-bold flex items-center gap-1 hover:opacity-95 transition-all shadow-sm"
                 >
                   <Check size={12} />
                   적용하기
@@ -873,13 +837,13 @@ function HospitalTab() {
           {/* D. 활성 필터 칩 표시판 */}
           <div className="flex gap-1.5 flex-wrap items-center">
             {region !== '전체' && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F2FFFD] text-[#00C9B7] text-xs font-semibold shadow-xs border border-[#CCFBF1]">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F2FFFD] text-[#00C8B4] text-xs font-semibold shadow-xs border border-[#CCFBF1]">
                 {region} {selectedSiGunGu !== '전체' ? selectedSiGunGu : ''}
                 <button onClick={() => { setRegion('전체'); setSelectedSiGunGu('전체'); }} className="hover:opacity-70"><X size={10} /></button>
               </span>
             )}
             {filterDialysis && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F2FFFD] text-[#00C9B7] text-xs font-semibold shadow-xs border border-[#CCFBF1]">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F2FFFD] text-[#00C8B4] text-xs font-semibold shadow-xs border border-[#CCFBF1]">
                 💧 투석실 필수
                 <button onClick={() => setFilterDialysis(false)} className="hover:opacity-70"><X size={10} /></button>
               </span>
@@ -936,7 +900,7 @@ function HospitalTab() {
           {/* 정렬 바 */}
           <div className="px-4 py-2 bg-gray-50 border-b border-[#E5E7EB] flex justify-between items-center">
             <span className="text-[11px] font-extrabold text-[#6B7280]">
-              검색결과 <span className="text-[#00C9B7]">{sortedHospitals.length}</span>곳
+              검색결과 <span className="text-[#00C8B4]">{sortedHospitals.length}</span>곳
             </span>
             
             <div className="flex items-center gap-1">
@@ -958,7 +922,7 @@ function HospitalTab() {
           <div className="flex-1 overflow-y-auto p-4 space-y-3 scroll-smooth">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-3">
-                <Loader2 className="animate-spin text-[#00C9B7]" size={28} />
+                <Loader2 className="animate-spin text-[#00C8B4]" size={28} />
                 <span className="text-xs font-semibold text-gray-400">전국 투석 병원 정보 로딩 중...</span>
               </div>
             ) : sortedHospitals.length === 0 ? (
@@ -978,7 +942,7 @@ function HospitalTab() {
                     setSelectedDays([]);
                     setQuery('');
                   }}
-                  className="mt-4 px-4 py-2 bg-[#00C9B7] text-white rounded-xl text-xs font-semibold shadow-xs"
+                  className="mt-4 px-4 py-2 bg-[#00C8B4] text-white rounded-xl text-xs font-semibold shadow-xs"
                 >
                   필터 전체 초기화
                 </button>
@@ -1003,7 +967,7 @@ function HospitalTab() {
                     key={h.id}
                     ref={isSelected ? selectedCardRef : undefined}
                     onClick={() => handleListCardClick(h)}
-                    className={`p-4 rounded-2xl border transition-all duration-200 relative overflow-hidden flex flex-col gap-2 ${isSelected ? 'border-[#00C9B7] bg-[#F2FFFD] shadow-md' : 'border-[#EEF0F2] bg-white hover:border-[#00C9B7]/50 hover:shadow-xs'}`}
+                    className={`p-4 rounded-2xl border transition-all duration-200 relative overflow-hidden flex flex-col gap-2 ${isSelected ? 'border-[#00C8B4] bg-[#F2FFFD] shadow-md' : 'border-[#EEF0F2] bg-white hover:border-[#00C8B4]/50 hover:shadow-xs'}`}
                   >
                     
                     {/* 상단: 타이틀 / 종류 / 하트 */}
@@ -1012,7 +976,7 @@ function HospitalTab() {
                         <span className="text-[10px] font-bold text-gray-400">
                           {h.region} · {h.name && String(h.name).includes('의원') ? '전문 의원' : '종합 병원'}
                         </span>
-                        <h3 className="font-extrabold text-[#1F2937] text-sm leading-snug hover:text-[#00C9B7] transition-colors">
+                        <h3 className="font-extrabold text-[#1F2937] text-sm leading-snug hover:text-[#00C8B4] transition-colors">
                           {h.name}
                         </h3>
                       </div>
@@ -1031,13 +995,13 @@ function HospitalTab() {
                     {/* 중단: 거리 & 핵심 칩 배지 */}
                     <div className="flex flex-wrap items-center gap-1.5">
                       {distString && (
-                        <span className="text-xs font-extrabold text-[#00C9B7] bg-[#F2FFFD] px-2 py-0.5 rounded-md flex items-center gap-0.5 shadow-2xs border border-[#CCFBF1]">
+                        <span className="text-xs font-extrabold text-[#00C8B4] bg-[#F2FFFD] px-2 py-0.5 rounded-md flex items-center gap-0.5 shadow-2xs border border-[#CCFBF1]">
                           📍 {distString}
                         </span>
                       )}
                       
                       {h.has_dialysis_unit && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#F2FFFD] text-[#00C9B7] font-bold border border-[#CCFBF1]">💧 투석실 {h.dialysis_machines}대</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#F2FFFD] text-[#00C8B4] font-bold border border-[#CCFBF1]">💧 투석실 {h.dialysis_machines}대</span>
                       )}
                       
                       {h.night_dialysis && (
@@ -1057,7 +1021,7 @@ function HospitalTab() {
                           <a 
                             href={`tel:${h.phone}`} 
                             onClick={e => e.stopPropagation()} 
-                            className="text-[#4B5563] hover:text-[#00C9B7] font-semibold text-xs leading-none"
+                            className="text-[#4B5563] hover:text-[#00C8B4] font-semibold text-xs leading-none"
                           >
                             {h.phone}
                           </a>
@@ -1093,7 +1057,7 @@ function HospitalTab() {
           <div ref={mapRef} className="w-full h-full">
             {!(window as any).naver?.maps && (
               <div className="flex flex-col items-center justify-center h-full text-[#9CA3AF] text-sm gap-2">
-                <Loader2 className="animate-spin text-[#00C9B7]" size={28} />
+                <Loader2 className="animate-spin text-[#00C8B4]" size={28} />
                 <span>지도를 불러오는 중입니다...</span>
               </div>
             )}
@@ -1104,7 +1068,7 @@ function HospitalTab() {
             {/* 현재위치 재탐색 맵버튼 */}
             <button
               onClick={handleGetCurrentLocation}
-              className="p-3 rounded-full bg-white shadow-lg text-[#4B5563] hover:text-[#00C9B7] hover:scale-105 transition-all border border-gray-100"
+              className="p-3 rounded-full bg-white shadow-lg text-[#4B5563] hover:text-[#00C8B4] hover:scale-105 transition-all border border-gray-100"
               title="내 현재 위치 찾기"
             >
               <Compass size={18} />
@@ -1114,7 +1078,7 @@ function HospitalTab() {
           {/* 맵 바텀 레전드 (색상 안내) */}
           <div className="absolute bottom-4 left-4 z-20 px-3 py-2 rounded-xl bg-white/90 backdrop-blur-xs border border-gray-200/50 shadow-md flex items-center gap-3 text-[10px] font-bold text-gray-500">
             <span className="flex items-center gap-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#00C9B7] block"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#00C8B4] block"></span>
               일반 투석실
             </span>
             <span className="flex items-center gap-1">
@@ -1153,7 +1117,7 @@ function HospitalTab() {
             <div className="p-5 pb-4 border-b border-gray-100 flex justify-between items-start flex-shrink-0">
               <div className="flex flex-col gap-0.5">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] font-bold text-[#00C9B7] bg-[#F2FFFD] px-2 py-0.5 rounded-md border border-[#CCFBF1]">
+                  <span className="text-[10px] font-bold text-[#00C8B4] bg-[#F2FFFD] px-2 py-0.5 rounded-md border border-[#CCFBF1]">
                     {selectedHospital.region}
                   </span>
                   {selectedHospital.night_dialysis && (
@@ -1197,7 +1161,7 @@ function HospitalTab() {
                 </div>
                 <div className="flex flex-col items-center justify-center text-center border-x border-gray-200/50">
                   <span className="text-xs font-bold text-gray-400 mb-0.5">투석기 보유</span>
-                  <span className="text-sm font-black text-[#00C9B7]">
+                  <span className="text-sm font-black text-[#00C8B4]">
                     {selectedHospital.dialysis_machines}대
                   </span>
                 </div>
@@ -1212,22 +1176,22 @@ function HospitalTab() {
               {/* 2. 핵심 투석 스펙 (강조 박스) */}
               <div className="space-y-3">
                 <h3 className="text-xs font-bold text-gray-500 flex items-center gap-1 uppercase tracking-wider">
-                  <Droplets size={14} className="text-[#00C9B7]" />
+                  <Droplets size={14} className="text-[#00C8B4]" />
                   투석 의료 서비스 안내
                 </h3>
                 <div className="rounded-2xl border border-[#CCFBF1] bg-[#F2FFFD] p-4 space-y-3.5">
                   <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C9B7] font-bold flex-shrink-0 mt-0.5">1</div>
+                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C8B4] font-bold flex-shrink-0 mt-0.5">1</div>
                     <div className="flex-1">
-                      <h4 className="text-xs font-extrabold text-[#00C9B7]">투석실 Bed 보유 현황</h4>
+                      <h4 className="text-xs font-extrabold text-[#00C8B4]">투석실 Bed 보유 현황</h4>
                       <p className="text-xs text-[#1F2937] leading-relaxed mt-0.5">최신 혈액투석기 총 <strong>{selectedHospital.dialysis_machines}대</strong> 보유로 원활하고 대기 없는 스케줄 처리를 지원합니다.</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C9B7] font-bold flex-shrink-0 mt-0.5">2</div>
+                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C8B4] font-bold flex-shrink-0 mt-0.5">2</div>
                     <div className="flex-1">
-                      <h4 className="text-xs font-extrabold text-[#00C9B7]">야간 투석 치료실</h4>
+                      <h4 className="text-xs font-extrabold text-[#00C8B4]">야간 투석 치료실</h4>
                       <p className="text-xs text-[#1F2937] leading-relaxed mt-0.5">
                         {selectedHospital.night_dialysis 
                           ? `본 병원은 만성신부전 환자들의 사회 복귀를 돕기 위해 **매주 [${selectedHospital.dialysis_days}]요일 야간(23시까지)** 투석실을 연장 운영합니다.`
@@ -1238,12 +1202,12 @@ function HospitalTab() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C9B7] font-bold flex-shrink-0 mt-0.5">3</div>
+                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C8B4] font-bold flex-shrink-0 mt-0.5">3</div>
                     <div className="flex-1">
-                      <h4 className="text-xs font-extrabold text-[#00C9B7]">지원 투석 종류</h4>
+                      <h4 className="text-xs font-extrabold text-[#00C8B4]">지원 투석 종류</h4>
                       <div className="flex gap-1.5 mt-1.5">
                         {getSimulatedDetails(selectedHospital).dialysisMethods.map(m => (
-                          <span key={m} className="text-[10px] px-2 py-0.5 bg-[#00C9B7] text-white font-bold rounded-md">
+                          <span key={m} className="text-[10px] px-2 py-0.5 bg-[#00C8B4] text-white font-bold rounded-md">
                             {m}
                           </span>
                         ))}
@@ -1267,7 +1231,7 @@ function HospitalTab() {
                   </div>
                   <div className="flex justify-between py-1 border-b border-gray-100">
                     <span className="font-semibold text-gray-400">대표전화</span>
-                    <a href={`tel:${selectedHospital.phone}`} className="font-bold text-[#00C9B7] hover:underline">{selectedHospital.phone}</a>
+                    <a href={`tel:${selectedHospital.phone}`} className="font-bold text-[#00C8B4] hover:underline">{selectedHospital.phone}</a>
                   </div>
                   <div className="flex flex-col py-1 border-b border-gray-100 gap-1">
                     <span className="font-semibold text-gray-400">운영 시간대</span>
@@ -1330,7 +1294,8 @@ function HospitalTab() {
               {/* 2) 저장 스타일의 그라데이션 전화 예약 버튼 */}
               <a
                 href={`tel:${selectedHospital.phone}`}
-                className="flex-1 py-3.5 rounded-xl text-white text-sm font-bold text-center bg-[#00C9B7] hover:bg-[#00B3A3] transition-colors shadow-sm flex items-center justify-center gap-1.5"
+                className="flex-1 py-3.5 rounded-xl text-white text-sm font-bold text-center hover:opacity-90 transition-opacity shadow-sm flex items-center justify-center gap-1.5"
+                style={{ background: 'linear-gradient(135deg, #00C8B4, #00A699)' }}
               >
                 <Phone size={14} />
                 전화 예약
@@ -1343,7 +1308,7 @@ function HospitalTab() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-3.5 rounded-xl text-white text-sm font-bold text-center hover:opacity-95 transition-all shadow-sm flex items-center justify-center gap-1.5"
-                  style={{ background: 'linear-gradient(135deg,#00C9B7,#9F7AEA)' }}
+                  style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}
                 >
                   <Compass size={14} className="fill-white/10" />
                   길찾기
@@ -1354,6 +1319,34 @@ function HospitalTab() {
           </div>
         </div>
       )}
+
+      {/* 모바일 전용: 지도보기 ↔ 리스트보기 플로팅 토글 (화면 하단 중앙 고정) */}
+      <div className="lg:hidden fixed bottom-20 left-1/2 -translate-x-1/2 z-30 flex rounded-full border border-gray-200 shadow-xl bg-white overflow-hidden p-1 gap-1">
+        <button 
+          onClick={() => setViewMode('map')}
+          className="px-5 py-2.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all duration-200"
+          style={{
+            background: viewMode === 'map' ? 'linear-gradient(135deg, #00C8B4, #9F7AEA)' : 'white',
+            color: viewMode === 'map' ? 'white' : '#4B5563',
+            boxShadow: viewMode === 'map' ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
+          }}
+        >
+          <MapIcon size={14} />
+          지도
+        </button>
+        <button 
+          onClick={() => setViewMode('list')}
+          className="px-5 py-2.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all duration-200"
+          style={{
+            background: viewMode === 'list' ? 'linear-gradient(135deg, #00C8B4, #9F7AEA)' : 'white',
+            color: viewMode === 'list' ? 'white' : '#4B5563',
+            boxShadow: viewMode === 'list' ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
+          }}
+        >
+          <List size={14} />
+          목록
+        </button>
+      </div>
 
     </div>
   );
@@ -1410,7 +1403,7 @@ function LogTab() {
       <div className="text-center py-20 text-[#9CA3AF]">
         <FileText className="mx-auto mb-4 opacity-30" size={40} />
         <p className="mb-4">투석 기록은 로그인 후 이용할 수 있습니다.</p>
-        <button onClick={() => navigate('/login')} className="px-5 py-2.5 rounded-xl bg-[#00C9B7] text-white text-sm font-medium">
+        <button onClick={() => navigate('/login')} className="px-5 py-2.5 rounded-xl bg-[#00C8B4] text-white text-sm font-medium">
           로그인
         </button>
       </div>
@@ -1424,7 +1417,7 @@ function LogTab() {
         <button
           onClick={() => setShowForm(true)}
           className="px-6 py-3 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(135deg,#00C9B7,#9F7AEA)' }}
+          style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}
         >
           <Plus size={18} /> 새 투석 기록 작성
         </button>
@@ -1499,7 +1492,7 @@ function LogTab() {
               </button>
               <button onClick={handleSave} disabled={saving || !form.treatmentDate}
                 className="flex-1 py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg,#00C9B7,#9F7AEA)' }}>
+                style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}>
                 {saving ? <Loader2 size={16} className="animate-spin mx-auto" /> : '저장'}
               </button>
             </div>
@@ -1509,7 +1502,7 @@ function LogTab() {
 
       {/* 기록 목록 */}
       {loading ? (
-        <div className="flex justify-center py-16"><Loader2 className="animate-spin text-[#00C9B7]" size={32} /></div>
+        <div className="flex justify-center py-16"><Loader2 className="animate-spin text-[#00C8B4]" size={32} /></div>
       ) : logs.length === 0 ? (
         <div className="text-center py-16 text-[#9CA3AF]">
           <FileText className="mx-auto mb-3 opacity-30" size={40} />
@@ -1569,13 +1562,13 @@ export function DialysisCarePage() {
   const tabs: Tab[] = ['투석 코치', '투석 병원', '투석 기록'];
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] bg-white overflow-hidden">
       <div className="lg:hidden">
         <MobileHeader title="투석케어" showMenu={true} showProfile={true} />
       </div>
 
-      <div className={`flex-1 ${activeTab === '투석 병원' ? 'overflow-hidden' : 'overflow-y-auto pb-24 lg:pb-10'}`}>
-        <div className={activeTab === '투석 병원' ? 'h-full w-full' : 'max-w-2xl mx-auto px-5 lg:px-7 pt-5'}>
+      <div className={`flex-1 ${activeTab === '투석 병원' ? 'flex flex-col overflow-hidden h-full' : 'overflow-y-auto pb-24 lg:pb-10'}`}>
+        <div className={activeTab === '투석 병원' ? 'flex-1 flex flex-col h-full w-full' : 'max-w-2xl mx-auto px-5 lg:px-7 pt-5'}>
 
           {/* 탭 헤더 영역 */}
           <div className={`border-b border-[#E5E7EB] ${activeTab === '투석 병원' ? 'px-5 lg:px-7 pt-4 bg-white flex-shrink-0' : 'mb-6'}`}>
@@ -1586,7 +1579,7 @@ export function DialysisCarePage() {
                   onClick={() => setActiveTab(tab)}
                   className="relative pb-3 text-sm transition-all duration-200 whitespace-nowrap"
                   style={{
-                    color: activeTab === tab ? '#00C9B7' : '#9CA3AF',
+                    color: activeTab === tab ? '#00C8B4' : '#9CA3AF',
                     fontWeight: activeTab === tab ? 600 : 400,
                   }}
                 >
