@@ -5,11 +5,18 @@ import {
   Droplets, Scale, Activity, FileText, ChevronDown, X,
   Heart, ShieldCheck, Dumbbell, AlertCircle, List, Map as MapIcon,
   Moon, SlidersHorizontal, Star, Share2, Compass, RotateCcw,
-  Check, ExternalLink, ChevronUp, Info, Clock, Calendar
+  Check, ExternalLink, ChevronUp, Info, Clock, Calendar, ThumbsUp
 } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import { listDialysisLogs, addDialysisLog, deleteDialysisLog, DialysisLog, NewDialysisLog } from '../services/dialysisApi';
-import { listHospitals, Hospital } from '../services/hospitalApi';
+import { 
+  listHospitals, 
+  Hospital, 
+  listHospitalReviews, 
+  addHospitalReview, 
+  deleteHospitalReview, 
+  HospitalReview 
+} from '../services/hospitalApi';
 
 type Tab = '투석 코치' | '투석 병원' | '투석 기록';
 
@@ -169,6 +176,128 @@ function CoachTab() {
   );
 }
 
+interface HospitalReviewsSectionProps {
+  hospital: Hospital;
+  reviews: HospitalReview[];
+  onReviewAdded: () => void;
+}
+
+function HospitalReviewsSection({ hospital, reviews, onReviewAdded }: HospitalReviewsSectionProps) {
+  const [rating, setRating] = useState(5);
+  const [content, setContent] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!content.trim()) return;
+    setSubmitting(true);
+    try {
+      await addHospitalReview({
+        hospital_id: hospital.id,
+        rating,
+        content: content.trim()
+      });
+      setContent('');
+      setRating(5);
+      onReviewAdded();
+    } catch (err: any) {
+      if (err.message === '로그인 필요') {
+        alert('리뷰를 작성하려면 로그인이 필요합니다.');
+      } else {
+        console.error(err);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (reviewId: string) => {
+    if (!confirm('리뷰를 삭제하시겠습니까?')) return;
+    try {
+      await deleteHospitalReview(reviewId, hospital.id);
+      onReviewAdded();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className="space-y-4 text-left" onClick={e => e.stopPropagation()}>
+      <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">💬 환자 보호자 리뷰 ({reviews.length})</h4>
+      
+      {/* 리뷰 리스트 */}
+      <div className="space-y-2.5 max-h-[250px] overflow-y-auto pr-1">
+        {reviews.length === 0 ? (
+          <p className="text-xs text-gray-400 py-4 text-center">등록된 리뷰가 없습니다. 첫 리뷰를 남겨보세요!</p>
+        ) : (
+          reviews.map(rev => (
+            <div key={rev.id} className="p-3 bg-gray-50 rounded-xl border border-gray-150 relative text-xs">
+              <div className="flex justify-between items-center mb-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-gray-700">{rev.author_name}</span>
+                  <span className="text-amber-500 font-bold">
+                    {'★'.repeat(rev.rating)}{'☆'.repeat(5 - rev.rating)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-gray-400">
+                    {new Date(rev.created_at).toLocaleDateString()}
+                  </span>
+                  {(rev.user_id === 'local_user' || localStorage.getItem('userId') === rev.user_id) && (
+                    <button 
+                      onClick={() => handleDelete(rev.id)} 
+                      className="text-red-400 hover:text-red-600 text-[10px] font-bold"
+                    >
+                      삭제
+                    </button>
+                  )}
+                </div>
+              </div>
+              <p className="text-gray-600 leading-relaxed break-words whitespace-pre-wrap">{rev.content}</p>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* 리뷰 작성 폼 */}
+      <form onSubmit={handleSubmit} className="border-t border-gray-150 pt-3 space-y-2.5">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-gray-500">평점 선택:</span>
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map(star => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setRating(star)}
+                className={`text-lg transition-transform hover:scale-110 ${star <= rating ? 'text-amber-400' : 'text-gray-300'}`}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <textarea
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            placeholder="환자 및 보호자분들께 힘이 되는 리뷰를 작성해주세요..."
+            className="flex-1 p-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-[#00C8B4] resize-none h-[54px] bg-[#F9FAFB]"
+            maxLength={300}
+          />
+          <button
+            type="submit"
+            disabled={submitting || !content.trim()}
+            className="px-4 bg-[#00C8B4] text-white rounded-xl text-xs font-bold hover:bg-[#00B3A3] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[60px]"
+          >
+            {submitting ? '등록중' : '등록'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 // ── 투석 병원 탭 (Naver Map) ──────────────────────────────────────
 const POPULAR_SEARCHES = ['강남구', '송파구', '수원시', '부평구', '해운대구', '대구 중구'];
 
@@ -254,6 +383,60 @@ function HospitalTab() {
   const markers = useRef<any[]>([]);
   const listContainerRef = useRef<HTMLDivElement>(null);
   const selectedCardRef = useRef<HTMLDivElement>(null);
+
+  // ── 자체 리뷰 평점 실시간 캐시 및 계산 로직 ──
+  const [reviewsCache, setReviewsCache] = useState<Record<string, HospitalReview[]>>({});
+
+  const loadReviews = useCallback(async (hospitalId: string) => {
+    try {
+      const revs = await listHospitalReviews(hospitalId);
+      setReviewsCache(prev => ({ ...prev, [hospitalId]: revs }));
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedHospital) {
+      loadReviews(selectedHospital.id);
+    }
+  }, [selectedHospital, loadReviews]);
+
+  const getHospitalRatingStats = useCallback((hospitalId: string) => {
+    const revs = reviewsCache[hospitalId];
+    if (!revs || revs.length === 0) {
+      // 로컬스토리지 백업 체크
+      const localSaved = localStorage.getItem(`reviews_${hospitalId}`);
+      if (localSaved) {
+        try {
+          const parsed = JSON.parse(localSaved) as HospitalReview[];
+          if (parsed.length > 0) {
+            const sum = parsed.reduce((acc, r) => acc + r.rating, 0);
+            return {
+              rating: (sum / parsed.length).toFixed(1),
+              count: parsed.length
+            };
+          }
+        } catch (e) {}
+      }
+      return { rating: '리뷰 없음', count: 0 };
+    }
+    const sum = revs.reduce((acc, r) => acc + r.rating, 0);
+    return {
+      rating: (sum / revs.length).toFixed(1),
+      count: revs.length
+    };
+  }, [reviewsCache]);
+
+  const renderReviewsSection = (h: Hospital) => {
+    return (
+      <HospitalReviewsSection 
+        hospital={h} 
+        reviews={reviewsCache[h.id] || []} 
+        onReviewAdded={() => loadReviews(h.id)} 
+      />
+    );
+  };
 
   // 로컬스토리지 기반 즐겨찾기 로드
   useEffect(() => {
@@ -619,14 +802,6 @@ function HospitalTab() {
               )}
             </div>
 
-            {/* 2) 현재 위치로 찾기 (GPS) */}
-            <button
-              onClick={handleGetCurrentLocation}
-              className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${userLocation ? 'bg-[#F2FFFD] border-[#00C8B4] text-[#00C8B4]' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
-            >
-              <Compass size={14} className={userLocation ? 'animate-spin' : ''} />
-              <span>현재 위치로 찾기</span>
-            </button>
 
             {/* 3) 상세 필터 접기/펼치기 토글 */}
             <button
@@ -834,67 +1009,17 @@ function HospitalTab() {
             </div>
           )}
 
-          {/* D. 활성 필터 칩 표시판 */}
-          <div className="flex gap-1.5 flex-wrap items-center">
-            {region !== '전체' && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F2FFFD] text-[#00C8B4] text-xs font-semibold shadow-xs border border-[#CCFBF1]">
-                {region} {selectedSiGunGu !== '전체' ? selectedSiGunGu : ''}
-                <button onClick={() => { setRegion('전체'); setSelectedSiGunGu('전체'); }} className="hover:opacity-70"><X size={10} /></button>
-              </span>
-            )}
-            {filterDialysis && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F2FFFD] text-[#00C8B4] text-xs font-semibold shadow-xs border border-[#CCFBF1]">
-                💧 투석실 필수
-                <button onClick={() => setFilterDialysis(false)} className="hover:opacity-70"><X size={10} /></button>
-              </span>
-            )}
-            {filterNight && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F8F4FE] text-[#9F7AEA] text-xs font-semibold shadow-xs border border-[#E5D5FC]">
-                🌙 야간투석 가능
-                <button onClick={() => setFilterNight(false)} className="hover:opacity-70"><X size={10} /></button>
-              </span>
-            )}
-            {filterMinMachines > 0 && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FEF3C7] text-[#D97706] text-xs font-semibold shadow-xs">
-                ⚙️ {filterMinMachines}대 이상
-                <button onClick={() => setFilterMinMachines(0)} className="hover:opacity-70"><X size={10} /></button>
-              </span>
-            )}
-            {hospitalType !== '전체' && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#EFF6FF] text-[#1D4ED8] text-xs font-semibold shadow-xs">
-                🏢 {hospitalType === '의원' ? '의원급' : '병원급'}
-                <button onClick={() => setHospitalType('전체')} className="hover:opacity-70"><X size={10} /></button>
-              </span>
-            )}
-            {distanceFilter !== '전체' && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F9FAFB] text-[#374151] text-xs font-semibold shadow-xs border border-gray-200">
-                📏 {distanceFilter}km 이내
-                <button onClick={() => setDistanceFilter('전체')} className="hover:opacity-70"><X size={10} /></button>
-              </span>
-            )}
-            {selectedDays.length > 0 && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF1F2] text-[#E11D48] text-xs font-semibold shadow-xs">
-                📅 야간 {selectedDays.join(',')}요일
-                <button onClick={() => setSelectedDays([])} className="hover:opacity-70"><X size={10} /></button>
-              </span>
-            )}
-            {favorites.length > 0 && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-semibold shadow-xs border border-pink-100 ml-auto">
-                ❤️ 관심병원 ({favorites.length})
-              </span>
-            )}
-          </div>
 
         </div>
       </div>
 
       {/* ── 메인 바디 Split Layout (Starbucks Store Map) ── */}
-      <div className="flex-1 flex overflow-hidden relative">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
         
-        {/* LEFT PANEL: 검색결과 리스트 영역 (Desktop 전용 40% 고정, 모바일은 토글) */}
+        {/* LEFT PANEL: 검색결과 리스트 영역 (Desktop 전용 40% 고정, 모바일은 하단 60% 고정) */}
         <div 
           ref={listContainerRef}
-          className={`w-full lg:w-[380px] xl:w-[420px] bg-white border-r border-[#E5E7EB] flex flex-col overflow-hidden transition-all duration-300 z-10 flex-shrink-0 ${viewMode === 'list' ? 'block' : 'hidden lg:flex'}`}
+          className="w-full lg:w-[380px] xl:w-[420px] bg-white border-t lg:border-t-0 lg:border-r border-[#E5E7EB] flex flex-col overflow-hidden transition-all duration-300 z-10 flex-shrink-0 h-[60%] lg:h-full order-2 lg:order-1"
         >
           
           {/* 정렬 바 */}
@@ -951,7 +1076,6 @@ function HospitalTab() {
               sortedHospitals.map(h => {
                 const isSelected = selectedHospital?.id === h.id;
                 const isFav = favorites.includes(h.id);
-                const details = getSimulatedDetails(h);
                 
                 // 거리 계산
                 let distString = '';
@@ -970,7 +1094,7 @@ function HospitalTab() {
                     className={`p-4 rounded-2xl border transition-all duration-200 relative overflow-hidden flex flex-col gap-2 ${isSelected ? 'border-[#00C8B4] bg-[#F2FFFD] shadow-md' : 'border-[#EEF0F2] bg-white hover:border-[#00C8B4]/50 hover:shadow-xs'}`}
                   >
                     
-                    {/* 상단: 타이틀 / 종류 / 하트 */}
+                    {/* 상단: 타이틀 / 종류 */}
                     <div className="flex items-start justify-between gap-1">
                       <div className="flex flex-col gap-0.5">
                         <span className="text-[10px] font-bold text-gray-400">
@@ -980,16 +1104,6 @@ function HospitalTab() {
                           {h.name}
                         </h3>
                       </div>
-                      
-                      <button
-                        onClick={(e) => toggleFavorite(h.id, e)}
-                        className={`p-1.5 rounded-full hover:bg-gray-100 transition-colors flex-shrink-0 -mt-1`}
-                      >
-                        <Heart 
-                          size={16} 
-                          className={isFav ? 'text-pink-500 fill-pink-500 animate-pulse' : 'text-gray-300'} 
-                        />
-                      </button>
                     </div>
 
                     {/* 중단: 거리 & 핵심 칩 배지 */}
@@ -999,13 +1113,39 @@ function HospitalTab() {
                           📍 {distString}
                         </span>
                       )}
-                      
-                      {h.has_dialysis_unit && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#F2FFFD] text-[#00C8B4] font-bold border border-[#CCFBF1]">💧 투석실 {h.dialysis_machines}대</span>
-                      )}
-                      
                       {h.night_dialysis && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#F8F4FE] text-[#9F7AEA] font-bold border border-[#E5D5FC]">🌙 야간투석</span>
+                      )}
+                    </div>
+
+                    {/* 신규 컬럼 배지 노출: 심평원 등급, 신장학회 우수인공신장실 인증, 전문의 */}
+                    <div className="flex flex-wrap items-center gap-1 mt-1 pt-1 border-t border-dashed border-gray-100">
+                      {h.hira_grade && (
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded font-extrabold border ${
+                          h.hira_grade === '1등급' 
+                            ? 'bg-amber-50 text-[#D97706] border-amber-200' 
+                            : 'bg-gray-50 text-gray-400 border-gray-200'
+                        }`}>
+                          🏅 심평원 {h.hira_grade}
+                        </span>
+                      )}
+                      
+                      {h.ksn_certified === '인증' && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#F2FFFD] text-[#00C8B4] font-extrabold border border-[#CCFBF1]">
+                          🛡️ 우수인공신장실
+                        </span>
+                      )}
+
+                      {h.is_dialysis_specialist === 1 && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#F8F4FE] text-[#9F7AEA] font-extrabold border border-[#E5D5FC]">
+                          👨‍⚕️ 투석전문의 상주
+                        </span>
+                      )}
+
+                      {h.specialist_count !== undefined && h.specialist_count > 0 && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 font-extrabold border border-blue-100">
+                          전문의 {h.specialist_count}명
+                        </span>
                       )}
                     </div>
 
@@ -1029,18 +1169,151 @@ function HospitalTab() {
                       )}
                     </div>
 
-                    {/* 하단: 별점 및 간략 시간 */}
-                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 text-[10px] text-gray-400 font-bold">
-                      <span className="flex items-center gap-0.5 text-amber-500">
-                        <Star size={11} className="fill-amber-400 text-amber-400" />
-                        {details.rating} <span className="text-gray-400 font-medium">({details.reviewsCount})</span>
-                      </span>
+                    {/* 하단: 좋아요 & 리뷰 (DietCare/커뮤니티 통일 스타일) */}
+                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+                      <div className="flex items-center gap-2">
+                        {/* 좋아요 */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(h.id);
+                          }}
+                          className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] transition-colors ${
+                            isFav ? 'bg-[#00C8B4]/10 text-[#00C8B4]' : 'text-gray-400 hover:text-[#00C8B4]'
+                          }`}
+                        >
+                          <ThumbsUp size={11} className={isFav ? 'fill-[#00C8B4]' : ''} />
+                          <span>{isFav ? '좋아요' : '좋아요'}</span>
+                        </button>
+
+                        {/* 리뷰 */}
+                        {(() => {
+                          const stats = getHospitalRatingStats(h.id);
+                          return (
+                            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] text-gray-400">
+                              <Star size={11} className={stats.count > 0 ? 'fill-amber-400 text-amber-400' : 'text-gray-300'} />
+                              <span>{stats.count > 0 ? `${stats.rating} (${stats.count})` : '리뷰 없음'}</span>
+                            </span>
+                          );
+                        })()}
+                      </div>
+
                       {h.dialysis_days && (
-                        <span className="text-[#9F7AEA] bg-[#F8F4FE] px-1.5 py-0.5 rounded-xs border border-[#E5D5FC]">
-                          야간: {h.dialysis_days}요일 운영
+                        <span className="text-[10px] text-[#9F7AEA] bg-[#F8F4FE] px-1.5 py-0.5 rounded-xs border border-[#E5D5FC] font-bold">
+                          야간: {h.dialysis_days}요일
                         </span>
                       )}
                     </div>
+
+                    {/* 아코디언 상세 정보 펼침 영역 */}
+                    {isSelected && (
+                      <div 
+                        className="mt-3 pt-3 border-t border-gray-250 space-y-4 animate-slideDown overflow-y-auto max-h-[60vh] pr-1 select-text"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {/* 🏅 최우수 지표 배지 영역 */}
+                        <div className="space-y-1.5">
+                          {h.hira_grade && (
+                            <div className={`p-2.5 rounded-xl border text-[11px] font-extrabold flex items-center gap-1.5 shadow-3xs ${
+                              h.hira_grade === '1등급'
+                                ? 'bg-amber-50 border-amber-200 text-[#D97706]'
+                                : 'bg-gray-50 border-gray-200 text-gray-500'
+                            }`}>
+                              🏅 건강보험심사평가원 적정성 평가 
+                              <strong>
+                                {h.hira_grade === '1등급' ? '최우수 1등급' : h.hira_grade}
+                              </strong>
+                            </div>
+                          )}
+                          {h.ksn_certified === '인증' && (
+                            <div className="p-2.5 bg-[#F2FFFD] rounded-xl border border-[#CCFBF1] text-[11px] text-[#00C8B4] font-extrabold flex items-center gap-1.5 shadow-3xs">
+                              🛡️ 대한신장학회 공식 지정 <strong>우수인공신장실</strong> {h.ksn_cert_date ? `(${h.ksn_cert_date})` : ''}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* 🏅 핵심 의료 지표 요약 그리드 (명시적 요건 강조) */}
+                        <div className="grid grid-cols-3 gap-2 border border-gray-150 rounded-xl p-2.5 bg-gray-50/50">
+                          {/* 1. 우수인공신장실 (KSN 인증 기준) */}
+                          <div className="flex flex-col items-center justify-center text-center">
+                            <span className="text-[9px] font-bold text-gray-400 mb-0.5">대한신장학회 인증</span>
+                            <span className={`text-[11px] font-black flex items-center gap-0.5 ${h.ksn_certified === '인증' ? 'text-[#00C8B4]' : 'text-gray-400'}`}>
+                              {h.ksn_certified === '인증' ? '🛡️ 우수인공신장실' : '– 해당없음'}
+                            </span>
+                          </div>
+                          
+                          {/* 2. 투석실 장비 */}
+                          <div className="flex flex-col items-center justify-center text-center border-x border-gray-200/50">
+                            <span className="text-[9px] font-bold text-gray-400 mb-0.5">투석실 장비</span>
+                            <span className="text-[11px] font-black text-[#00C8B4]">
+                              💧 {h.dialysis_machines}대 보유
+                            </span>
+                          </div>
+                          
+                          {/* 3. 투석 전문의 */}
+                          <div className="flex flex-col items-center justify-center text-center">
+                            <span className="text-[9px] font-bold text-gray-400 mb-0.5">투석 전문의</span>
+                            <span className={`text-[11px] font-black ${h.specialist_count && h.specialist_count > 0 ? 'text-[#9F7AEA]' : 'text-gray-500'}`}>
+                              👨‍⚕️ {h.specialist_count || 0}명 상주
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* 야간 투석 안내 (야간 운영 병원만 노출) */}
+                        {h.night_dialysis && (
+                          <div className="rounded-xl border border-[#E5D5FC] bg-[#F8F4FE] p-3 text-xs font-semibold text-[#9F7AEA] leading-relaxed">
+                            🌙 매주 <strong>{h.dialysis_days}요일 야간(23시까지)</strong> 연장 운영합니다.
+                          </div>
+                        )}
+
+                        {/* 전문 의료진 정보 */}
+                        {((h.specialist_count && h.specialist_count > 0) || h.nephrology_doctor) && (
+                          <div className="space-y-1.5">
+                            <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">👨‍⚕️ 신장내과 전문 의료진</h4>
+                            <div className="p-3 rounded-xl border border-blue-100 bg-blue-50/20 space-y-2">
+                              <div className="text-xs font-bold text-blue-700">전문의 수: <span className="bg-blue-100 text-blue-900 px-2 py-0.5 rounded-full text-[10px]">{h.specialist_count || 0}명 상주</span></div>
+                              {h.nephrology_doctor && (
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {h.nephrology_doctor.split(',').map((doc: string) => (
+                                    <span key={doc} className="text-[10px] font-bold text-blue-700 bg-white border border-blue-100 px-2 py-0.5 rounded-md">
+                                      👨‍⚕️ {doc.trim()} 의사
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 병원 운영 및 대표 번호 */}
+                        <div className="space-y-1.5">
+                          <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">📞 병원 연락처 및 운영 정보</h4>
+                          <div className="space-y-1.5 text-xs text-gray-600">
+                            <div className="flex justify-between py-1 border-b border-gray-100">
+                              <span className="font-semibold text-gray-400">대표전화</span>
+                              <a href={`tel:${h.phone}`} className="font-bold text-[#00C8B4] hover:underline">{h.phone}</a>
+                            </div>
+                            <div className="flex flex-col py-1 gap-0.5">
+                              <span className="font-semibold text-gray-400">운영시간</span>
+                              <span className="font-bold text-gray-800 leading-relaxed text-[11px]">
+                                {h.night_dialysis 
+                                  ? "월·수·금: 06:00 ~ 23:00 / 화·목·토: 06:00 ~ 18:00 (일요일 휴진)" 
+                                  : "월~토: 06:00 ~ 18:00 (일요일 휴진)"
+                                }
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 자체 평점 및 리뷰 리스트 */}
+                        <div className="border-t border-gray-150 pt-3">
+                          {renderReviewsSection(h)}
+                        </div>
+
+
+
+                      </div>
+                    )}
 
                   </div>
                 );
@@ -1049,9 +1322,9 @@ function HospitalTab() {
           </div>
         </div>
 
-        {/* RIGHT PANEL: 네이버 맵 영역 (Desktop 60% 또는 모바일 토글) */}
+        {/* RIGHT PANEL: 네이버 맵 영역 (Desktop 60% 또는 모바일 상단 40%) */}
         <div 
-          className={`flex-1 relative h-full bg-[#E5E7EB] ${viewMode === 'map' ? 'block' : 'hidden lg:block'}`}
+          className="w-full h-[40%] lg:h-full lg:flex-1 relative bg-[#E5E7EB] order-1 lg:order-2"
         >
           {/* 지도 컨테이너 */}
           <div ref={mapRef} className="w-full h-full">
@@ -1093,260 +1366,7 @@ function HospitalTab() {
 
       </div>
 
-      {/* ── 병원 상세 정보 프리미엄 슬라이드 패널 (Bottom Sheet / Sidebar) ── */}
-      {selectedHospital && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center lg:items-stretch lg:justify-end bg-black/40 animate-fadeIn">
-          
-          {/* 투명 배경 클릭 시 패널 닫기 */}
-          <div 
-            onClick={() => setSelectedHospital(null)} 
-            className="absolute inset-0 cursor-pointer lg:w-[calc(100%-480px)] xl:w-[calc(100%-540px)]"
-          />
-          
-          {/* 슬라이딩 본체 */}
-          <div 
-            className="w-full lg:w-[480px] xl:w-[540px] bg-white rounded-t-3xl lg:rounded-t-none lg:rounded-l-3xl shadow-[0_-8px_30px_rgb(0,0,0,0.15)] flex flex-col overflow-hidden max-h-[85vh] lg:max-h-screen z-10 transition-transform duration-300 transform translate-y-0"
-          >
-            
-            {/* 모바일 상단 드래그 핸들 바 */}
-            <div className="lg:hidden flex justify-center py-3 flex-shrink-0 cursor-pointer border-b border-gray-100" onClick={() => setSelectedHospital(null)}>
-              <div className="w-10 h-1.5 rounded-full bg-gray-200"></div>
-            </div>
 
-            {/* 패널 타이틀 영역 */}
-            <div className="p-5 pb-4 border-b border-gray-100 flex justify-between items-start flex-shrink-0">
-              <div className="flex flex-col gap-0.5">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] font-bold text-[#00C8B4] bg-[#F2FFFD] px-2 py-0.5 rounded-md border border-[#CCFBF1]">
-                    {selectedHospital.region}
-                  </span>
-                  {selectedHospital.night_dialysis && (
-                    <span className="text-[10px] font-bold text-[#9F7AEA] bg-[#F8F4FE] px-2 py-0.5 rounded-md flex items-center gap-0.5 border border-[#E5D5FC]">
-                      🌙 야간투석 ({selectedHospital.dialysis_days}요일)
-                    </span>
-                  )}
-                </div>
-                <h2 className="text-lg font-black text-gray-800 leading-snug mt-1">
-                  {selectedHospital.name}
-                </h2>
-                <p className="text-xs text-gray-400 mt-0.5">{selectedHospital.address}</p>
-              </div>
-
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => toggleFavorite(selectedHospital.id)}
-                  className="p-2 rounded-full hover:bg-gray-100 text-gray-400 transition-colors"
-                >
-                  <Heart size={20} className={favorites.includes(selectedHospital.id) ? 'text-pink-500 fill-pink-500' : 'text-gray-400'} />
-                </button>
-                <button
-                  onClick={() => setSelectedHospital(null)}
-                  className="p-2 rounded-full hover:bg-gray-100 text-gray-400 transition-colors"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-            </div>
-
-            {/* 본문 스크롤 공간 */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-6">
-              
-              {/* 1. 요약 실시간 지표 (별점, 주차 등) */}
-              <div className="grid grid-cols-3 gap-2 border border-gray-100 rounded-2xl p-4 bg-gray-50/50">
-                <div className="flex flex-col items-center justify-center text-center">
-                  <span className="text-xs font-bold text-gray-400 mb-0.5">네이버 평점</span>
-                  <span className="text-sm font-black text-gray-800 flex items-center gap-0.5">
-                    ⭐ {getSimulatedDetails(selectedHospital).rating}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center text-center border-x border-gray-200/50">
-                  <span className="text-xs font-bold text-gray-400 mb-0.5">투석기 보유</span>
-                  <span className="text-sm font-black text-[#00C8B4]">
-                    {selectedHospital.dialysis_machines}대
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center text-center">
-                  <span className="text-xs font-bold text-gray-400 mb-0.5">주차 여부</span>
-                  <span className="text-[11px] font-extrabold text-gray-700 truncate w-full px-1">
-                    무료 가능
-                  </span>
-                </div>
-              </div>
-
-              {/* 2. 핵심 투석 스펙 (강조 박스) */}
-              <div className="space-y-3">
-                <h3 className="text-xs font-bold text-gray-500 flex items-center gap-1 uppercase tracking-wider">
-                  <Droplets size={14} className="text-[#00C8B4]" />
-                  투석 의료 서비스 안내
-                </h3>
-                <div className="rounded-2xl border border-[#CCFBF1] bg-[#F2FFFD] p-4 space-y-3.5">
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C8B4] font-bold flex-shrink-0 mt-0.5">1</div>
-                    <div className="flex-1">
-                      <h4 className="text-xs font-extrabold text-[#00C8B4]">투석실 Bed 보유 현황</h4>
-                      <p className="text-xs text-[#1F2937] leading-relaxed mt-0.5">최신 혈액투석기 총 <strong>{selectedHospital.dialysis_machines}대</strong> 보유로 원활하고 대기 없는 스케줄 처리를 지원합니다.</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C8B4] font-bold flex-shrink-0 mt-0.5">2</div>
-                    <div className="flex-1">
-                      <h4 className="text-xs font-extrabold text-[#00C8B4]">야간 투석 치료실</h4>
-                      <p className="text-xs text-[#1F2937] leading-relaxed mt-0.5">
-                        {selectedHospital.night_dialysis 
-                          ? `본 병원은 만성신부전 환자들의 사회 복귀를 돕기 위해 **매주 [${selectedHospital.dialysis_days}]요일 야간(23시까지)** 투석실을 연장 운영합니다.`
-                          : "현재 야간 투석은 별도 협의가 필요하거나 운영하지 않으며, 일반 주간 시간대 투석이 가능합니다."
-                        }
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-[#CCFBF1] flex items-center justify-center text-xs text-[#00C8B4] font-bold flex-shrink-0 mt-0.5">3</div>
-                    <div className="flex-1">
-                      <h4 className="text-xs font-extrabold text-[#00C8B4]">지원 투석 종류</h4>
-                      <div className="flex gap-1.5 mt-1.5">
-                        {getSimulatedDetails(selectedHospital).dialysisMethods.map(m => (
-                          <span key={m} className="text-[10px] px-2 py-0.5 bg-[#00C8B4] text-white font-bold rounded-md">
-                            {m}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 3. 진료 및 영업시간 정보 */}
-              <div className="space-y-3.5 pt-1">
-                <h3 className="text-xs font-bold text-gray-500 flex items-center gap-1 uppercase tracking-wider">
-                  <Clock size={14} className="text-gray-400" />
-                  병원 운영 및 시간 안내
-                </h3>
-                
-                <div className="space-y-2 text-xs text-[#4B5563]">
-                  <div className="flex justify-between py-1 border-b border-gray-100">
-                    <span className="font-semibold text-gray-400">운영 구분</span>
-                    <span className="font-bold text-gray-800">{selectedHospital.name.includes('의원') ? '의원급 클리닉' : '종합/대형병원'}</span>
-                  </div>
-                  <div className="flex justify-between py-1 border-b border-gray-100">
-                    <span className="font-semibold text-gray-400">대표전화</span>
-                    <a href={`tel:${selectedHospital.phone}`} className="font-bold text-[#00C8B4] hover:underline">{selectedHospital.phone}</a>
-                  </div>
-                  <div className="flex flex-col py-1 border-b border-gray-100 gap-1">
-                    <span className="font-semibold text-gray-400">운영 시간대</span>
-                    <span className="font-bold text-gray-800 leading-relaxed">{getSimulatedDetails(selectedHospital).opTimes}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 4. 환자 편의 및 시설 */}
-              <div className="space-y-3 pt-1">
-                <h3 className="text-xs font-bold text-gray-500 flex items-center gap-1 uppercase tracking-wider">
-                  <Info size={14} className="text-gray-400" />
-                  환자 편의 시설 및 교통안내
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 bg-gray-50 rounded-xl">
-                    <h4 className="text-xs font-extrabold text-gray-600 mb-1">🚗 주차 공간</h4>
-                    <p className="text-[11px] text-gray-500 leading-relaxed font-semibold">{getSimulatedDetails(selectedHospital).parking}</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded-xl">
-                    <h4 className="text-xs font-extrabold text-gray-600 mb-1">🚇 대중교통 이용</h4>
-                    <p className="text-[11px] text-gray-500 leading-relaxed font-semibold">{getSimulatedDetails(selectedHospital).publicTransport}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* 5. 네이버 연동 생생 리뷰 (Starbucks 요약리뷰) */}
-              <div className="space-y-3.5 pt-1">
-                <h3 className="text-xs font-bold text-gray-500 flex items-center gap-1 uppercase tracking-wider">
-                  <Star size={14} className="text-amber-500" />
-                  실제 환자/보호자 생생 후기
-                </h3>
-                <div className="space-y-2">
-                  {getSimulatedDetails(selectedHospital).reviews.map((rev, idx) => (
-                    <div key={idx} className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 relative">
-                      <div className="absolute top-2.5 right-3 text-xs text-amber-500">★★★★★</div>
-                      <p className="text-xs text-[#374151] leading-relaxed pr-12 font-medium">"{rev}"</p>
-                      <div className="text-[9px] text-gray-400 mt-2 font-bold flex gap-2">
-                        <span>인증보호자</span>
-                        <span>•</span>
-                        <span>2026년 후기</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-            </div>
-
-            {/* 고정 하단 액션 버튼바 */}
-            <div className="p-5 border-t border-gray-100 bg-white flex justify-end gap-3 flex-shrink-0 w-full">
-              {/* 1) 뒤로가기 스타일의 닫기 버튼 */}
-              <button
-                onClick={() => setSelectedHospital(null)}
-                className="flex-1 max-w-[160px] py-3.5 rounded-xl border border-[#E5E7EB] bg-white text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
-              >
-                닫기
-              </button>
-
-              {/* 2) 저장 스타일의 그라데이션 전화 예약 버튼 */}
-              <a
-                href={`tel:${selectedHospital.phone}`}
-                className="flex-1 py-3.5 rounded-xl text-white text-sm font-bold text-center hover:opacity-90 transition-opacity shadow-sm flex items-center justify-center gap-1.5"
-                style={{ background: 'linear-gradient(135deg, #00C8B4, #00A699)' }}
-              >
-                <Phone size={14} />
-                전화 예약
-              </a>
-
-              {/* 3) 길찾기 버튼 (그라데이션 rounded-xl 형태) */}
-              {selectedHospital.naver_map_url && (
-                <a
-                  href={selectedHospital.naver_map_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 py-3.5 rounded-xl text-white text-sm font-bold text-center hover:opacity-95 transition-all shadow-sm flex items-center justify-center gap-1.5"
-                  style={{ background: 'linear-gradient(135deg,#00C8B4,#9F7AEA)' }}
-                >
-                  <Compass size={14} className="fill-white/10" />
-                  길찾기
-                </a>
-              )}
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* 모바일 전용: 지도보기 ↔ 리스트보기 플로팅 토글 (화면 하단 중앙 고정) */}
-      <div className="lg:hidden fixed bottom-20 left-1/2 -translate-x-1/2 z-30 flex rounded-full border border-gray-200 shadow-xl bg-white overflow-hidden p-1 gap-1">
-        <button 
-          onClick={() => setViewMode('map')}
-          className="px-5 py-2.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all duration-200"
-          style={{
-            background: viewMode === 'map' ? 'linear-gradient(135deg, #00C8B4, #9F7AEA)' : 'white',
-            color: viewMode === 'map' ? 'white' : '#4B5563',
-            boxShadow: viewMode === 'map' ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
-          }}
-        >
-          <MapIcon size={14} />
-          지도
-        </button>
-        <button 
-          onClick={() => setViewMode('list')}
-          className="px-5 py-2.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all duration-200"
-          style={{
-            background: viewMode === 'list' ? 'linear-gradient(135deg, #00C8B4, #9F7AEA)' : 'white',
-            color: viewMode === 'list' ? 'white' : '#4B5563',
-            boxShadow: viewMode === 'list' ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
-          }}
-        >
-          <List size={14} />
-          목록
-        </button>
-      </div>
 
     </div>
   );
