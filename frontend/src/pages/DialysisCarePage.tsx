@@ -657,11 +657,16 @@ function HospitalTab() {
       const isSelected = selectedHospital?.id === h.id;
       
       const markerHtml = `
-        <div class="relative cursor-pointer transition-all duration-200" style="transform: ${isSelected ? 'scale(1.2)' : 'scale(1.0)'}; z-index: ${isSelected ? 50 : 10};">
-          <div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-lg text-white" style="background: ${isNight ? 'linear-gradient(135deg, #9F7AEA, #7C3AED)' : 'linear-gradient(135deg, #00C8B4, #9F7AEA)'};">
-            ${isNight ? '🌙' : '💧'}
+        <div class="relative cursor-pointer transition-all duration-200" style="transform: ${isSelected ? 'scale(1.25)' : 'scale(1.0)'}; z-index: ${isSelected ? 100 : 10};">
+          <!-- 병원 이름 말풍선 라벨 -->
+          <div class="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-white border border-[#E5E7EB] shadow-md text-[9px] font-black text-[#374151] whitespace-nowrap pointer-events-none select-none ${isSelected ? 'border-[#00C8B4] text-[#00C8B4] scale-105' : ''}">
+            ${h.name}
           </div>
-          <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 border-r border-b border-white shadow-md" style="background: ${isNight ? '#7C3AED' : '#9F7AEA'};"></div>
+          <!-- 핀 바디 (선택 시 황금색 네온 하이라이트) -->
+          <div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-lg text-white ${isSelected ? 'ring-4 ring-[#00C8B4]/30 animate-pulse' : ''}" style="background: ${isSelected ? 'linear-gradient(135deg, #FBBF24, #F59E0B)' : isNight ? 'linear-gradient(135deg, #9F7AEA, #7C3AED)' : 'linear-gradient(135deg, #00C8B4, #9F7AEA)'};">
+            ${isSelected ? '📍' : isNight ? '🌙' : '💧'}
+          </div>
+          <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 border-r border-b border-white shadow-md" style="background: ${isSelected ? '#F59E0B' : isNight ? '#7C3AED' : '#9F7AEA'};"></div>
         </div>
       `;
 
@@ -1056,7 +1061,18 @@ function HospitalTab() {
                 </button>
               </div>
             ) : (
-              sortedHospitals.map(h => {
+              (() => {
+                // 선택된 병원 카드를 목록 최상단으로 우선 배치(Pin to top)하는 리스트 보정 로직
+                let displayHospitals = [...sortedHospitals];
+                if (selectedHospital) {
+                  const selectedIdx = displayHospitals.findIndex(h => h.id === selectedHospital.id);
+                  if (selectedIdx > -1) {
+                    const [selectedItem] = displayHospitals.splice(selectedIdx, 1);
+                    displayHospitals.unshift(selectedItem);
+                  }
+                }
+                
+                return displayHospitals.map(h => {
                 const isSelected = selectedHospital?.id === h.id;
                 const isFav = favorites.includes(h.id);
                 
@@ -1101,7 +1117,7 @@ function HospitalTab() {
                       )}
                     </div>
 
-                    {/* 신규 컬럼 배지 노출: 심평원 등급, 신장학회 우수인공신장실 인증, 전문의 */}
+                    {/* 신규 컬럼 배지 노출: 심평원 등급, 전문의 */}
                     <div className="flex flex-wrap items-center gap-1 mt-1 pt-1 border-t border-dashed border-gray-100">
                       {h.hira_grade && (
                         <span className={`text-[9px] px-1.5 py-0.5 rounded font-extrabold border ${
@@ -1113,12 +1129,6 @@ function HospitalTab() {
                         </span>
                       )}
                       
-                      {h.ksn_certified === '인증' && (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#F2FFFD] text-[#00C8B4] font-extrabold border border-[#CCFBF1]">
-                          🛡️ 우수인공신장실
-                        </span>
-                      )}
-
                       {h.is_dialysis_specialist === 1 && (
                         <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#F8F4FE] text-[#9F7AEA] font-extrabold border border-[#E5D5FC]">
                           👨‍⚕️ 투석전문의 상주
@@ -1152,10 +1162,9 @@ function HospitalTab() {
                       )}
                     </div>
 
-                    {/* 하단: 좋아요 & 리뷰 (DietCare/커뮤니티 통일 스타일) */}
+                    {/* 하단: 좋아요 & 리뷰 */}
                     <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
                       <div className="flex items-center gap-2">
-                        {/* 좋아요 */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -1301,7 +1310,8 @@ function HospitalTab() {
                   </div>
                 );
               })
-            )}
+            })()
+          )}
           </div>
         </div>
 
