@@ -31,5 +31,6 @@
     }
   },
   "include": ["src"],
+  "exclude": ["api", "node_modules", "dist"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

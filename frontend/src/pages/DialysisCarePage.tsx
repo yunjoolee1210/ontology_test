@@ -803,13 +803,13 @@ function HospitalTab() {
             </div>
 
 
-            {/* 3) 상세 필터 접기/펼치기 토글 */}
+            {/* 3) 필터 접기/펼치기 토글 */}
             <button
               onClick={() => setShowFilters(p => !p)}
-              className={`px-4 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${showFilters ? 'bg-gradient-to-r from-[#00C8B4] to-[#9F7AEA] text-white border-transparent' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
+              className={`px-2.5 py-1.5 sm:px-4 sm:py-2.5 rounded-xl border text-[11px] sm:text-xs font-semibold flex items-center gap-1 transition-all shadow-sm ${showFilters ? 'bg-gradient-to-r from-[#00C8B4] to-[#9F7AEA] text-white border-transparent' : 'bg-white border-[#E5E7EB] text-[#4B5563] hover:bg-gray-50'}`}
             >
-              <SlidersHorizontal size={14} />
-              <span>{showFilters ? '필터 접기' : '상세 필터'}</span>
+              <SlidersHorizontal size={12} className="sm:w-3.5 sm:h-3.5" />
+              <span>필터</span>
             </button>
 
 
@@ -1014,12 +1014,12 @@ function HospitalTab() {
       </div>
 
       {/* ── 메인 바디 Split Layout (Starbucks Store Map) ── */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden relative">
         
-        {/* LEFT PANEL: 검색결과 리스트 영역 (Desktop 전용 40% 고정, 모바일은 하단 60% 고정) */}
+        {/* LEFT PANEL: 검색결과 리스트 영역 (Desktop 전용 40% 고정, 모바일은 전체 스크롤을 따름) */}
         <div 
           ref={listContainerRef}
-          className="w-full lg:w-[380px] xl:w-[420px] bg-white border-t lg:border-t-0 lg:border-r border-[#E5E7EB] flex flex-col overflow-hidden transition-all duration-300 z-10 flex-shrink-0 h-[60%] lg:h-full order-2 lg:order-1"
+          className="w-full lg:w-[380px] xl:w-[420px] bg-white border-t lg:border-t-0 lg:border-r border-[#E5E7EB] flex flex-col overflow-visible lg:overflow-hidden transition-all duration-300 z-10 flex-shrink-0 h-auto lg:h-full order-2 lg:order-1"
         >
           
           {/* 정렬 바 */}
@@ -1044,7 +1044,7 @@ function HospitalTab() {
           </div>
 
           {/* 스크롤 가능한 병원 카드 리스트 */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 scroll-smooth">
+          <div className="flex-1 overflow-y-visible lg:overflow-y-auto p-4 space-y-3 scroll-smooth">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-3">
                 <Loader2 className="animate-spin text-[#00C8B4]" size={28} />
@@ -1322,9 +1322,9 @@ function HospitalTab() {
           </div>
         </div>
 
-        {/* RIGHT PANEL: 네이버 맵 영역 (Desktop 60% 또는 모바일 상단 40%) */}
+        {/* RIGHT PANEL: 네이버 맵 영역 (Desktop 60% 또는 모바일 상단 고정 높이 280px) */}
         <div 
-          className="w-full h-[40%] lg:h-full lg:flex-1 relative bg-[#E5E7EB] order-1 lg:order-2"
+          className="w-full h-[280px] sm:h-[320px] lg:h-full lg:flex-1 relative bg-[#E5E7EB] order-1 lg:order-2 flex-shrink-0"
         >
           {/* 지도 컨테이너 */}
           <div ref={mapRef} className="w-full h-full">
