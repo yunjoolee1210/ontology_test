@@ -5,7 +5,7 @@ import {
   Droplets, Scale, Activity, FileText, ChevronDown, X,
   Heart, ShieldCheck, Dumbbell, AlertCircle, List, Map as MapIcon,
   Moon, SlidersHorizontal, Star, Share2, Compass, RotateCcw,
-  Check, ExternalLink, ChevronUp, Info, Clock, Calendar, ThumbsUp
+  Check, ExternalLink, ChevronUp, Info, Clock, Calendar, ThumbsUp, MessageSquare
 } from 'lucide-react';
 import { MobileHeader } from '../components/MobileHeader';
 import { listDialysisLogs, addDialysisLog, deleteDialysisLog, DialysisLog, NewDialysisLog } from '../services/dialysisApi';
@@ -235,9 +235,6 @@ function HospitalReviewsSection({ hospital, reviews, onReviewAdded }: HospitalRe
               <div className="flex justify-between items-center mb-1">
                 <div className="flex items-center gap-1.5">
                   <span className="font-bold text-gray-700">{rev.author_name}</span>
-                  <span className="text-amber-500 font-bold">
-                    {'★'.repeat(rev.rating)}{'☆'.repeat(5 - rev.rating)}
-                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] text-gray-400">
@@ -261,21 +258,7 @@ function HospitalReviewsSection({ hospital, reviews, onReviewAdded }: HospitalRe
 
       {/* 리뷰 작성 폼 */}
       <form onSubmit={handleSubmit} className="border-t border-gray-150 pt-3 space-y-2.5">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-gray-500">평점 선택:</span>
-          <div className="flex gap-1">
-            {[1, 2, 3, 4, 5].map(star => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => setRating(star)}
-                className={`text-lg transition-transform hover:scale-110 ${star <= rating ? 'text-amber-400' : 'text-gray-300'}`}
-              >
-                ★
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* 평점 선택 기능 제거 (요구사항 반영) */}
 
         <div className="flex gap-2">
           <textarea
@@ -362,7 +345,7 @@ function HospitalTab() {
   const [query, setQuery] = useState('');
   const [region, setRegion] = useState('전체'); // 시/도
   const [selectedSiGunGu, setSelectedSiGunGu] = useState('전체'); // 시/군/구
-  const [filterDialysis, setFilterDialysis] = useState(true);
+  const [filterDialysis, setFilterDialysis] = useState(false);
   const [filterNight, setFilterNight] = useState(false);
   const [filterMinMachines, setFilterMinMachines] = useState(0);
   const [distanceFilter, setDistanceFilter] = useState('전체'); // '5', '10', '20' 등
@@ -1186,13 +1169,13 @@ function HospitalTab() {
                           <span>{isFav ? '좋아요' : '좋아요'}</span>
                         </button>
 
-                        {/* 리뷰 */}
+                        {/* 리뷰 (별점 제거 및 ThumbsUp 옆 배치 최적화) */}
                         {(() => {
                           const stats = getHospitalRatingStats(h.id);
                           return (
-                            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] text-gray-400">
-                              <Star size={11} className={stats.count > 0 ? 'fill-amber-400 text-amber-400' : 'text-gray-300'} />
-                              <span>{stats.count > 0 ? `${stats.rating} (${stats.count})` : '리뷰 없음'}</span>
+                            <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[11px] text-gray-400">
+                              <MessageSquare size={11} className="text-gray-300" />
+                              <span>리뷰 {stats.count > 0 ? stats.count : 0}</span>
                             </span>
                           );
                         })()}
