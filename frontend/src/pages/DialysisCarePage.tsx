@@ -511,6 +511,7 @@ function HospitalTab() {
     setSelectedSiGunGu('전체');
     if (mapInstance.current) {
       const naver = (window as any).naver;
+      mapInstance.current.autoResize(); // 뷰포트 크기 강제 재설정
       if (newRegion !== '전체') {
         const coords = REGION_COORDS[newRegion];
         if (coords) {
@@ -707,8 +708,11 @@ function HospitalTab() {
         } else {
           setBottomSheetStage(1);
         }
-        mapInstance.current.panTo(new naver.maps.LatLng(h.lat, h.lng));
-        mapInstance.current.setZoom(15);
+        if (mapInstance.current) {
+          mapInstance.current.autoResize();
+          mapInstance.current.panTo(new naver.maps.LatLng(h.lat, h.lng));
+          mapInstance.current.setZoom(15);
+        }
       });
 
       return marker;
@@ -767,6 +771,7 @@ function HospitalTab() {
     setSelectedHospital(h);
     if (mapInstance.current && h.lat && h.lng) {
       const naver = (window as any).naver;
+      mapInstance.current.autoResize(); // 뷰포트 크기 강제 재설정
       mapInstance.current.panTo(new naver.maps.LatLng(h.lat, h.lng));
       mapInstance.current.setZoom(15);
       
@@ -933,7 +938,7 @@ function HospitalTab() {
       </div>
 
       {/* ── 메인 바디 Split Layout (PC: 좌리스트 우지도, Mobile: 전체 지도) ── */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden relative">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
         
         {/* DESKTOP PANEL: 좌측 검색 리스트 (PC 전용 420px 고정) */}
         <div 
@@ -1204,6 +1209,7 @@ function HospitalTab() {
                       setSelectedHospital(null);
                       if (mapInstance.current) {
                         const naver = (window as any).naver;
+                        mapInstance.current.autoResize(); // 뷰포트 크기 강제 재설정
                         if (region !== '전체') {
                           const coords = REGION_COORDS[region];
                           if (coords) {
