@@ -607,10 +607,13 @@ function HospitalTab() {
     
     // 9. 지도 화면 영역 Bounds 기반 필터링 (로컬 뷰 동기화)
     if (mapBounds && viewMode === 'map') {
-      const sw = mapBounds.getSW();
-      const ne = mapBounds.getNE();
-      if (h.lat < sw.lat() || h.lat > ne.lat() || h.lng < sw.lng() || h.lng > ne.lng()) {
-        return false;
+      const isSelected = selectedHospital?.id === h.id;
+      if (!isSelected) {
+        const sw = mapBounds.getSW();
+        const ne = mapBounds.getNE();
+        if (h.lat < sw.lat() || h.lat > ne.lat() || h.lng < sw.lng() || h.lng > ne.lng()) {
+          return false;
+        }
       }
     }
     
