@@ -241,3 +241,13 @@ LOADING_MESSAGE_CONFIG = {
 - Other agents: Stub implementations
 - Frontend pages: Layouts ready, mostly stubs
 - Authentication: Framework ready, needs completion
+
+## Latest Dialysis Hospital Map UX Overhaul (May 2026)
+
+The responsive map UI/UX and mobile optimization for the Dialysis Hospital map view (`DialysisCarePage.tsx`) has been completely overhauled and fully stabilized:
+- **PC Marker Guarantee**: The selected hospital marker (📍) is rendered directly on the Naver Map as a standalone instance, bypassing `MarkerClustering` entirely, ensuring 100% persistent visibility.
+- **Starbucks-like Mobile UX**: Bottom sheet is hidden (`h-[0px]`) when a hospital is selected, allowing full map visibility with a neat `Horizontal Swipe Details Card` at the bottom. Tapping "상세 리뷰/정보 확인" expands the bottom sheet to `h-[88vh]` full detailed view.
+- **Map autoResize & Smooth Centering**: Added a 350ms transition timeout `autoResize()` and `panTo` trigger upon selecting a hospital on mobile, aligning the marker perfectly in the center of the screen after the bottom sheet height animation finishes.
+- **Defensive Coordinate Swapping**: Flipped coordinate detector and parser embedded on hospital list initialization, correcting any database coordinate swap anomalies.
+- **Git Status**: Working directory is completely **CLEAN**. Both local and remote `dev` and `main` branches are **100% merged, synchronized, and pushed** to GitHub `yunjoolee1210/carekidney` repository.
+- **Production Server**: Production assets have been successfully built (Clean Vite build) and live-deployed to Vercel (`https://frontend-rho-tawny-17.vercel.app/dialysis-care`).
