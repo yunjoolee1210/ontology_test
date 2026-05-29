@@ -387,7 +387,6 @@ function HospitalTab() {
 
   // 모바일 전용 UI 및 상세 팝업 상태
   const [bottomSheetStage, setBottomSheetStage] = useState<1 | 2 | 3>(2); // 1: 최소화, 2: 중간, 3: 최대화
-  const [showMobileDetail, setShowMobileDetail] = useState(false); // 모바일 전체화면 상세 정보 모달
 
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
@@ -682,12 +681,13 @@ function HospitalTab() {
 
       naver.maps.Event.addListener(marker, 'click', () => {
         setSelectedHospital(h);
-        setBottomSheetStage(1); // 모바일에서 카드 정보 부상시 바텀 시트 자동 축소
+        if (window.innerWidth < 1024) {
+          setBottomSheetStage(3); // 모바일은 상세 정보 노출을 위해 시트 최대화
+        } else {
+          setBottomSheetStage(1);
+        }
         mapInstance.current.panTo(new naver.maps.LatLng(h.lat, h.lng));
         mapInstance.current.setZoom(15);
-        if (window.innerWidth < 1024) {
-          setShowMobileDetail(true);
-        }
       });
 
       return marker;
@@ -696,7 +696,7 @@ function HospitalTab() {
     markers.current = newMarkers;
 
     // 3. 네이버 지도 공식 MarkerClustering 활용 (CareKidney의 고유 브랜드 그라디언트 및 서클 디자인)
-    if (newMarkers.length > 0 && (window as any).MarkerClustering) {
+    if (newMarkers.length > 0 && (window as any).MarkerClustering && mapZoom < 15) {
       const mc = new (window as any).MarkerClustering({
         minClusterSize: 2,
         maxZoom: 14,
@@ -732,7 +732,7 @@ function HospitalTab() {
       });
       (window as any).markerClusteringInstance = mc;
     } else {
-      // 마커 클러스터가 없거나 로드 전인 빌드 백업
+      // 마커 클러스터가 없거나 줌레벨이 15 이상인 경우 모든 마커 직접 표시
       newMarkers.forEach(m => m.setMap(mapInstance.current));
     }
   }, [sortedHospitals, mapReady, selectedHospital]);
@@ -749,10 +749,10 @@ function HospitalTab() {
       mapInstance.current.panTo(new naver.maps.LatLng(h.lat, h.lng));
       mapInstance.current.setZoom(15);
       
-      // 모바일 기기 대응: 바텀 시트 자동 축소 및 지도 핀 포커스
-      setBottomSheetStage(1);
       if (window.innerWidth < 1024) {
-        setShowMobileDetail(true);
+        setBottomSheetStage(3); // 모바일은 상세 정보 노출을 위해 시트 최대화
+      } else {
+        setBottomSheetStage(1);
       }
     }
   };
@@ -1150,85 +1150,181 @@ function HospitalTab() {
         </div>
 
         {/* ── MOBILE EXCLUSIVE: Swipeable Bottom Sheet (모바일 전용 3단계 시트) ── */}
-        {!selectedHospital && (
-          <div 
-            className={`lg:hidden fixed bottom-[64px] left-0 right-0 z-40 bg-white rounded-t-3xl shadow-2xl transition-all duration-300 overflow-hidden flex flex-col ${getBottomSheetHeight()}`}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            {/* 드래그용 핸들러 */}
-            <div className="w-full py-3 bg-white flex flex-col items-center justify-center flex-shrink-0 cursor-row-resize border-b border-gray-100">
-              <div className="w-12 h-1.5 bg-gray-300 rounded-full mb-1"></div>
-              <div className="text-[10px] font-extrabold text-gray-400">
-                현재 영역 내 병원 <span className="text-[#00C9B7]">{sortedHospitals.length}</span>곳 보기
-              </div>
+        <div 
+          className={`lg:hidden fixed bottom-[64px] left-0 right-0 z-40 bg-white rounded-t-3xl shadow-2xl transition-all duration-300 overflow-hidden flex flex-col ${getBottomSheetHeight()}`}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* 드래그용 핸들러 */}
+          <div className="w-full py-3 bg-white flex flex-col items-center justify-center flex-shrink-0 cursor-row-resize border-b border-gray-100">
+            <div className="w-12 h-1.5 bg-gray-300 rounded-full mb-1"></div>
+            <div className="text-[10px] font-extrabold text-gray-400">
+              {selectedHospital 
+                ? `${selectedHospital.name} 상세 정보`
+                : <>현재 영역 내 병원 <span className="text-[#00C9B7]">{sortedHospitals.length}</span>곳 보기</>
+              }
             </div>
-
-            {/* 바텀시트 컨텐츠 리스트 (Stage 2, 3에서만 활성화) */}
-            {bottomSheetStage > 1 && (
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 pb-16">
-                <div className="flex justify-between items-center pb-2 border-b border-gray-150 mb-3">
-                  <span className="text-xs font-bold text-gray-400">목록 정렬 기준</span>
-                  <select
-                    value={sortBy}
-                    onChange={e => setSortBy(e.target.value)}
-                    className="bg-transparent text-xs font-bold text-gray-600 outline-none cursor-pointer"
-                  >
-                    <option value="name">가나다순</option>
-                    <option value="rating">별점 높은순</option>
-                    <option value="machines">투석기 많은순</option>
-                    <option value="night">야간투석 우선</option>
-                  </select>
-                </div>
-
-                {loading ? (
-                  <div className="flex items-center justify-center py-10">
-                    <Loader2 className="animate-spin text-[#00C8B4]" size={24} />
-                  </div>
-                ) : sortedHospitals.length === 0 ? (
-                  <div className="text-center py-10 text-xs text-gray-400">
-                    매칭되는 병원이 없습니다. 지도를 다르게 드래그해보세요.
-                  </div>
-                ) : (
-                  sortedHospitals.map(h => {
-                    return (
-                      <div
-                        key={h.id}
-                        onClick={() => handleListCardClick(h)}
-                        className="p-3.5 rounded-2xl border border-gray-150 bg-white hover:border-[#00C8B4]/50 transition-all flex flex-col gap-1.5"
-                      >
-                        <div className="flex flex-col gap-0.5">
-                          <span className="text-[9px] font-bold text-gray-400">{h.region}</span>
-                          <h3 className="font-extrabold text-[#1F2937] text-sm leading-snug">{h.name}</h3>
-                        </div>
-
-                        <div className="flex flex-wrap items-center gap-1">
-                          {h.hira_grade === '1등급' && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded font-extrabold bg-amber-50 text-[#D97706] border border-amber-200">
-                              🏅 심평원 1등급
-                            </span>
-                          )}
-                          {h.ksn_certified === '인증' && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded font-extrabold bg-[#F2FFFD] text-[#00C8B4] border border-[#CCFBF1]">
-                              🛡️ 우수 인공신장실
-                            </span>
-                          )}
-                          {h.night_dialysis && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#F8F4FE] text-[#9F7AEA] font-bold border border-[#E5D5FC]">
-                              🌙 야간투석
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="text-[11px] text-gray-500 truncate">{h.address}</div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            )}
           </div>
-        )}
+
+          {/* 바텀시트 컨텐츠 (Stage 2, 3에서만 활성화) */}
+          {bottomSheetStage > 1 && (
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 pb-16">
+              {selectedHospital ? (
+                // ── [선택된 병원 상세 뷰] ──
+                <div className="space-y-4 text-left select-text">
+                  <button
+                    onClick={() => {
+                      setSelectedHospital(null);
+                    }}
+                    className="w-full py-2.5 px-4 bg-gray-50 border border-gray-150 rounded-xl text-xs font-bold text-gray-500 hover:bg-gray-100 flex items-center justify-center gap-1.5 transition-colors mb-2 cursor-pointer"
+                  >
+                    ◀ 전체 병원 목록 보기
+                  </button>
+
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[10px] font-bold text-gray-400">{selectedHospital.region}</span>
+                    <h3 className="font-extrabold text-[#1F2937] text-sm leading-snug">{selectedHospital.name}</h3>
+                  </div>
+
+                  {/* Badges */}
+                  <div className="space-y-1.5">
+                    {selectedHospital.hira_grade === '1등급' && (
+                      <div className="p-2.5 rounded-xl border text-[11px] font-extrabold bg-amber-50 border-amber-200 text-[#D97706]">
+                        🏅 건강보험심사평가원 적정성 평가 <strong>최우수 1등급</strong>
+                      </div>
+                    )}
+                    {selectedHospital.ksn_certified === '인증' && (
+                      <div className="p-2.5 bg-[#F2FFFD] rounded-xl border border-[#CCFBF1] text-[11px] text-[#00C8B4] font-extrabold">
+                        🛡️ 대한신장학회 공식 지정 <strong>우수 인공신장실</strong>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Medical Indicators Grid */}
+                  <div className="grid grid-cols-3 gap-2 border border-gray-150 rounded-xl p-2.5 bg-gray-50/50">
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <span className="text-[9px] font-bold text-gray-400 mb-0.5">신장학회 인증</span>
+                      <span className={`text-[10px] font-black ${selectedHospital.ksn_certified === '인증' ? 'text-[#00C8B4]' : 'text-gray-400'}`}>
+                        {selectedHospital.ksn_certified === '인증' ? '우수신장실' : '미인증'}
+                      </span>
+                    </div>
+                    
+                    <div className="flex flex-col items-center justify-center text-center border-x border-gray-200/50">
+                      <span className="text-[9px] font-bold text-gray-400 mb-0.5">투석 장비</span>
+                      <span className="text-[10px] font-black text-[#00C8B4]">
+                        💧 {selectedHospital.dialysis_machines}대 보유
+                      </span>
+                    </div>
+                    
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <span className="text-[9px] font-bold text-gray-400 mb-0.5">투석 전문의</span>
+                      <span className={`text-[10px] font-black ${(selectedHospital.specialist_count && selectedHospital.specialist_count > 0) ? 'text-[#9F7AEA]' : 'text-gray-500'}`}>
+                        👨‍⚕️ {selectedHospital.specialist_count || 0}명 상주
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Operating Hours and Contact */}
+                  <div className="space-y-1 text-xs text-gray-600 border-t border-gray-100 pt-3">
+                    <div className="flex justify-between py-1 border-b border-gray-50">
+                      <span className="font-semibold text-gray-400">대표전화</span>
+                      <a href={`tel:${selectedHospital.phone}`} className="font-bold text-[#00C8B4] active:underline">{selectedHospital.phone}</a>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-gray-50">
+                      <span className="font-semibold text-gray-400">운영시간</span>
+                      <span className="font-bold text-gray-800">
+                        {selectedHospital.night_dialysis 
+                          ? "월·수·금: 06:00~23:00 / 화·목·토: 06:00~18:00"
+                          : "월~토: 06:00 ~ 18:00 (일요일 휴진)"
+                        }
+                      </span>
+                    </div>
+                    {selectedHospital.night_dialysis && (
+                      <div className="rounded-xl border border-[#E5D5FC] bg-[#F8F4FE] p-2.5 text-xs font-semibold text-[#9F7AEA] mt-2">
+                        🌙 {selectedHospital.dialysis_days ? `매주 ${selectedHospital.dialysis_days}요일 야간(23시) 연장 운영` : '야간 투석 연장 운영 지원'}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Nephrologist details */}
+                  {selectedHospital.nephrology_doctor && (
+                    <div className="p-3 rounded-xl border border-blue-100 bg-blue-50/20 text-xs">
+                      <div className="font-bold text-blue-700 mb-1">신장내과 전문의 상주 정보</div>
+                      <div className="text-gray-600 font-semibold">{selectedHospital.nephrology_doctor}</div>
+                    </div>
+                  )}
+
+                  {/* Reviews */}
+                  <div className="border-t border-gray-150 pt-3">
+                    {renderReviewsSection(selectedHospital)}
+                  </div>
+                </div>
+              ) : (
+                // ── [전체 병원 목록 뷰] ──
+                <>
+                  <div className="flex justify-between items-center pb-2 border-b border-gray-150 mb-3">
+                    <span className="text-xs font-bold text-gray-400">목록 정렬 기준</span>
+                    <select
+                      value={sortBy}
+                      onChange={e => setSortBy(e.target.value)}
+                      className="bg-transparent text-xs font-bold text-gray-600 outline-none cursor-pointer"
+                    >
+                      <option value="name">가나다순</option>
+                      <option value="rating">별점 높은순</option>
+                      <option value="machines">투석기 많은순</option>
+                      <option value="night">야간투석 우선</option>
+                    </select>
+                  </div>
+
+                  {loading ? (
+                    <div className="flex items-center justify-center py-10">
+                      <Loader2 className="animate-spin text-[#00C8B4]" size={24} />
+                    </div>
+                  ) : sortedHospitals.length === 0 ? (
+                    <div className="text-center py-10 text-xs text-gray-400">
+                      매칭되는 병원이 없습니다. 지도를 다르게 드래그해보세요.
+                    </div>
+                  ) : (
+                    sortedHospitals.map(h => {
+                      return (
+                        <div
+                          key={h.id}
+                          onClick={() => handleListCardClick(h)}
+                          className="p-3.5 rounded-2xl border border-gray-150 bg-white hover:border-[#00C8B4]/50 transition-all flex flex-col gap-1.5"
+                        >
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-[9px] font-bold text-gray-400">{h.region}</span>
+                            <h3 className="font-extrabold text-[#1F2937] text-sm leading-snug">{h.name}</h3>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-1">
+                            {h.hira_grade === '1등급' && (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded font-extrabold bg-amber-50 text-[#D97706] border border-amber-200">
+                                🏅 심평원 1등급
+                              </span>
+                            )}
+                            {h.ksn_certified === '인증' && (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded font-extrabold bg-[#F2FFFD] text-[#00C8B4] border border-[#CCFBF1]">
+                                🛡️ 우수 인공신장실
+                              </span>
+                            )}
+                            {h.night_dialysis && (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#F8F4FE] text-[#9F7AEA] font-bold border border-[#E5D5FC]">
+                                🌙 야간투석
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="text-[11px] text-gray-500 truncate">{h.address}</div>
+                        </div>
+                      );
+                    })
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* ── MOBILE EXCLUSIVE: Horizontal Swipe Details Card (선택된 병원 요약 카드 플로팅) ── */}
         {selectedHospital && (
@@ -1236,7 +1332,7 @@ function HospitalTab() {
             className="lg:hidden fixed bottom-[72px] left-4 right-4 z-45 bg-white border border-gray-150 rounded-2xl shadow-xl p-4 flex flex-col gap-2 transition-all animate-slideUp cursor-pointer"
             onTouchStart={handleHorizontalSwipeStart}
             onTouchEnd={handleHorizontalSwipeEnd}
-            onClick={() => setShowMobileDetail(true)}
+            onClick={() => setBottomSheetStage(3)}
           >
             {/* 카드 닫기 및 네비게이션 헤더 */}
             <div className="flex items-start justify-between">
@@ -1311,7 +1407,7 @@ function HospitalTab() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setShowMobileDetail(true);
+                  setBottomSheetStage(3);
                 }}
                 className="text-[11px] font-bold text-[#00C8B4] hover:underline animate-pulse"
               >
@@ -1322,101 +1418,6 @@ function HospitalTab() {
         )}
 
       </div>
-
-      {/* ── MOBILE EXCLUSIVE: Full-screen Hospital Detail Overlay Sheet (모바일 전용 상세 시트) ── */}
-      {showMobileDetail && selectedHospital && (
-        <div className="lg:hidden fixed inset-x-0 bottom-0 top-[56px] z-50 bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden animate-slideUp select-text">
-          {/* Header */}
-          <div className="px-5 py-4 bg-gray-50 border-b border-gray-150 flex justify-between items-center flex-shrink-0">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-[10px] font-bold text-gray-400">{selectedHospital.region}</span>
-              <h3 className="font-extrabold text-[#1F2937] text-sm leading-snug">{selectedHospital.name}</h3>
-            </div>
-            <button 
-              onClick={() => setShowMobileDetail(false)}
-              className="p-1.5 rounded-full hover:bg-gray-200 text-gray-400"
-            >
-              <X size={18} />
-            </button>
-          </div>
-
-          {/* Body (scrollable) */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-5 pb-24">
-            {/* Badges */}
-            <div className="space-y-1.5">
-              {selectedHospital.hira_grade === '1등급' && (
-                <div className="p-2.5 rounded-xl border text-[11px] font-extrabold bg-amber-50 border-amber-200 text-[#D97706]">
-                  🏅 건강보험심사평가원 적정성 평가 <strong>최우수 1등급</strong>
-                </div>
-              )}
-              {selectedHospital.ksn_certified === '인증' && (
-                <div className="p-2.5 bg-[#F2FFFD] rounded-xl border border-[#CCFBF1] text-[11px] text-[#00C8B4] font-extrabold">
-                  🛡️ 대한신장학회 공식 지정 <strong>우수 인공신장실</strong>
-                </div>
-              )}
-            </div>
-
-            {/* Medical Indicators Grid */}
-            <div className="grid grid-cols-3 gap-2 border border-gray-150 rounded-xl p-3 bg-gray-50/50">
-              <div className="flex flex-col items-center justify-center text-center">
-                <span className="text-[9px] font-bold text-gray-400 mb-0.5">신장학회 인증</span>
-                <span className={`text-[10px] font-black ${selectedHospital.ksn_certified === '인증' ? 'text-[#00C8B4]' : 'text-gray-400'}`}>
-                  {selectedHospital.ksn_certified === '인증' ? '우수신장실' : '미인증'}
-                </span>
-              </div>
-              
-              <div className="flex flex-col items-center justify-center text-center border-x border-gray-200/50">
-                <span className="text-[9px] font-bold text-gray-400 mb-0.5">투석 장비</span>
-                <span className="text-[10px] font-black text-[#00C8B4]">
-                  💧 {selectedHospital.dialysis_machines}대 보유
-                </span>
-              </div>
-              
-              <div className="flex flex-col items-center justify-center text-center">
-                <span className="text-[9px] font-bold text-gray-400 mb-0.5">투석 전문의</span>
-                <span className={`text-[10px] font-black ${(selectedHospital.specialist_count && selectedHospital.specialist_count > 0) ? 'text-[#9F7AEA]' : 'text-gray-500'}`}>
-                  👨‍⚕️ {selectedHospital.specialist_count || 0}명 상주
-                </span>
-              </div>
-            </div>
-
-            {/* Operating Hours and Contact */}
-            <div className="space-y-1 text-xs text-gray-600 border-t border-gray-100 pt-3">
-              <div className="flex justify-between py-1 border-b border-gray-50">
-                <span className="font-semibold text-gray-400">대표전화</span>
-                <a href={`tel:${selectedHospital.phone}`} className="font-bold text-[#00C8B4] active:underline">{selectedHospital.phone}</a>
-              </div>
-              <div className="flex justify-between py-1 border-b border-gray-50">
-                <span className="font-semibold text-gray-400">운영시간</span>
-                <span className="font-bold text-gray-800">
-                  {selectedHospital.night_dialysis 
-                    ? "월·수·금: 06:00~23:00 / 화·목·토: 06:00~18:00"
-                    : "월~토: 06:00 ~ 18:00 (일요일 휴진)"
-                  }
-                </span>
-              </div>
-              {selectedHospital.night_dialysis && (
-                <div className="rounded-xl border border-[#E5D5FC] bg-[#F8F4FE] p-2.5 text-xs font-semibold text-[#9F7AEA] mt-2">
-                  🌙 {selectedHospital.dialysis_days ? `매주 ${selectedHospital.dialysis_days}요일 야간(23시) 연장 운영` : '야간 투석 연장 운영 지원'}
-                </div>
-              )}
-            </div>
-
-            {/* Nephrologist details */}
-            {selectedHospital.nephrology_doctor && (
-              <div className="p-3 rounded-xl border border-blue-100 bg-blue-50/20 text-xs">
-                <div className="font-bold text-blue-700 mb-1">신장내과 전문의 상주 정보</div>
-                <div className="text-gray-600 font-semibold">{selectedHospital.nephrology_doctor}</div>
-              </div>
-            )}
-
-            {/* Reviews */}
-            <div className="border-t border-gray-150 pt-3">
-              {renderReviewsSection(selectedHospital)}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── 전역 필터 모달 (PC/모바일 공용 글래스모피즘 팝업) ── */}
       {showFilters && (
