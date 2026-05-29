@@ -518,8 +518,9 @@ function HospitalTab() {
           mapInstance.current.setZoom(coords.zoom);
         }
       } else {
-        mapInstance.current.setCenter(new naver.maps.LatLng(36.5, 127.5));
-        mapInstance.current.setZoom(7);
+        const isMobile = window.innerWidth < 1024;
+        mapInstance.current.setCenter(new naver.maps.LatLng(isMobile ? 35.6 : 36.5, 127.5));
+        mapInstance.current.setZoom(isMobile ? 7.5 : 7);
       }
     }
   };
@@ -529,9 +530,10 @@ function HospitalTab() {
     const naver = (window as any).naver;
     if (!naver?.maps || !mapRef.current || mapInstance.current) return;
 
+    const isMobile = window.innerWidth < 1024;
     mapInstance.current = new naver.maps.Map(mapRef.current, {
-      center: new naver.maps.LatLng(36.5, 127.5), // 전국 대한민국 중심
-      zoom: 7,
+      center: new naver.maps.LatLng(isMobile ? 35.6 : 36.5, 127.5), // 모바일은 지도를 남쪽으로 중심 이동하여 북한 가림
+      zoom: isMobile ? 7.5 : 7, // 모바일은 줌 배율을 살짝 당김
       zoomControl: true,
       zoomControlOptions: { position: naver.maps.Position.TOP_RIGHT },
       mapTypeControl: false,
@@ -769,7 +771,7 @@ function HospitalTab() {
       mapInstance.current.setZoom(15);
       
       if (window.innerWidth < 1024) {
-        setBottomSheetStage(3); // 모바일은 상세 정보 노출을 위해 시트 최대화
+        setBottomSheetStage(1); // 모바일은 즉시 최대화 대신 지도/마커와 하단 플로팅 카드로 노출
       } else {
         setBottomSheetStage(1);
       }
@@ -829,6 +831,10 @@ function HospitalTab() {
 
   // 모바일 3단계 시트 높이 클래스
   const getBottomSheetHeight = () => {
+    if (selectedHospital) {
+      if (bottomSheetStage === 3) return 'h-[88vh]';
+      return 'h-[0px]'; // 요약 카드와 지도의 온전한 시야를 위해 완전히 숨김
+    }
     if (bottomSheetStage === 1) return 'h-[64px]';
     if (bottomSheetStage === 2) return 'h-[36vh]';
     return 'h-[85vh]';
@@ -1205,8 +1211,9 @@ function HospitalTab() {
                             mapInstance.current.setZoom(coords.zoom);
                           }
                         } else {
-                          mapInstance.current.setCenter(new naver.maps.LatLng(36.5, 127.5));
-                          mapInstance.current.setZoom(7);
+                          const isMobile = window.innerWidth < 1024;
+                          mapInstance.current.setCenter(new naver.maps.LatLng(isMobile ? 35.6 : 36.5, 127.5));
+                          mapInstance.current.setZoom(isMobile ? 7.5 : 7);
                         }
                       }
                       setBottomSheetStage(2); // Reset to medium height
