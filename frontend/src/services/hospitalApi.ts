@@ -35,6 +35,12 @@ export interface HospitalFilter {
   nightDialysis?: boolean;
   minMachines?: number;
   query?: string;
+  bounds?: {
+    swLat: number;
+    swLng: number;
+    neLat: number;
+    neLng: number;
+  };
 }
 
 // 정적 데이터 실시간 필터링 헬퍼 함수
@@ -61,6 +67,14 @@ const getFilteredFallbackHospitals = (filter: HospitalFilter): Hospital[] => {
       (h.address && h.address.toLowerCase().includes(clean))
     );
   }
+  if (filter.bounds) {
+    result = result.filter(h => 
+      h.lat >= filter.bounds!.swLat &&
+      h.lat <= filter.bounds!.neLat &&
+      h.lng >= filter.bounds!.swLng &&
+      h.lng <= filter.bounds!.neLng
+    );
+  }
   
   return result;
 };
@@ -81,11 +95,20 @@ export const listHospitals = async (filter: HospitalFilter = {}): Promise<Hospit
     if (filter.minMachines && filter.minMachines > 0) q = q.gte('dialysis_machines', filter.minMachines);
     if (filter.region && filter.region !== '전체') q = q.eq('region', filter.region);
     if (filter.query) q = q.or(`name.ilike.%${filter.query}%,address.ilike.%${filter.query}%`);
+    if (filter.bounds) {
+      q = q.gte('lat', filter.bounds.swLat)
+           .lte('lat', filter.bounds.neLat)
+           .gte('lng', filter.bounds.swLng)
+           .lte('lng', filter.bounds.neLng);
+    }
 
     const { data, error } = await q.order('name');
     
     // DB 에러가 발생하거나 데이터가 충분히 적재되지 않았을 때(1500개 미만) 정적 1,523개 fallback 데이터로 복구
-    if (error || !data || data.length < 1500) {
+    const isBoundsQuery = !!filter.bounds;
+    const isCompleteDataset = isBoundsQuery || (data && data.length >= 1500);
+    
+    if (error || !data || !isCompleteDataset) {
       if (error) console.error("Supabase query error:", error);
       console.warn(`Using static fallback hospitals data (count: ${data?.length || 0}) due to incomplete database or query error.`);
       return getFilteredFallbackHospitals(filter);
