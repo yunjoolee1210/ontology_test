@@ -685,6 +685,9 @@ function HospitalTab() {
         setBottomSheetStage(1); // 모바일에서 카드 정보 부상시 바텀 시트 자동 축소
         mapInstance.current.panTo(new naver.maps.LatLng(h.lat, h.lng));
         mapInstance.current.setZoom(15);
+        if (window.innerWidth < 1024) {
+          setShowMobileDetail(true);
+        }
       });
 
       return marker;
@@ -748,6 +751,9 @@ function HospitalTab() {
       
       // 모바일 기기 대응: 바텀 시트 자동 축소 및 지도 핀 포커스
       setBottomSheetStage(1);
+      if (window.innerWidth < 1024) {
+        setShowMobileDetail(true);
+      }
     }
   };
 
@@ -1227,9 +1233,10 @@ function HospitalTab() {
         {/* ── MOBILE EXCLUSIVE: Horizontal Swipe Details Card (선택된 병원 요약 카드 플로팅) ── */}
         {selectedHospital && (
           <div 
-            className="lg:hidden fixed bottom-[72px] left-4 right-4 z-45 bg-white border border-gray-150 rounded-2xl shadow-xl p-4 flex flex-col gap-2 transition-all animate-slideUp"
+            className="lg:hidden fixed bottom-[72px] left-4 right-4 z-45 bg-white border border-gray-150 rounded-2xl shadow-xl p-4 flex flex-col gap-2 transition-all animate-slideUp cursor-pointer"
             onTouchStart={handleHorizontalSwipeStart}
             onTouchEnd={handleHorizontalSwipeEnd}
+            onClick={() => setShowMobileDetail(true)}
           >
             {/* 카드 닫기 및 네비게이션 헤더 */}
             <div className="flex items-start justify-between">
@@ -1238,7 +1245,7 @@ function HospitalTab() {
                 <h3 className="font-extrabold text-[#1F2937] text-sm leading-snug truncate">{selectedHospital.name}</h3>
               </div>
               <button 
-                onClick={() => setSelectedHospital(null)} 
+                onClick={(e) => { e.stopPropagation(); setSelectedHospital(null); }} 
                 className="p-1 rounded-full hover:bg-gray-100 text-gray-400"
               >
                 <X size={16} />
@@ -1273,7 +1280,13 @@ function HospitalTab() {
               {selectedHospital.phone && (
                 <div className="flex items-center gap-1">
                   <Phone size={10} className="text-gray-400 flex-shrink-0" />
-                  <a href={`tel:${selectedHospital.phone}`} className="text-blue-500 hover:underline">{selectedHospital.phone}</a>
+                  <a 
+                    href={`tel:${selectedHospital.phone}`} 
+                    className="text-blue-500 hover:underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {selectedHospital.phone}
+                  </a>
                 </div>
               )}
             </div>
@@ -1282,13 +1295,13 @@ function HospitalTab() {
             <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-100 flex-shrink-0">
               <div className="flex gap-2">
                 <button 
-                  onClick={handlePrevHospital}
+                  onClick={(e) => { e.stopPropagation(); handlePrevHospital(); }}
                   className="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-[10px] font-bold text-gray-600 flex items-center gap-0.5"
                 >
                   ◀ 이전
                 </button>
                 <button 
-                  onClick={handleNextHospital}
+                  onClick={(e) => { e.stopPropagation(); handleNextHospital(); }}
                   className="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-[10px] font-bold text-gray-600 flex items-center gap-0.5"
                 >
                   다음 ▶
@@ -1296,7 +1309,8 @@ function HospitalTab() {
               </div>
 
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setShowMobileDetail(true);
                 }}
                 className="text-[11px] font-bold text-[#00C8B4] hover:underline animate-pulse"
