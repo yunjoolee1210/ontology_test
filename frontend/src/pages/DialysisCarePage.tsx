@@ -478,11 +478,32 @@ function HospitalTab() {
     localStorage.setItem('dialysis_favorites', JSON.stringify(updated));
   };
 
-  // 병원 전체 데이터 로드 (클라이언트단 빠른 필터링 제공)
+  // 병원 전체 데이터 로드 (클라이언트단 빠른 필터링 제공 및 위경도 검증/보정 탑재)
   useEffect(() => {
     setLoading(true);
     listHospitals()
-      .then(setAllHospitals)
+      .then(hospitals => {
+        const validated = hospitals.map(h => {
+          let lat = parseFloat(h.lat as any);
+          let lng = parseFloat(h.lng as any);
+          
+          // 위경도 데이터가 데이터베이스상에서 거꾸로 바뀌어 들어간 경우 완벽 자동 보정
+          if (124 <= lat && lat <= 132 && 33 <= lng && lng <= 39) {
+            const temp = lat;
+            lat = lng;
+            lng = temp;
+          }
+          
+          // 데이터가 누락되었거나 정상 범위를 벗어날 경우 서울 기준으로 안전한 폴백 제공
+          if (isNaN(lat) || isNaN(lng) || lat < 33 || lat > 39 || lng < 124 || lng > 132) {
+            lat = 37.5665;
+            lng = 126.9780;
+          }
+          
+          return { ...h, lat, lng };
+        });
+        setAllHospitals(validated);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -771,12 +792,23 @@ function HospitalTab() {
     setSelectedHospital(h);
     if (mapInstance.current && h.lat && h.lng) {
       const naver = (window as any).naver;
-      mapInstance.current.autoResize(); // 뷰포트 크기 강제 재설정
+      
+      // 1. 즉시 리사이징 및 일차 정렬
+      mapInstance.current.autoResize();
       mapInstance.current.panTo(new naver.maps.LatLng(h.lat, h.lng));
       mapInstance.current.setZoom(15);
       
       if (window.innerWidth < 1024) {
         setBottomSheetStage(1); // 모바일은 즉시 최대화 대신 지도/마커와 하단 플로팅 카드로 노출
+        
+        // 2. 모바일은 바텀 시트가 h-[85vh]에서 h-[0px]로 300ms 트랜지션 축소되므로,
+        // 시트 축소 애니메이션이 완벽히 끝난 350ms 후에 2차 정밀 재정렬(autoResize & panTo)을 재호출합니다.
+        setTimeout(() => {
+          if (mapInstance.current) {
+            mapInstance.current.autoResize();
+            mapInstance.current.panTo(new naver.maps.LatLng(h.lat, h.lng));
+          }
+        }, 350);
       } else {
         setBottomSheetStage(1);
       }
@@ -1220,6 +1252,15 @@ function HospitalTab() {
                           const isMobile = window.innerWidth < 1024;
                           mapInstance.current.setCenter(new naver.maps.LatLng(isMobile ? 35.6 : 36.5, 127.5));
                           mapInstance.current.setZoom(isMobile ? 7.5 : 7);
+                        }
+                        
+                        // 모바일에서는 시트 높이 변경 트랜지션이 완료되는 350ms 후에 지도를 다시 한 번 autoResize하여 정렬 보장
+                        if (window.innerWidth < 1024) {
+                          setTimeout(() => {
+                            if (mapInstance.current) {
+                              mapInstance.current.autoResize();
+                            }
+                          }, 350);
                         }
                       }
                       setBottomSheetStage(2); // Reset to medium height
