@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Loader2, Plus, Trash2, Search, MapPin, Phone, Building2,
@@ -467,11 +467,12 @@ function HospitalTab() {
   // 즐겨찾기 토글
   const toggleFavorite = (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    const idStr = String(id);
     let updated;
-    if (favorites.includes(id)) {
-      updated = favorites.filter(fav => fav !== id);
+    if (favorites.includes(idStr)) {
+      updated = favorites.filter(fav => fav !== idStr);
     } else {
-      updated = [...favorites, id];
+      updated = [...favorites, idStr];
     }
     setFavorites(updated);
     localStorage.setItem('dialysis_favorites', JSON.stringify(updated));
@@ -566,79 +567,71 @@ function HospitalTab() {
   }, [mapReady]);
 
   // 실시간 다차원 검색 & 필터링 로직
-  const filteredHospitals = allHospitals.filter(h => {
-    // 1. 키워드 검색 (이름, 주소, 지역명)
-    if (query.trim()) {
-      const clean = query.toLowerCase();
-      const inName = h.name ? String(h.name).toLowerCase().includes(clean) : false;
-      const inAddress = h.address ? String(h.address).toLowerCase().includes(clean) : false;
-      const inRegion = h.region ? String(h.region).toLowerCase().includes(clean) : false;
-      if (!inName && !inAddress && !inRegion) return false;
-    }
-    
-    // 2. 시/도 필터
-    if (region !== '전체' && h.region !== region) return false;
-    
-    // 3. 시/군/구 필터
-    if (selectedSiGunGu !== '전체') {
-      const parts = h.address ? String(h.address).trim().split(/\s+/) : [];
-      const district = parts[1] || '';
-      if (!district.includes(selectedSiGunGu)) return false;
-    }
-    
-    // 4. 투석기 대수 필터
-    if (filterMinMachines > 0 && h.dialysis_machines < filterMinMachines) return false;
-    
-    // 5. 야간투석 여부
-    if (filterNight && !h.night_dialysis) return false;
-
-    // 6. 우수 인공신장실 여부
-    if (filterKsn && h.ksn_certified !== '인증') return false;
-
-    // 7. 심평원 1등급 여부
-    if (filterHira && h.hira_grade !== '1등급') return false;
-
-    // 8. 투석전문의 상주 여부
-    if (filterSpecialist) {
-      const hasSpecialist = h.is_dialysis_specialist === 1 || (h.specialist_count !== undefined && h.specialist_count > 0);
-      if (!hasSpecialist) return false;
-    }
-    
-    // 9. 지도 화면 영역 Bounds 기반 필터링 (로컬 뷰 동기화)
-    if (mapBounds && viewMode === 'map') {
-      const isSelected = selectedHospital?.id === h.id;
-      if (!isSelected) {
-        const sw = mapBounds.getSW();
-        const ne = mapBounds.getNE();
-        if (h.lat < sw.lat() || h.lat > ne.lat() || h.lng < sw.lng() || h.lng > ne.lng()) {
-          return false;
-        }
+  const filteredHospitals = useMemo(() => {
+    return allHospitals.filter(h => {
+      // 1. 키워드 검색 (이름, 주소, 지역명)
+      if (query.trim()) {
+        const clean = query.toLowerCase();
+        const inName = h.name ? String(h.name).toLowerCase().includes(clean) : false;
+        const inAddress = h.address ? String(h.address).toLowerCase().includes(clean) : false;
+        const inRegion = h.region ? String(h.region).toLowerCase().includes(clean) : false;
+        if (!inName && !inAddress && !inRegion) return false;
       }
-    }
-    
-    return true;
-  });
+      
+      // 2. 시/도 필터
+      if (region !== '전체' && h.region !== region) return false;
+      
+      // 3. 시/군/구 필터
+      if (selectedSiGunGu !== '전체') {
+        const parts = h.address ? String(h.address).trim().split(/\s+/) : [];
+        const district = parts[1] || '';
+        if (!district.includes(selectedSiGunGu)) return false;
+      }
+      
+      // 4. 투석기 대수 필터
+      if (filterMinMachines > 0 && h.dialysis_machines < filterMinMachines) return false;
+      
+      // 5. 야간투석 여부
+      if (filterNight && !h.night_dialysis) return false;
+
+      // 6. 우수 인공신장실 여부
+      if (filterKsn && h.ksn_certified !== '인증') return false;
+
+      // 7. 심평원 1등급 여부
+      if (filterHira && h.hira_grade !== '1등급') return false;
+
+      // 8. 투석전문의 상주 여부
+      if (filterSpecialist) {
+        const hasSpecialist = h.is_dialysis_specialist === 1 || (h.specialist_count !== undefined && h.specialist_count > 0);
+        if (!hasSpecialist) return false;
+      }
+      
+      return true;
+    });
+  }, [allHospitals, query, region, selectedSiGunGu, filterMinMachines, filterNight, filterKsn, filterHira, filterSpecialist]);
 
   // 정렬 옵션 처리
-  const sortedHospitals = [...filteredHospitals].sort((a, b) => {
-    if (sortBy === 'rating') {
-      const ratingA = parseFloat(getSimulatedDetails(a).rating);
-      const ratingB = parseFloat(getSimulatedDetails(b).rating);
-      return ratingB - ratingA;
-    }
-    
-    if (sortBy === 'machines') {
-      return b.dialysis_machines - a.dialysis_machines;
-    }
-    
-    if (sortBy === 'night') {
-      if (a.night_dialysis && !b.night_dialysis) return -1;
-      if (!a.night_dialysis && b.night_dialysis) return 1;
-      return b.dialysis_machines - a.dialysis_machines;
-    }
-    
-    return a.name.localeCompare(b.name, 'ko');
-  });
+  const sortedHospitals = useMemo(() => {
+    return [...filteredHospitals].sort((a, b) => {
+      if (sortBy === 'rating') {
+        const ratingA = parseFloat(getSimulatedDetails(a).rating);
+        const ratingB = parseFloat(getSimulatedDetails(b).rating);
+        return ratingB - ratingA;
+      }
+      
+      if (sortBy === 'machines') {
+        return b.dialysis_machines - a.dialysis_machines;
+      }
+      
+      if (sortBy === 'night') {
+        if (a.night_dialysis && !b.night_dialysis) return -1;
+        if (!a.night_dialysis && b.night_dialysis) return 1;
+        return b.dialysis_machines - a.dialysis_machines;
+      }
+      
+      return a.name.localeCompare(b.name, 'ko');
+    });
+  }, [filteredHospitals, sortBy]);
 
   // 지도 마커 & 공식 MarkerClustering 렌더링
   useEffect(() => {
@@ -653,24 +646,50 @@ function HospitalTab() {
     markers.current.forEach(m => m.setMap(null));
     markers.current = [];
 
-    // 2. 새 마커 생성
-    const newMarkers = sortedHospitals.map(h => {
-      if (!h.lat || !h.lng) return null;
-
+    // 2. 선택된 병원이 있으면 먼저 단독 마커로 생성하여 지도에 직접 표시 (클러스터링 예외 처리로 항상 보임 보장)
+    let selectedMarkerInstance: any = null;
+    if (selectedHospital && selectedHospital.lat && selectedHospital.lng) {
+      const h = selectedHospital;
       const isNight = h.night_dialysis;
-      const isSelected = selectedHospital?.id === h.id;
-      
       const markerHtml = `
-        <div class="hospital-marker-wrapper relative cursor-pointer transition-all duration-200 ${isSelected ? 'is-selected' : ''}" style="transform: ${isSelected ? 'scale(1.2)' : 'scale(1)'}; z-index: ${isSelected ? 9999 : 100};">
+        <div class="hospital-marker-wrapper relative cursor-pointer transition-all duration-200 is-selected" style="transform: scale(1.2); z-index: 9999;">
           <!-- Hospital Label -->
-          <div class="hospital-label absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-lg bg-white border border-gray-200 shadow-md text-[10px] font-black text-gray-700 whitespace-nowrap pointer-events-none select-none ${isSelected ? 'selected-hospital-label border-[#00C8B4] text-[#00C8B4] scale-105 z-50' : 'z-10'}">
+          <div class="hospital-label absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-lg bg-white border border-[#00C8B4] shadow-md text-[10px] font-black text-[#00C8B4] whitespace-nowrap pointer-events-none select-none selected-hospital-label scale-105 z-50">
             ${h.name}
           </div>
           <!-- Pin Body (Teal/Mint for standard, Purple for night-operating, Custom Brand Gradient for selected) -->
-          <div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-lg text-white ${isSelected ? 'ring-4 ring-[#00C9B7]/30 animate-pulse' : ''}" style="background: ${isSelected ? 'linear-gradient(135deg, #00C8B4, #9F7AEA)' : isNight ? 'linear-gradient(135deg, #9F7AEA, #7C3AED)' : 'linear-gradient(135deg, #00C8B4, #00B3A3)'};">
-            ${isSelected ? '📍' : isNight ? '🌙' : '💧'}
+          <div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-lg text-white ring-4 ring-[#00C9B7]/30 animate-pulse" style="background: linear-gradient(135deg, #00C8B4, #9F7AEA);">
+            📍
           </div>
-          <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 border-r border-b border-white shadow-md" style="background: ${isSelected ? '#9F7AEA' : isNight ? '#7C3AED' : '#00B3A3'};"></div>
+          <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 border-r border-b border-white shadow-md" style="background: #9F7AEA;"></div>
+        </div>
+      `;
+      selectedMarkerInstance = new naver.maps.Marker({
+        position: new naver.maps.LatLng(h.lat, h.lng),
+        icon: { content: markerHtml, anchor: new naver.maps.Point(16, 32) },
+        map: mapInstance.current
+      });
+      markers.current.push(selectedMarkerInstance);
+    }
+
+    // 3. 선택되지 않은 나머지 병원들 마커 생성 (중복 드로잉 및 클러스터 간섭 차단)
+    const otherHospitals = sortedHospitals.filter(h => !selectedHospital || String(h.id) !== String(selectedHospital.id));
+    const newMarkers = otherHospitals.map(h => {
+      if (!h.lat || !h.lng) return null;
+
+      const isNight = h.night_dialysis;
+      
+      const markerHtml = `
+        <div class="hospital-marker-wrapper relative cursor-pointer transition-all duration-200" style="transform: scale(1); z-index: 100;">
+          <!-- Hospital Label -->
+          <div class="hospital-label absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-lg bg-white border border-gray-200 shadow-md text-[10px] font-black text-gray-700 whitespace-nowrap pointer-events-none select-none z-10">
+            ${h.name}
+          </div>
+          <!-- Pin Body (Teal/Mint for standard, Purple for night-operating) -->
+          <div class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-lg text-white" style="background: ${isNight ? 'linear-gradient(135deg, #9F7AEA, #7C3AED)' : 'linear-gradient(135deg, #00C8B4, #00B3A3)'};">
+            ${isNight ? '🌙' : '💧'}
+          </div>
+          <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 border-r border-b border-white shadow-md" style="background: ${isNight ? '#7C3AED' : '#00B3A3'};"></div>
         </div>
       `;
 
@@ -682,7 +701,7 @@ function HospitalTab() {
       naver.maps.Event.addListener(marker, 'click', () => {
         setSelectedHospital(h);
         if (window.innerWidth < 1024) {
-          setBottomSheetStage(3); // 모바일은 상세 정보 노출을 위해 시트 최대화
+          setBottomSheetStage(1); // 모바일은 지도 시야를 가리지 않기 위해 시트를 최소화하고 플로팅 카드로 노출
         } else {
           setBottomSheetStage(1);
         }
@@ -693,9 +712,9 @@ function HospitalTab() {
       return marker;
     }).filter(Boolean) as any[];
 
-    markers.current = newMarkers;
+    markers.current.push(...newMarkers);
 
-    // 3. 네이버 지도 공식 MarkerClustering 활용 (CareKidney의 고유 브랜드 그라디언트 및 서클 디자인)
+    // 4. 네이버 지도 공식 MarkerClustering 활용 (선택된 마커를 제외하고 클러스터링 구성)
     if (newMarkers.length > 0 && (window as any).MarkerClustering && mapZoom < 15) {
       const mc = new (window as any).MarkerClustering({
         minClusterSize: 2,
@@ -732,10 +751,10 @@ function HospitalTab() {
       });
       (window as any).markerClusteringInstance = mc;
     } else {
-      // 마커 클러스터가 없거나 줌레벨이 15 이상인 경우 모든 마커 직접 표시
+      // 마커 클러스터가 없거나 줌레벨이 15 이상인 경우 모든 일반 마커 직접 표시
       newMarkers.forEach(m => m.setMap(mapInstance.current));
     }
-  }, [sortedHospitals, mapReady, selectedHospital]);
+  }, [sortedHospitals, mapReady, selectedHospital, mapZoom]);
 
   // 검색 제안 필터링 (최대 5개)
   const suggestedHospitals = query.trim()
@@ -947,8 +966,8 @@ function HospitalTab() {
               </div>
             ) : (
               sortedHospitals.map(h => {
-                const isSelected = selectedHospital?.id === h.id;
-                const isFav = favorites.includes(h.id);
+                const isSelected = selectedHospital && String(selectedHospital.id) === String(h.id);
+                const isFav = favorites.includes(String(h.id));
                 
                 return (
                   <div
@@ -1152,11 +1171,13 @@ function HospitalTab() {
         {/* ── MOBILE EXCLUSIVE: Swipeable Bottom Sheet (모바일 전용 3단계 시트) ── */}
         <div 
           className={`lg:hidden fixed bottom-[64px] left-0 right-0 z-40 bg-white rounded-t-3xl shadow-2xl transition-all duration-300 overflow-hidden flex flex-col ${getBottomSheetHeight()}`}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
         >
           {/* 드래그용 핸들러 */}
-          <div className="w-full py-3 bg-white flex flex-col items-center justify-center flex-shrink-0 cursor-row-resize border-b border-gray-100">
+          <div 
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            className="w-full py-3 bg-white flex flex-col items-center justify-center flex-shrink-0 cursor-row-resize border-b border-gray-100"
+          >
             <div className="w-12 h-1.5 bg-gray-300 rounded-full mb-1"></div>
             <div className="text-[10px] font-extrabold text-gray-400">
               {selectedHospital 
@@ -1175,6 +1196,20 @@ function HospitalTab() {
                   <button
                     onClick={() => {
                       setSelectedHospital(null);
+                      if (mapInstance.current) {
+                        const naver = (window as any).naver;
+                        if (region !== '전체') {
+                          const coords = REGION_COORDS[region];
+                          if (coords) {
+                            mapInstance.current.setCenter(new naver.maps.LatLng(coords.lat, coords.lng));
+                            mapInstance.current.setZoom(coords.zoom);
+                          }
+                        } else {
+                          mapInstance.current.setCenter(new naver.maps.LatLng(36.5, 127.5));
+                          mapInstance.current.setZoom(7);
+                        }
+                      }
+                      setBottomSheetStage(2); // Reset to medium height
                     }}
                     className="w-full py-2.5 px-4 bg-gray-50 border border-gray-150 rounded-xl text-xs font-bold text-gray-500 hover:bg-gray-100 flex items-center justify-center gap-1.5 transition-colors mb-2 cursor-pointer"
                   >
@@ -1327,7 +1362,7 @@ function HospitalTab() {
         </div>
 
         {/* ── MOBILE EXCLUSIVE: Horizontal Swipe Details Card (선택된 병원 요약 카드 플로팅) ── */}
-        {selectedHospital && (
+        {selectedHospital && bottomSheetStage !== 3 && (
           <div 
             className="lg:hidden fixed bottom-[72px] left-4 right-4 z-45 bg-white border border-gray-150 rounded-2xl shadow-xl p-4 flex flex-col gap-2 transition-all animate-slideUp cursor-pointer"
             onTouchStart={handleHorizontalSwipeStart}
