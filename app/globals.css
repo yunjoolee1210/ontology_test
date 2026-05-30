@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-purple: #6D3FA0;
+  --primary-red: #C0392B;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
