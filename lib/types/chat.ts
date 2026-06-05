@@ -1,4 +1,4 @@
-export type Intent = 'research' | 'welfare' | 'general';
+export type Intent = 'medical' | 'nutrition' | 'welfare' | 'research' | 'drug' | 'lifestyle' | 'general';
 
 export interface Entity {
   diseaseType?: 'CKD' | 'DM' | 'BOTH';

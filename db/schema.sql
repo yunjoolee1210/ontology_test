@@ -41,3 +41,66 @@ LANGUAGE SQL AS $$
   WHERE fts @@ plainto_tsquery('simple', query)
   ORDER BY rank DESC LIMIT match_count;
 $$;
+
+-- 4. 사용자 테이블 (demo/stub 및 기본 Supabase Auth 연동용)
+CREATE TABLE IF NOT EXISTS users (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email         TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  status        TEXT NOT NULL DEFAULT 'active', -- 'active' | 'disabled'
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 5. 사용자 프로필 테이블 (Role & Conditions)
+CREATE TABLE IF NOT EXISTS user_profiles (
+  id            UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  name          TEXT,
+  role          TEXT NOT NULL DEFAULT 'patient', -- 'patient' | 'caregiver' | 'researcher'
+  conditions    TEXT[] NOT NULL DEFAULT '{}',    -- 'kidney' | 'diabetes' 복수 선택
+  points        INT DEFAULT 0,
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 6. 채팅 세션 테이블
+CREATE TABLE IF NOT EXISTS chat_sessions (
+  id            TEXT PRIMARY KEY, -- sessionId (Client-generated or timestamp-based string)
+  user_id       UUID REFERENCES users(id) ON DELETE CASCADE, -- 비로그인 시 NULL 가능
+  title         TEXT DEFAULT '새로운 대화',
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 7. 채팅 메시지 테이블
+CREATE TABLE IF NOT EXISTS chat_messages (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id    TEXT REFERENCES chat_sessions(id) ON DELETE CASCADE NOT NULL,
+  role          TEXT NOT NULL, -- 'user' | 'assistant' | 'system'
+  content       TEXT NOT NULL,
+  agent_type    TEXT,          -- 'medical' | 'nutrition' | 'welfare' | 'research' | 'drug' | 'lifestyle' | 'general'
+  sources       JSONB DEFAULT '[]'::jsonb,
+  created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 8. 대화 평가 피드백 테이블 (AI 답변 개선용)
+CREATE TABLE IF NOT EXISTS conversation_feedback (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id    TEXT REFERENCES chat_sessions(id) ON DELETE CASCADE NOT NULL,
+  message_id    UUID REFERENCES chat_messages(id) ON DELETE CASCADE NOT NULL,
+  rating        INT CHECK (rating >= 1 AND rating <= 5),
+  tags          TEXT[] DEFAULT '{}', -- good, excellent, hallucination, incorrect, unsafe, irrelevant, incomplete
+  comment       TEXT,
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 9. 관리자 감사 로그 테이블
+CREATE TABLE IF NOT EXISTS admin_logs (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  admin_id      UUID REFERENCES users(id),
+  action        TEXT NOT NULL, -- 'ROLE_CHANGE' | 'USER_DISABLE' | 'FEEDBACK_SAVE' | 'MESSAGE_DELETE' 등
+  target_id     TEXT,
+  details       TEXT,
+  created_at    TIMESTAMPTZ DEFAULT NOW()
+);

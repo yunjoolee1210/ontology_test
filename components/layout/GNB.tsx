@@ -3,17 +3,45 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HeartPulse, MessageSquare, LineChart, Users, LogIn } from 'lucide-react';
+import { HeartPulse, MessageSquare, LineChart, Users, LogIn, Shield } from 'lucide-react';
 
 export function GNB() {
   const pathname = usePathname();
-
-  const menuItems = [
+  const [menuItems, setMenuItems] = React.useState([
     { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
     { name: '트렌드', path: '/trend', icon: LineChart },
     { name: '커뮤니티', path: '/community', icon: Users },
     { name: '로그인', path: '/auth/login', icon: LogIn },
-  ];
+  ]);
+
+  React.useEffect(() => {
+    // 콩당 프로필이 연구자(researcher)거나 관리자일 경우 관리 콘솔 추가 노출
+    const saved = localStorage.getItem('kongdang_profile');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.role === 'researcher') {
+          setMenuItems([
+            { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
+            { name: '트렌드', path: '/trend', icon: LineChart },
+            { name: '커뮤니티', path: '/community', icon: Users },
+            { name: '관리 콘솔', path: '/admin/dashboard', icon: Shield },
+            { name: '마이페이지', path: '/mypage', icon: LogIn },
+          ]);
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    // 기본 게스트/일반 유저 메뉴
+    setMenuItems([
+      { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
+      { name: '트렌드', path: '/trend', icon: LineChart },
+      { name: '커뮤니티', path: '/community', icon: Users },
+      { name: '마이페이지', path: '/mypage', icon: LogIn },
+    ]);
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-slate-100 shadow-sm backdrop-blur-md bg-white/95">

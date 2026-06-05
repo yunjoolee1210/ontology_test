@@ -1,17 +1,70 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { HeartPulse, Key, Mail, ArrowRight } from 'lucide-react';
+import { supabase } from '../../../lib/rag/supabaseClient';
 
 export default function LoginPage() {
-  const handleLogin = (e: React.FormEvent) => {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('로그인 기능은 데모 버전입니다.');
+    setLoading(true);
+
+    try {
+      // 1. Supabase Auth 로그인 진행
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      const user = data.user;
+      if (user) {
+        // 2. user_profiles 테이블에서 프로필 로드
+        const { data: profile, error: profileError } = await supabase
+          .from('user_profiles')
+          .select('role, conditions, name')
+          .eq('id', user.id)
+          .single();
+
+        if (profile) {
+          // 3. 로컬스토리지 동기화
+          localStorage.setItem('kongdang_profile', JSON.stringify({
+            role: profile.role,
+            conditions: profile.conditions,
+            name: profile.name,
+            email: user.email,
+          }));
+        } else {
+          // 프로필 정보가 없으면 기본 환자 + 신장병 셋팅
+          localStorage.setItem('kongdang_profile', JSON.stringify({
+            role: 'patient',
+            conditions: ['kidney'],
+            name: user.email?.split('@')[0] || '사용자',
+            email: user.email,
+          }));
+        }
+
+        alert('로그인에 성공했습니다!');
+        router.push('/chat');
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || '로그인 실패. 이메일 또는 비밀번호를 확인해 주세요.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto py-8 animate-fade-in">
+    <div className="w-full max-w-md mx-auto py-8 animate-fade-in px-4">
       <div className="bg-white border border-slate-100 rounded-3xl shadow-xl p-8 space-y-6 relative overflow-hidden">
         {/* 장식용 그라디언트 구 */}
         <div className="absolute top-0 right-0 w-24 h-24 bg-purple-100 rounded-full blur-3xl opacity-60"></div>
@@ -32,6 +85,8 @@ export default function LoginPage() {
               <input
                 type="email"
                 required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 placeholder="example@email.com"
                 className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600 focus:bg-white transition-all"
               />
@@ -48,6 +103,8 @@ export default function LoginPage() {
               <input
                 type="password"
                 required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600 focus:bg-white transition-all"
               />
@@ -57,9 +114,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
+            disabled={loading}
             className="w-full py-3.5 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 text-white rounded-xl text-sm font-bold shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center space-x-1.5"
           >
-            <span>로그인</span>
+            <span>{loading ? '로그인 중...' : '로그인'}</span>
             <ArrowRight size={16} />
           </button>
         </form>

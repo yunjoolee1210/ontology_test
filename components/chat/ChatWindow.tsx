@@ -7,12 +7,59 @@ import { InputBar } from './InputBar';
 import { Intent } from '../../lib/types/chat';
 import { Loader2, Bot } from 'lucide-react';
 
+import { supabase } from '../../lib/rag/supabaseClient';
+
 export function ChatWindow() {
   const [activeIntent, setActiveIntent] = useState<Intent>('general');
   const [activeSources, setActiveSources] = useState<any[]>([]);
   const [messageMeta, setMessageMeta] = useState<Record<string, { agentType: Intent; sources: any[] }>>({});
+  const [userProfile, setUserProfile] = useState<{ role: string; conditions: string[] } | null>(null);
+  
+  const [sessionId, setSessionId] = useState<string>('');
+  const [userId, setUserId] = useState<string>('');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // 로컬스토리지 및 세션 정보 로딩
+  useEffect(() => {
+    // 1. 프로필 정보 로드
+    const saved = localStorage.getItem('kongdang_profile');
+    if (saved) {
+      try {
+        setUserProfile(JSON.parse(saved));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // 2. 세션 ID 생성 또는 조회
+    let activeSId = localStorage.getItem('kongdang_active_session_id');
+    if (!activeSId) {
+      activeSId = `session_${Date.now()}`;
+      localStorage.setItem('kongdang_active_session_id', activeSId);
+    }
+    setSessionId(activeSId);
+
+    // 3. 로그인 정보 조회
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } }));
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+    checkUser();
+  }, []);
+
+  const roleLabels: Record<string, string> = {
+    patient: '환자',
+    caregiver: '간병인/보호자',
+    researcher: '연구자',
+  };
+
+  const conditionLabels: Record<string, string> = {
+    kidney: '신장병',
+    diabetes: '당뇨병',
+  };
 
   const {
     messages,
@@ -23,6 +70,10 @@ export function ChatWindow() {
     isLoading,
   } = useChat({
     api: '/api/chat',
+    body: {
+      sessionId: sessionId,
+      userId: userId,
+    },
     onResponse(response) {
       // 응답 헤더에서 에이전트 종류 및 출처 획득
       const agentType = (response.headers.get('X-Agent-Type') || 'general') as Intent;
@@ -55,10 +106,33 @@ export function ChatWindow() {
           }
         }));
       }
+
+      // 비로그인 상태일 때 로컬 세션 & 메시지 이력 갱신
+      const saveLocalHistory = async () => {
+        const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } }));
+        if (!user && sessionId) {
+          // 세션 목록 저장
+          const localSessions = localStorage.getItem('kongdang_local_sessions');
+          let sessionList = localSessions ? JSON.parse(localSessions) : [];
+          if (!sessionList.some((s: any) => s.id === sessionId)) {
+            sessionList = [{
+              id: sessionId,
+              title: messages[0]?.content.substring(0, 30) || '새로운 대화',
+              created_at: new Date().toISOString()
+            }, ...sessionList];
+            localStorage.setItem('kongdang_local_sessions', JSON.stringify(sessionList));
+          }
+
+          // 메시지 상세 목록 저장
+          const localMsgKey = `kongdang_local_msg_${sessionId}`;
+          localStorage.setItem(localMsgKey, JSON.stringify(messages));
+        }
+      };
+      saveLocalHistory();
     }
     // 스크롤 아래로 내리기
     scrollToBottom();
-  }, [messages, activeIntent, activeSources]);
+  }, [messages, activeIntent, activeSources, sessionId]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -78,15 +152,22 @@ export function ChatWindow() {
           </div>
           <div>
             <h2 className="text-sm font-bold tracking-wide">콩당콩당 AI 케어 파트너</h2>
-            <p className="text-[10px] text-purple-200">만성 신장병(CKD) & 당뇨(DM) 맞춤형 멀티에이전트 RAG</p>
+            <p className="text-[10px] text-purple-200">만성 신장병(CKD) & 당뇨(DM) 맞춤형 RAG 챗봇</p>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <span className="flex h-2 w-2 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          <span className="text-[11px] font-semibold text-purple-100">에이전트 대기 중</span>
+        <div className="flex items-center space-x-4">
+          {userProfile && (
+            <div className="hidden sm:flex items-center text-[11px] font-bold text-purple-100 bg-white/15 px-3 py-1.5 rounded-xl border border-white/5 shadow-xs">
+              {roleLabels[userProfile.role] || userProfile.role} | 관심 질환: {userProfile.conditions.map(c => conditionLabels[c] || c).join(', ')}
+            </div>
+          )}
+          <div className="flex items-center space-x-2">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-[11px] font-semibold text-purple-100">에이전트 대기 중</span>
+          </div>
         </div>
       </div>
 
