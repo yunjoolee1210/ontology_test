@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
       finalAnswer += '\n\n🔍 **신뢰 정보 검색 출처**:\n';
       orchestratorResult.sources.forEach((s, idx) => {
         const doiStr = s.doi ? ` (DOI: ${s.doi})` : '';
-        const urlStr = s.url ? ` [[링크](${s.url})]` : '';
+        const urlStr = s.url ? ` [링크](${s.url})` : '';
         finalAnswer += `${idx + 1}. *${s.title}* - ${s.org || '공식 정보처'}${doiStr}${urlStr}\n`;
       });
     }

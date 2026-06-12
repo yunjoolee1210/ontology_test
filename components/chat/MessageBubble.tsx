@@ -14,91 +14,109 @@ interface MessageBubbleProps {
 export function MessageBubble({ role, content, agentType, sources, onActionClick }: MessageBubbleProps) {
   const isUser = role === 'user';
 
-  // Parse custom links like [식단 에이전트로 연결](#action-nutrition)
-  const parseActionLinks = (line: string) => {
-    const actionRegex = /\[(.*?)\]\(#action-(.*?)\)/g;
+  const parseBold = (text: string): React.ReactNode[] => {
+    const boldRegex = /\*\*(.*?)\*\*/g;
     const parts = [];
     let lastIndex = 0;
     let match;
 
-    while ((match = actionRegex.exec(line)) !== null) {
-      // Add text before the match
+    while ((match = boldRegex.exec(text)) !== null) {
       if (match.index > lastIndex) {
-        parts.push(line.substring(lastIndex, match.index));
+        parts.push(text.substring(lastIndex, match.index));
       }
-      
+      parts.push(<strong key={match.index} className="font-bold text-slate-900">{match[1]}</strong>);
+      lastIndex = boldRegex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : [text];
+  };
+
+  const parseLinksAndBold = (text: string): React.ReactNode[] => {
+    const linkRegex = /\[(.*?)\]\((.*?)\)/g;
+    const parts: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = linkRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(...parseBold(text.substring(lastIndex, match.index)));
+      }
+
       const label = match[1];
-      const actionType = match[2];
-      
-      parts.push(
-        <button
-          key={match.index}
-          onClick={() => onActionClick && onActionClick(actionType)}
-          className="mx-1 px-3 py-1 bg-purple-50 text-[#6D3FA0] border border-purple-200 rounded-lg text-xs font-bold hover:bg-[#6D3FA0] hover:text-white transition-all shadow-xs my-1"
-        >
-          {label}
-        </button>
-      );
-      
-      lastIndex = actionRegex.lastIndex;
+      const url = match[2];
+
+      if (url.startsWith('#action-')) {
+        const actionType = url.replace('#action-', '');
+        parts.push(
+          <button
+            key={`action-${match.index}`}
+            onClick={() => onActionClick && onActionClick(actionType)}
+            className="mx-1 px-3 py-1 bg-purple-50 text-[#6D3FA0] border border-purple-200 rounded-lg text-xs font-bold hover:bg-[#6D3FA0] hover:text-white transition-all shadow-xs my-1"
+          >
+            {label}
+          </button>
+        );
+      } else {
+        parts.push(
+          <a
+            key={`link-${match.index}`}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-purple-600 hover:text-purple-850 font-bold underline mx-0.5"
+          >
+            {label}
+          </a>
+        );
+      }
+
+      lastIndex = linkRegex.lastIndex;
     }
 
-    if (lastIndex < line.length) {
-      parts.push(line.substring(lastIndex));
+    if (lastIndex < text.length) {
+      parts.push(...parseBold(text.substring(lastIndex)));
     }
 
-    return parts.length > 0 ? parts : line;
+    return parts.length > 0 ? parts : [text];
   };
 
   const formatContent = (text: string) => {
     return text.split('\n').map((line, i) => {
-      // Check for list items
-      const isListItem = line.trim().startsWith('- ') || line.trim().match(/^\d+\.\s/);
-      
-      // Parse bold text
-      let renderedLine: React.ReactNode = line;
-      const boldRegex = /\*\*(.*?)\*\*/g;
-      
-      if (line.includes('**')) {
-        const parts = [];
-        let lastIndex = 0;
-        let match;
-        
-        while ((match = boldRegex.exec(line)) !== null) {
-          if (match.index > lastIndex) {
-            parts.push(line.substring(lastIndex, match.index));
-          }
-          parts.push(<strong key={match.index} className="font-bold text-slate-900">{match[1]}</strong>);
-          lastIndex = boldRegex.lastIndex;
-        }
-        if (lastIndex < line.length) {
-          parts.push(line.substring(lastIndex));
-        }
-        renderedLine = parts;
+      let isHeader = false;
+      let renderedLine: React.ReactNode = null;
+
+      if (line.startsWith('#### ')) {
+        isHeader = true;
+        renderedLine = <h5 className="text-xs font-extrabold text-slate-900 mt-3 mb-1.5">{parseLinksAndBold(line.substring(5))}</h5>;
+      } else if (line.startsWith('### ')) {
+        isHeader = true;
+        renderedLine = <h4 className="text-sm font-black text-slate-900 mt-4 mb-2">{parseLinksAndBold(line.substring(4))}</h4>;
+      } else if (line.startsWith('## ')) {
+        isHeader = true;
+        renderedLine = <h3 className="text-base font-black text-slate-900 mt-5 mb-2.5">{parseLinksAndBold(line.substring(3))}</h3>;
+      } else if (line.startsWith('# ')) {
+        isHeader = true;
+        renderedLine = <h2 className="text-lg font-black text-slate-900 mt-6 mb-3">{parseLinksAndBold(line.substring(2))}</h2>;
       }
 
-      // Check if line contains action buttons
-      if (typeof renderedLine === 'string' && renderedLine.includes('#action-')) {
-        renderedLine = parseActionLinks(renderedLine);
-      } else if (Array.isArray(renderedLine)) {
-        renderedLine = renderedLine.map(part => {
-          if (typeof part === 'string' && part.includes('#action-')) {
-            return parseActionLinks(part);
-          }
-          return part;
-        });
+      if (!isHeader) {
+        renderedLine = parseLinksAndBold(line);
       }
 
       // Identify risk tags and add beautiful background highlight if needed
       let lineClass = "min-h-[1.25rem] my-0.5";
       if (line.includes('🚨') || line.includes('위험도: 응급')) {
-        lineClass += " p-2 bg-red-50 border-l-4 border-red-500 rounded-r-md text-red-950 font-medium";
+        lineClass += " p-2.5 bg-red-50 border-l-4 border-red-500 rounded-r-xl text-red-950 font-semibold my-2 shadow-2xs";
       } else if (line.includes('🔴') || line.includes('위험도: 위험')) {
-        lineClass += " p-2 bg-amber-50 border-l-4 border-amber-500 rounded-r-md text-amber-950 font-medium";
+        lineClass += " p-2.5 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl text-amber-950 font-semibold my-2 shadow-2xs";
       } else if (line.includes('🟡') || line.includes('위험도: 주의')) {
-        lineClass += " p-2 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-md text-yellow-950";
+        lineClass += " p-2.5 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-xl text-yellow-950 my-2";
       } else if (line.includes('🟢') || line.includes('위험도: 정상')) {
-        lineClass += " p-2 bg-emerald-50 border-l-4 border-emerald-400 rounded-r-md text-emerald-950";
+        lineClass += " p-2.5 bg-emerald-50 border-l-4 border-emerald-400 rounded-r-xl text-emerald-950 my-2";
       }
 
       return (
