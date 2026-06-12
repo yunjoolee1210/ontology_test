@@ -89,7 +89,7 @@ export function ChatWindow() {
       let parsedSources = [];
       if (sourcesHeader) {
         try {
-          parsedSources = JSON.parse(sourcesHeader);
+          parsedSources = JSON.parse(decodeURIComponent(sourcesHeader));
         } catch (e) {
           console.error('Failed to parse sources header:', e);
         }

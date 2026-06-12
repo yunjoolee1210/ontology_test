@@ -144,7 +144,7 @@ export async function POST(req: NextRequest) {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
         'X-Agent-Type': orchestratorResult.agentType,
-        'X-Agent-Sources': JSON.stringify(orchestratorResult.sources),
+        'X-Agent-Sources': encodeURIComponent(JSON.stringify(orchestratorResult.sources || [])),
         'Access-Control-Expose-Headers': 'X-Agent-Type, X-Agent-Sources',
       }
     });
