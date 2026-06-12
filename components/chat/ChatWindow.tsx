@@ -76,6 +76,7 @@ export function ChatWindow() {
     append
   } = useChat({
     api: '/api/chat',
+    streamProtocol: 'text',
     body: {
       sessionId: sessionId,
       userId: userId,
