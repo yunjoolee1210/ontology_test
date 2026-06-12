@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Award, Heart, Shield, Settings, ChevronRight, CheckCircle2, Save } from 'lucide-react';
+import { User, Award, Heart, Shield, Settings, Save, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../../lib/rag/supabaseClient';
 
 type Role = 'patient' | 'caregiver' | 'researcher';
-type Condition = 'kidney' | 'diabetes';
 
 export default function MyPage() {
   const router = useRouter();
@@ -15,19 +14,31 @@ export default function MyPage() {
     name: string;
     email: string;
     role: Role;
-    conditions: Condition[];
+    ckd_stage: string;
+    dialysis_type: string;
+    diabetes_type: string;
+    medication: string;
+    other_conditions: string[];
     points: number;
   }>({
     name: '게스트',
     email: '로그인하지 않음',
     role: 'patient',
-    conditions: ['kidney'],
+    ckd_stage: '1기',
+    dialysis_type: '해당없음',
+    diabetes_type: '없음',
+    medication: '식이조절만',
+    other_conditions: [],
     points: 0,
   });
   
   const [isEditing, setIsEditing] = useState(false);
   const [editRole, setEditRole] = useState<Role>('patient');
-  const [editConditions, setEditConditions] = useState<Condition[]>([]);
+  const [editCkdStage, setEditCkdStage] = useState('1기');
+  const [editDialysisType, setEditDialysisType] = useState('해당없음');
+  const [editDiabetesType, setEditDiabetesType] = useState('없음');
+  const [editMedication, setEditMedication] = useState('식이조절만');
+  const [editOtherConditions, setEditOtherConditions] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -46,13 +57,21 @@ export default function MyPage() {
           name: dbProfile?.name || user.email?.split('@')[0] || '사용자',
           email: user.email || '',
           role: (dbProfile?.role || 'patient') as Role,
-          conditions: (dbProfile?.conditions || ['kidney']) as Condition[],
+          ckd_stage: dbProfile?.ckd_stage || '1기',
+          dialysis_type: dbProfile?.dialysis_type || '해당없음',
+          diabetes_type: dbProfile?.diabetes_type || '없음',
+          medication: dbProfile?.medication || '식이조절만',
+          other_conditions: dbProfile?.other_conditions || [],
           points: dbProfile?.points || 100,
         };
 
         setProfile(loadedProfile);
         setEditRole(loadedProfile.role);
-        setEditConditions(loadedProfile.conditions);
+        setEditCkdStage(loadedProfile.ckd_stage);
+        setEditDialysisType(loadedProfile.dialysis_type);
+        setEditDiabetesType(loadedProfile.diabetes_type);
+        setEditMedication(loadedProfile.medication);
+        setEditOtherConditions(loadedProfile.other_conditions);
       } else {
         setIsLoggedIn(false);
         const saved = localStorage.getItem('kongdang_profile');
@@ -63,12 +82,20 @@ export default function MyPage() {
               name: parsed.name || '게스트 환우',
               email: parsed.email || '비로그인 상태',
               role: (parsed.role || 'patient') as Role,
-              conditions: (parsed.conditions || ['kidney']) as Condition[],
+              ckd_stage: parsed.ckd_stage || '1기',
+              dialysis_type: parsed.dialysis_type || '해당없음',
+              diabetes_type: parsed.diabetes_type || '없음',
+              medication: parsed.medication || '식이조절만',
+              other_conditions: parsed.other_conditions || [],
               points: 0,
             };
             setProfile(loadedProfile);
             setEditRole(loadedProfile.role);
-            setEditConditions(loadedProfile.conditions);
+            setEditCkdStage(loadedProfile.ckd_stage);
+            setEditDialysisType(loadedProfile.dialysis_type);
+            setEditDiabetesType(loadedProfile.diabetes_type);
+            setEditMedication(loadedProfile.medication);
+            setEditOtherConditions(loadedProfile.other_conditions);
           } catch (e) {
             console.error(e);
           }
@@ -78,25 +105,33 @@ export default function MyPage() {
     loadProfile();
   }, []);
 
-  const handleConditionToggle = (cond: Condition) => {
-    setEditConditions(prev => 
+  const handleConditionToggle = (cond: string) => {
+    setEditOtherConditions(prev => 
       prev.includes(cond) ? prev.filter(c => c !== cond) : [...prev, cond]
     );
   };
 
   const handleSave = async () => {
-    if (editConditions.length === 0) {
-      alert('관심 질환을 하나 이상 선택해 주세요.');
-      return;
-    }
-
     setSaving(true);
     try {
-      const updatedProfile = { ...profile, role: editRole, conditions: editConditions };
+      const updatedProfile = { 
+        ...profile, 
+        role: editRole, 
+        ckd_stage: editCkdStage,
+        dialysis_type: editDialysisType,
+        diabetes_type: editDiabetesType,
+        medication: editMedication,
+        other_conditions: editOtherConditions
+      };
       
       // 1. LocalStorage 저장
       localStorage.setItem('kongdang_profile', JSON.stringify({
-        ...updatedProfile,
+        role: editRole, 
+        ckd_stage: editCkdStage,
+        dialysis_type: editDialysisType,
+        diabetes_type: editDiabetesType,
+        medication: editMedication,
+        other_conditions: editOtherConditions,
         name: profile.name,
         email: profile.email
       }));
@@ -110,7 +145,11 @@ export default function MyPage() {
             .upsert({
               id: user.id,
               role: editRole,
-              conditions: editConditions,
+              ckd_stage: editCkdStage,
+              dialysis_type: editDialysisType,
+              diabetes_type: editDiabetesType,
+              medication: editMedication,
+              other_conditions: editOtherConditions,
               updated_at: new Date().toISOString()
             });
 
@@ -142,10 +181,11 @@ export default function MyPage() {
     researcher: '연구자',
   };
 
-  const conditionLabels = {
-    kidney: '신장병 (콩팥병)',
-    diabetes: '당뇨병',
-  };
+  const ckdStages = ['1기', '2기', '3a', '3b', '4기', '5기(투석전)', '투석중'];
+  const dialysisTypes = ['해당없음', '혈액투석', '복막투석', '신장이식 후'];
+  const diabetesTypes = ['없음', '1형', '2형'];
+  const medications = ['경구약', '인슐린', '경구약+인슐린', '식이조절만'];
+  const otherConditionsList = ['고혈압', '고지혈증'];
 
   return (
     <div className="w-full max-w-2xl mx-auto py-6 space-y-6 animate-fade-in px-4">
@@ -160,7 +200,7 @@ export default function MyPage() {
             <p className="text-xs text-slate-400">{profile.email}</p>
             <div className="flex flex-wrap gap-1.5 justify-center sm:justify-start pt-1.5">
               <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100">
-                {roleLabels[profile.role]} | 관심: {profile.conditions.map(c => conditionLabels[c]).join(', ')}
+                {roleLabels[profile.role]} | CKD: {profile.ckd_stage} | 당뇨: {profile.diabetes_type !== '없음' ? `${profile.diabetes_type}` : '없음'}
               </span>
             </div>
           </div>
@@ -214,17 +254,31 @@ export default function MyPage() {
               <span className="font-bold text-slate-800">{roleLabels[profile.role]}</span>
             </div>
             <div className="flex justify-between text-xs sm:text-sm">
-              <span className="text-slate-400">관심 만성질환</span>
-              <span className="font-bold text-slate-800">
-                {profile.conditions.map(c => conditionLabels[c]).join(', ')}
-              </span>
+              <span className="text-slate-400">만성 콩팥병(CKD) 단계</span>
+              <span className="font-bold text-slate-800">{profile.ckd_stage}</span>
+            </div>
+            <div className="flex justify-between text-xs sm:text-sm">
+              <span className="text-slate-400">투석 여부 및 방법</span>
+              <span className="font-bold text-slate-800">{profile.dialysis_type}</span>
+            </div>
+            <div className="flex justify-between text-xs sm:text-sm">
+              <span className="text-slate-400">당뇨 유형</span>
+              <span className="font-bold text-slate-800">{profile.diabetes_type === '없음' ? '해당 없음' : `${profile.diabetes_type} 당뇨`}</span>
+            </div>
+            <div className="flex justify-between text-xs sm:text-sm">
+              <span className="text-slate-400">현재 당 조절 약물</span>
+              <span className="font-bold text-slate-800">{profile.medication}</span>
+            </div>
+            <div className="flex justify-between text-xs sm:text-sm">
+              <span className="text-slate-400">기타 만성 합병증</span>
+              <span className="font-bold text-slate-800">{profile.other_conditions.join(', ') || '없음'}</span>
             </div>
           </div>
         ) : (
           <div className="space-y-4 pt-2">
             {/* 역할 변경 */}
             <div className="space-y-2">
-              <label className="text-[11px] font-bold text-slate-500 uppercase">역할 변경</label>
+              <label className="text-[11px] font-bold text-slate-500 uppercase">역할</label>
               <div className="grid grid-cols-3 gap-2">
                 {(['patient', 'caregiver', 'researcher'] as Role[]).map(r => (
                   <button
@@ -239,20 +293,88 @@ export default function MyPage() {
               </div>
             </div>
 
-            {/* 관심질환 변경 */}
+            {/* CKD 단계 */}
             <div className="space-y-2">
-              <label className="text-[11px] font-bold text-slate-500 uppercase">관심 질환 변경</label>
+              <label className="text-[11px] font-bold text-slate-500 uppercase">콩팥병(CKD) 단계</label>
+              <div className="flex flex-wrap gap-2">
+                {ckdStages.map(stage => (
+                  <button
+                    key={stage}
+                    type="button"
+                    onClick={() => setEditCkdStage(stage)}
+                    className={`py-1.5 px-3 border rounded-xl text-xs font-semibold transition-all ${editCkdStage === stage ? 'border-purple-600 bg-purple-50 text-purple-700 font-bold' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                  >
+                    {stage}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 투석 방법 */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-slate-500 uppercase">투석 여부/방법</label>
+              <div className="grid grid-cols-4 gap-2">
+                {dialysisTypes.map(type => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setEditDialysisType(type)}
+                    className={`py-2 px-1 border rounded-xl text-xs font-semibold transition-all ${editDialysisType === type ? 'border-purple-600 bg-purple-50 text-purple-700 font-bold' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 당뇨 유형 */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-slate-500 uppercase">당뇨 유형</label>
+              <div className="grid grid-cols-3 gap-2">
+                {diabetesTypes.map(type => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setEditDiabetesType(type)}
+                    className={`py-2 px-3 border rounded-xl text-xs font-semibold transition-all ${editDiabetesType === type ? 'border-purple-600 bg-purple-50 text-purple-700 font-bold' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                  >
+                    {type === '없음' ? '해당 없음' : `${type} 당뇨`}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 약물 조절 */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-slate-500 uppercase">당뇨 조절 약물</label>
+              <div className="flex flex-wrap gap-2">
+                {medications.map(med => (
+                  <button
+                    key={med}
+                    type="button"
+                    onClick={() => setEditMedication(med)}
+                    className={`py-2 px-3 border rounded-xl text-xs font-semibold transition-all ${editMedication === med ? 'border-purple-600 bg-purple-50 text-purple-700 font-bold' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                  >
+                    {med}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 기타 질환 */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-slate-500 uppercase">기타 동반 질환</label>
               <div className="grid grid-cols-2 gap-3">
-                {(['kidney', 'diabetes'] as Condition[]).map(c => {
-                  const isSelected = editConditions.includes(c);
+                {otherConditionsList.map(cond => {
+                  const isSelected = editOtherConditions.includes(cond);
                   return (
                     <button
-                      key={c}
+                      key={cond}
                       type="button"
-                      onClick={() => handleConditionToggle(c)}
+                      onClick={() => handleConditionToggle(cond)}
                       className={`py-3 px-4 border rounded-2xl text-xs font-semibold text-left flex justify-between items-center transition-all ${isSelected ? 'border-purple-600 bg-purple-50 text-purple-700' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
                     >
-                      <span>{conditionLabels[c]}</span>
+                      <span>{cond}</span>
                       <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${isSelected ? 'border-purple-600 bg-purple-600 text-white' : 'border-slate-300 bg-white'}`}>
                         {isSelected && <CheckCircle2 size={10} className="fill-white text-purple-600" />}
                       </div>

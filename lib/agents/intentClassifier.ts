@@ -13,6 +13,7 @@ const KEYWORD_MAP: Record<Intent, string[]> = {
   research: ['논문', '연구', '임상', '최신', '실험', '저널', 'pubmed', 'study', 'paper', '학술'],
   drug: ['약물', '복약', '부작용', '처방', 'sglt2', '약', '복용', '메트포르민', '부작용'],
   lifestyle: ['운동', '수면', '생활습관', '담배', '술', '음주', '스트레스', '유산소'],
+  hospital: ['병원', '의료원', '응급실', '신장내과', '의원', '내과', '투석실', '야간투석', '심평원', '가까운', '어디가야'],
   general: ['안녕', '반가워', '인사', '고마워', '감사']
 };
 
@@ -50,6 +51,7 @@ export async function intentClassifier(message: string): Promise<Intent[]> {
 - "research": 최신 임상 시험 결과, 신장/당뇨 학술 논문, PubMed 연구자료 등 학술 연구 지식 질문.
 - "drug": 특정 약물(예: SGLT2 억제제, 메트포르민 등), 복용 방법, 부작용 및 상호작용 질문.
 - "lifestyle": 운동법, 수면 조절, 스트레스, 금연/금주 등 건강 습관 질문.
+- "hospital": 신장내과/내분비내과 병원 찾기, 혈액투석 가능 병원, 야간투석실 운영 여부, 병원 예약 및 의뢰 절차 질문.
 - "general": 단순 인사, 가벼운 대화, 감사 표시 등 위의 특화 범주에 속하지 않는 일상 질문.
 
 [Few-Shot Examples]
@@ -61,6 +63,9 @@ Assistant: ["research", "drug"]
 
 User: 당뇨 신장 합병증 증상과 수면 습관 관계는?
 Assistant: ["medical", "lifestyle"]
+
+User: 집 근처에 혈액투석실 있는 신장내과 병원 있어?
+Assistant: ["hospital"]
 
 User: 안녕! 만나서 반가워
 Assistant: ["general"]`
@@ -82,7 +87,7 @@ Assistant: ["general"]`
     if (Array.isArray(parsed) && parsed.length > 0) {
       // 유효한 의도만 필터링
       const validIntents = parsed.filter(i => 
-        ['medical', 'nutrition', 'welfare', 'research', 'drug', 'lifestyle', 'general'].includes(i)
+        ['medical', 'nutrition', 'welfare', 'research', 'drug', 'lifestyle', 'hospital', 'general'].includes(i)
       ) as Intent[];
       if (validIntents.length > 0) {
         return validIntents;

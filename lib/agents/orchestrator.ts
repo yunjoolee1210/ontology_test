@@ -1,18 +1,18 @@
 import OpenAI from 'openai';
 import { intentClassifier } from './intentClassifier';
 import { medicalAgent } from './medicalAgent';
-import { nutritionAgent } from './nutritionAgent';
+import { dietAgent } from './dietAgent';
 import { welfareAgent } from './welfareAgent';
 import { researchAgent } from './researchAgent';
 import { drugAgent } from './drugAgent';
-import { lifestyleAgent } from './lifestyleAgent';
-import { AgentResponse, Intent } from '../types/chat';
+import { hospitalAgent } from './hospitalAgent';
+import { AgentResponse, Intent, UserProfile } from '../types/chat';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'dummy_key',
 });
 
-export async function orchestrator(message: string): Promise<AgentResponse> {
+export async function orchestrator(message: string, userProfile?: UserProfile): Promise<AgentResponse> {
   try {
     // 1. 의도 분류 호출 (다중 의도 감지 가능)
     const intents = await intentClassifier(message);
@@ -52,22 +52,23 @@ export async function orchestrator(message: string): Promise<AgentResponse> {
     activeIntents.forEach(intent => {
       switch (intent) {
         case 'medical':
-          agentPromises.push(medicalAgent(message));
+          agentPromises.push(medicalAgent(message, userProfile));
           break;
         case 'nutrition':
-          agentPromises.push(nutritionAgent(message));
+        case 'lifestyle':
+          agentPromises.push(dietAgent(message, userProfile));
           break;
         case 'welfare':
-          agentPromises.push(welfareAgent(message));
+          agentPromises.push(welfareAgent(message, userProfile));
           break;
         case 'research':
-          agentPromises.push(researchAgent(message));
+          agentPromises.push(researchAgent(message, userProfile));
           break;
         case 'drug':
-          agentPromises.push(drugAgent(message));
+          agentPromises.push(drugAgent(message)); // drugAgent doesn't strictly need userProfile yet, but we will keep it simple
           break;
-        case 'lifestyle':
-          agentPromises.push(lifestyleAgent(message));
+        case 'hospital':
+          agentPromises.push(hospitalAgent(message, userProfile));
           break;
       }
     });
@@ -108,7 +109,7 @@ export async function orchestrator(message: string): Promise<AgentResponse> {
 
 [합성 주의사항]
 1. 서로 다른 의도의 정보를 자연스럽게 병합하고 어색한 중복 표현은 제거하세요. (예: 두 에이전트가 모두 인사하거나 주의사항을 각자 말하는 부분 정리)
-2. 각 에이전트가 제시한 핵심 임상적/식단/복지 가이드는 누락 없이 정확히 포함하세요.
+2. 각 에이전트가 제시한 핵심 임상적/식단/복지/병원 가이드는 누락 없이 정확히 포함하세요.
 3. 보기 쉽게 마크다운 구조(소제목, 글머리 기호 등)를 사용해 가독성을 대폭 높이세요.
 4. 환자를 위하고 안심시키는 친절하고 세심한 어조를 유지하세요.`
         },
@@ -137,10 +138,14 @@ export async function orchestrator(message: string): Promise<AgentResponse> {
     // 대표 에이전트 타입 결정 (첫 번째 의도 기준)
     const primaryAgentType = activeIntents[0] || 'general';
 
+    // 대표 위험도 캡처
+    const primaryRisk = agentResponses.find(r => r.riskLevel)?.riskLevel;
+
     return {
       answer: synthesisResponse.choices[0]?.message?.content || '통합 답변 생성에 실패했습니다.',
       agentType: primaryAgentType,
       sources: allSources,
+      riskLevel: primaryRisk
     };
   } catch (error) {
     console.error('Error in Orchestrator:', error);

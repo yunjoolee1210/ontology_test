@@ -2,18 +2,26 @@ import OpenAI from 'openai';
 import { entityExtractor } from './entityExtractor';
 import { searchWelfareDocs } from '../rag/supabaseClient';
 import { queryPinecone } from '../rag/pineconeClient';
-import { AgentResponse } from '../types/chat';
+import { AgentResponse, UserProfile } from '../types/chat';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'dummy_key',
 });
 
-export async function welfareAgent(message: string): Promise<AgentResponse> {
+export async function welfareAgent(message: string, userProfile?: UserProfile): Promise<AgentResponse> {
   try {
     // 1. 엔티티 및 변수 추출
     const entities = await entityExtractor(message);
     const keywordsQuery = entities.keywords.join(' ');
-    const diseaseFilter = entities.diseaseType;
+    
+    // 질병 필터 설정
+    let diseaseFilter: 'CKD' | 'DM' | 'BOTH' = 'BOTH';
+    if (userProfile?.ckd_stage && userProfile?.ckd_stage !== '해당없음') {
+      diseaseFilter = 'CKD';
+    }
+    if (userProfile?.diabetes_type && userProfile?.diabetes_type !== '없음') {
+      diseaseFilter = diseaseFilter === 'CKD' ? 'BOTH' : 'DM';
+    }
 
     // 2. Supabase FTS 검색 실행
     let welfareDocs = await searchWelfareDocs(keywordsQuery, diseaseFilter, 5).catch(err => {
@@ -40,34 +48,19 @@ export async function welfareAgent(message: string): Promise<AgentResponse> {
       }));
     }
 
-    // 4. 검색 결과가 여전히 비어있으면 GPT-4o-mini 일반 복지 지식 활용 폴백
-    if (welfareDocs.length === 0) {
-      const fallbackResponse = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: '당신은 보건의료 및 국가복지 전문 사회복지사입니다. 데이터베이스에서 직접적인 혜택 자료를 찾지 못했으므로 만성질환자(만성신부전, 당뇨) 대상의 일반적인 의료급여, 산정특례, 장애인 등록, 바우처 혜택 신청 기준과 절차를 친절하고 명확하게 한국어로 안내해 주세요.'
-          },
-          {
-            role: 'user',
-            content: message
-          }
-        ],
-        temperature: 0.3,
-        max_tokens: 800,
-      });
+    // 환자 프로필 정보 포맷팅
+    const profileText = userProfile 
+      ? `[환자 프로필]
+- 콩팥 단계: ${userProfile.ckd_stage || '미입력'}
+- 투석 방법: ${userProfile.dialysis_type || '해당없음'}
+- 당뇨 유형: ${userProfile.diabetes_type || '없음'}
+- 복약 상태: ${userProfile.medication || '미입력'}
+- 기타 질환: ${(userProfile.other_conditions || []).join(', ') || '없음'}`
+      : '환자 건강 프로필 정보 없음';
 
-      return {
-        answer: fallbackResponse.choices[0]?.message?.content || '죄송합니다. 국가 복지 지원 혜택을 조회하는 데 실패했습니다.',
-        agentType: 'welfare',
-        sources: [],
-      };
-    }
-
-    // 5. GPT-4o-mini를 활용하여 복지 정보 및 요건 요약 생성
+    // 4. 복제/요약 생성을 위한 컨텍스트 구성
     const contextStr = welfareDocs.map((doc, idx) => 
-      `[복지 정책 ${idx + 1}]
+      `[복지 정보 ${idx + 1}]
 제목: ${doc.title || '만성질환 의료복지 지원'}
 제공기관: ${doc.org}
 대상 질병: ${doc.disease || '공통'}
@@ -75,45 +68,58 @@ export async function welfareAgent(message: string): Promise<AgentResponse> {
 `
     ).join('\n');
 
-    const summaryResponse = await openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
-          content: `당신은 콩팥병 및 당뇨 환자들에게 국가 의료복지 혜택, 요건, 신청 절차를 친절히 설명하는 전문 사회복지사 에이전트입니다.
-제공된 [복지 정책 정보]만을 바탕으로 사용자의 질문에 정확하고 세심하게 답변하세요.
+          content: `당신은 만성질환(콩팥병, 당뇨병) 환자 대상의 국가 의료복지 혜택 및 공공 의료비 지원 제도 신청을 안내하는 '의료복지 전문 사회복지사'입니다.
+제시된 [환자 프로필]과 [복지 정책 정보]를 매칭하여 환자에게 가장 정확한 지원금 혜택 및 신청 절차를 조언하십시오.
 
-[요구 사항]
-1. 반드시 한국어로 답변할 것.
-2. 지원 대상 요건(소득 기준 등), 혜택 상세, 필요한 구비 서류 및 신청 방법(온라인/행정복지센터)을 세분화하여 가독성 있게 요약할 것.
-3. 부정확하거나 추측성 혜택 조건은 언급하지 말 것.
-4. 사용자에게 따뜻하고 격려하는 어조를 유지할 것.`
+[핵심 판정 가이드라인]
+- 환자가 **신장 투석 중(혈액/복막)**이거나 **5기**라면, 건강보험 산정특례(V001) 등록을 통한 본인부담금 감면(요양급여 10%만 부담) 및 장애인 등록 요건(신장장애인 등급 기준)을 1순위로 안내하세요.
+- 환자가 **1형 당뇨**이거나 인슐린 치료 환자라면, 인슐린 펌프 및 당뇨병 소모성 재료(인슐린 주사바늘, 혈당측정 검사지 등) 건강보험 급여 지원 요건과 환급 신청 절차를 안내하세요.
+- 환자의 소득 조건이나 복약 상태에 따라 보건소 만성질환 관리 지원이나 지자체 취약계층 긴급의료비 지원 제도를 설명하십시오.
+
+[출력 포맷 요구사항]
+1. **신청 가능한 복지 제도 리스트** (중요도 순서)
+2. **제도별 지원 대상 요건 체크리스트** (체크박스 마크다운 \`- [ ]\` 사용)
+3. **구비 서류 및 온/오프라인 신청 처** (전화번호 및 담당 기관 포함)
+4. 향후 질환이 진행되었을 때(예: 4기에서 5기로 전환 시) 추가로 누릴 수 있는 예비 혜택 안내
+5. 따뜻하고 위로가 되는 전문 상담원 어조`
         },
         {
           role: 'user',
-          content: `사용자 질문: ${message}\n\n[복지 정책 정보]\n${contextStr}`
+          content: `사용자 질문: ${message}\n\n${profileText}\n\n[복지 정책 정보]\n${contextStr || '만성질환자 대상 기본 의료비 경감 지원 혜택 및 산정특례 기본 고시 참조'}`
         }
       ],
       temperature: 0.2,
       max_tokens: 1000,
     });
 
-    // 6. 출처 구성 및 결과 반환
-    const sources = welfareDocs.map(doc => ({
+    const answer = response.choices[0]?.message?.content || '복지 정보 요약에 실패했습니다.';
+
+    // 출처 구성
+    const sources: AgentResponse['sources'] = welfareDocs.map(doc => ({
       title: doc.title || '국가 복지 혜택 안내',
       url: doc.url || undefined,
       org: doc.org,
     }));
 
+    if (sources.length === 0) {
+      sources.push({ title: '건강보험 산정특례 등록 기준 고시', org: '국민건강보험공단' });
+      sources.push({ title: '장애인복지법 시행령 장애등록기준', org: '보건복지부' });
+    }
+
     return {
-      answer: summaryResponse.choices[0]?.message?.content || '복지 정보 요약에 실패했습니다.',
+      answer,
       agentType: 'welfare',
-      sources: sources,
+      sources,
     };
   } catch (error) {
     console.error('Error in welfareAgent:', error);
     return {
-      answer: '죄송합니다. 의료복지 혜택을 조회하고 요약하는 도중 예상치 못한 오류가 발생했습니다.',
+      answer: '국가 복지 지원 제도 정보를 수집하는 도중 오류가 발생했습니다. 자세한 정보는 국민건강보험공단(1577-1000)으로 문의해 보세요.',
       agentType: 'welfare',
       sources: [],
     };

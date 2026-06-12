@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, message: directMessage, sessionId, userId } = await req.json().catch(() => ({}));
+    const { messages, message: directMessage, sessionId, userId, user_profile } = await req.json().catch(() => ({}));
     
     let userMessage = '';
     if (directMessage && typeof directMessage === 'string') {
@@ -78,8 +78,31 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // 환자 건강 프로필 구성
+    let userProfile = user_profile;
+    if (!userProfile && userId) {
+      try {
+        const { data } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('id', userId)
+          .single();
+        if (data) {
+          userProfile = {
+            ckd_stage: data.ckd_stage,
+            dialysis_type: data.dialysis_type,
+            diabetes_type: data.diabetes_type,
+            medication: data.medication,
+            other_conditions: data.other_conditions
+          };
+        }
+      } catch (e) {
+        console.error('Failed to load user profile in API route:', e);
+      }
+    }
+
     // ④ 오케스트레이터 호출 (의도 분류 → 병렬 실행 → 답변 합성)
-    const orchestratorResult = await orchestrator(userMessage);
+    const orchestratorResult = await orchestrator(userMessage, userProfile);
 
     // 출처 요약을 답변 밑에 정갈하게 배치
     let finalAnswer = orchestratorResult.answer;

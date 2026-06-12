@@ -4,16 +4,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from 'ai/react';
 import { MessageBubble } from './MessageBubble';
 import { InputBar } from './InputBar';
-import { Intent } from '../../lib/types/chat';
-import { Loader2, Bot } from 'lucide-react';
-
+import { Intent, UserProfile } from '../../lib/types/chat';
+import { Loader2, Bot, Heart, ShieldAlert, BookOpen, Compass, Search } from 'lucide-react';
 import { supabase } from '../../lib/rag/supabaseClient';
 
 export function ChatWindow() {
   const [activeIntent, setActiveIntent] = useState<Intent>('general');
   const [activeSources, setActiveSources] = useState<any[]>([]);
-  const [messageMeta, setMessageMeta] = useState<Record<string, { agentType: Intent; sources: any[] }>>({});
-  const [userProfile, setUserProfile] = useState<{ role: string; conditions: string[] } | null>(null);
+  const [messageMeta, setMessageMeta] = useState<Record<string, { agentType: Intent; sources: any[]; riskLevel?: string }>>({});
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
   const [sessionId, setSessionId] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
@@ -45,21 +44,27 @@ export function ChatWindow() {
       const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } }));
       if (user) {
         setUserId(user.id);
+        // DB에서 프로필 최신정보 동기화
+        const { data: dbProfile } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        if (dbProfile) {
+          const loadedProfile = {
+            ckd_stage: dbProfile.ckd_stage,
+            dialysis_type: dbProfile.dialysis_type,
+            diabetes_type: dbProfile.diabetes_type,
+            medication: dbProfile.medication,
+            other_conditions: dbProfile.other_conditions
+          };
+          setUserProfile(loadedProfile);
+          localStorage.setItem('kongdang_profile', JSON.stringify(loadedProfile));
+        }
       }
     };
     checkUser();
   }, []);
-
-  const roleLabels: Record<string, string> = {
-    patient: '환자',
-    caregiver: '간병인/보호자',
-    researcher: '연구자',
-  };
-
-  const conditionLabels: Record<string, string> = {
-    kidney: '신장병',
-    diabetes: '당뇨병',
-  };
 
   const {
     messages,
@@ -68,14 +73,15 @@ export function ChatWindow() {
     handleInputChange,
     handleSubmit,
     isLoading,
+    append
   } = useChat({
     api: '/api/chat',
     body: {
       sessionId: sessionId,
       userId: userId,
+      user_profile: userProfile,
     },
     onResponse(response) {
-      // 응답 헤더에서 에이전트 종류 및 출처 획득
       const agentType = (response.headers.get('X-Agent-Type') || 'general') as Intent;
       const sourcesHeader = response.headers.get('X-Agent-Sources');
       
@@ -93,7 +99,7 @@ export function ChatWindow() {
     },
   });
 
-  // 메시지 리스트에 변화가 생겼을 때, 가장 최근 추가된 어시스턴트 메시지에 메타데이터 바인딩
+  // 메시지 리스트에 변화가 생겼을 때 메타데이터 바인딩
   useEffect(() => {
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
@@ -111,7 +117,6 @@ export function ChatWindow() {
       const saveLocalHistory = async () => {
         const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } }));
         if (!user && sessionId) {
-          // 세션 목록 저장
           const localSessions = localStorage.getItem('kongdang_local_sessions');
           let sessionList = localSessions ? JSON.parse(localSessions) : [];
           if (!sessionList.some((s: any) => s.id === sessionId)) {
@@ -122,15 +127,12 @@ export function ChatWindow() {
             }, ...sessionList];
             localStorage.setItem('kongdang_local_sessions', JSON.stringify(sessionList));
           }
-
-          // 메시지 상세 목록 저장
           const localMsgKey = `kongdang_local_msg_${sessionId}`;
           localStorage.setItem(localMsgKey, JSON.stringify(messages));
         }
       };
       saveLocalHistory();
     }
-    // 스크롤 아래로 내리기
     scrollToBottom();
   }, [messages, activeIntent, activeSources, sessionId]);
 
@@ -142,47 +144,119 @@ export function ChatWindow() {
     setInput(text);
   };
 
+  // 5대 워크플로우 명세 (Perplexity Health 스타일)
+  const workflows = [
+    {
+      id: 'medical',
+      icon: '🩺',
+      title: '증상 문진',
+      desc: '신부전 거품뇨, 부종, 발저림 등 구어체 증상 위험도 판정',
+      prompt: '다리가 퉁퉁 붓고 최근에 소변에 거품이 많아졌는데, 병원에 가야 하나요?'
+    },
+    {
+      id: 'welfare',
+      icon: '🏛️',
+      title: '복지 / 보험',
+      desc: '건강보험 산정특례(V코드), 신장 장애등록 및 급여 지원 신청',
+      prompt: '투석 치료를 받게 되었는데 받을 수 있는 본인부담금 감면이나 산정특례 혜택이 어떻게 되나요?'
+    },
+    {
+      id: 'research',
+      icon: '🔬',
+      title: '연구 / 신약',
+      desc: 'SGLT2, GLP-1 등 최신 신장보호 신약의 부작용 및 급여 여부',
+      prompt: 'SGLT2 억제제 신약이 콩팥을 보호한다고 하던데, 투석 환자도 복용 가능한가요?'
+    },
+    {
+      id: 'nutrition',
+      icon: '🥗',
+      title: '식단 / 운동',
+      desc: '당뇨·신장·고혈압 3중 안심 식품 판정 및 저칼륨 한식 요리법',
+      prompt: '바나나와 두부, 김치를 먹어도 괜찮은지 성분 판정해주고 대안 식단을 제안해줘.'
+    },
+    {
+      id: 'hospital',
+      icon: '🏥',
+      title: '병원 찾기',
+      desc: '투석 전문 의원, 야간투석 가능 기관 및 대학병원 의뢰 절차',
+      prompt: '근처에 야간 투석실을 운영하거나 투석 전문 신장내과가 있는 병원이 어디인가요?'
+    }
+  ];
+
+  // Inter-agent navigation handler (e.g. clicking [식단 에이전트 연결])
+  const handleActionClick = (actionType: string) => {
+    console.log('Action navigate to:', actionType);
+    let targetPrompt = '';
+    if (actionType === 'nutrition' || actionType === 'diet') {
+      targetPrompt = '현재 제 건강 상태와 복약 상태에 맞는 맞춤형 한식 식단 계획과 저칼륨 조리 팁을 상세히 짜주세요.';
+    } else if (actionType === 'hospital') {
+      targetPrompt = '현재 제 투석 방법과 콩팥 단계를 고려했을 때 방문하기 좋은 집 근처 신장내과 전문의가 있는 병원 리스트를 추천해주세요.';
+    } else if (actionType === 'welfare') {
+      targetPrompt = '제가 받을 수 있는 신장 건강보험 산정특례 혜택과 구비서류를 한번 더 꼼꼼히 정리해 주세요.';
+    } else {
+      targetPrompt = '이 증상과 관련해서 추가 관리법을 자세하게 알려주세요.';
+    }
+
+    // Trigger chat request automatically
+    append({
+      role: 'user',
+      content: targetPrompt
+    });
+  };
+
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] bg-slate-50 border border-slate-100 rounded-2xl shadow-sm overflow-hidden max-w-4xl mx-auto w-full">
+    <div className="flex flex-col h-[calc(100vh-120px)] bg-slate-50 overflow-hidden max-w-4xl mx-auto w-full">
       {/* 챗봇 헤더 */}
-      <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-purple-800 to-purple-700 text-white shadow-md">
-        <div className="flex items-center space-x-2.5">
-          <div className="p-2 bg-white/10 rounded-xl">
-            <Bot size={22} className="text-purple-100" />
+      <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-100 shadow-xs">
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-purple-50 text-[#6D3FA0] rounded-2xl">
+            <Bot size={22} className="stroke-[2.5]" />
           </div>
           <div>
-            <h2 className="text-sm font-bold tracking-wide">콩당콩당 AI 케어 파트너</h2>
-            <p className="text-[10px] text-purple-200">만성 신장병(CKD) & 당뇨(DM) 맞춤형 RAG 챗봇</p>
+            <h2 className="text-sm font-bold text-slate-800 tracking-tight">콩당콩당 AI 케어 파트너</h2>
+            <p className="text-[10px] text-slate-400 font-semibold">만성 콩팥병(CKD) & 당뇨(DM) 복합 만성질환 통합 RAG 챗봇</p>
           </div>
         </div>
-        <div className="flex items-center space-x-4">
-          {userProfile && (
-            <div className="hidden sm:flex items-center text-[11px] font-bold text-purple-100 bg-white/15 px-3 py-1.5 rounded-xl border border-white/5 shadow-xs">
-              {roleLabels[userProfile.role] || userProfile.role} | 관심 질환: {userProfile.conditions.map(c => conditionLabels[c] || c).join(', ')}
-            </div>
-          )}
-          <div className="flex items-center space-x-2">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="text-[11px] font-semibold text-purple-100">에이전트 대기 중</span>
+        
+        {userProfile && (
+          <div className="hidden sm:flex items-center text-[10px] font-bold text-purple-700 bg-purple-50/80 border border-purple-100 px-3 py-1.5 rounded-xl shadow-2xs">
+            콩팥: {userProfile.ckd_stage || '미지정'} | 투석: {userProfile.dialysis_type || '해당없음'} | 당뇨: {userProfile.diabetes_type !== '없음' ? `${userProfile.diabetes_type}` : '없음'}
           </div>
-        </div>
+        )}
       </div>
 
       {/* 메시지 영역 */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gradient-to-b from-white to-slate-50/50">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center p-8 space-y-4 animate-fade-in">
-            <div className="p-4 bg-purple-50 rounded-full border border-purple-100 shadow-sm text-purple-700 animate-bounce">
-              <Bot size={36} />
-            </div>
-            <div className="max-w-md">
-              <h3 className="text-base font-bold text-slate-800 mb-1">안녕하세요! 콩당콩당 챗봇입니다.</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                콩팥병 및 당뇨 관리를 위한 식단/의학 전문 정보와 국가 복지 지원 혜택을 통합하여 맞춤형으로 안내해 드립니다.
+          <div className="flex flex-col items-center justify-center min-h-full py-8 space-y-6 animate-fade-in">
+            <div className="text-center space-y-2 max-w-lg">
+              <span className="text-3xl">🫘</span>
+              <h3 className="text-xl font-extrabold text-slate-800 tracking-tight">무엇이든 물어보세요</h3>
+              <p className="text-xs text-slate-400 font-medium leading-relaxed">
+                만성 콩팥병(CKD)과 당뇨병(DM) 맞춤형 의학 검증 데이터, 복지 혜택, 식단 지침, 그리고 전문 병원 매칭 서비스를 원스톱으로 지원합니다.
               </p>
+            </div>
+
+            {/* Health Workflows Cards */}
+            <div className="w-full max-w-2xl space-y-3">
+              <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Health Workflows</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                {workflows.map(wf => (
+                  <button
+                    key={wf.id}
+                    onClick={() => handleExampleClick(wf.prompt)}
+                    className="flex flex-col text-left p-4 bg-white border border-slate-100 rounded-3xl hover:border-purple-200 hover:shadow-md hover:scale-[1.01] transition-all duration-300 group relative overflow-hidden shadow-xs"
+                  >
+                    <span className="text-2xl mb-2.5 block">{wf.icon}</span>
+                    <h5 className="text-xs font-bold text-slate-800 mb-1 flex items-center gap-1">
+                      {wf.title}
+                    </h5>
+                    <p className="text-[10px] text-slate-400 font-semibold leading-relaxed group-hover:text-slate-500">
+                      {wf.desc}
+                    </p>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         ) : (
@@ -195,6 +269,7 @@ export function ChatWindow() {
                 content={m.content}
                 agentType={m.role === 'assistant' ? meta.agentType : undefined}
                 sources={m.role === 'assistant' ? meta.sources : undefined}
+                onActionClick={handleActionClick}
               />
             );
           })
@@ -202,9 +277,9 @@ export function ChatWindow() {
 
         {/* 로딩 표시 */}
         {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
-          <div className="flex justify-start items-center space-x-2 p-3 bg-white border border-slate-100 rounded-2xl rounded-tl-none max-w-xs shadow-sm">
+          <div className="flex justify-start items-center space-x-2.5 p-4 bg-white border border-slate-100 rounded-3xl rounded-tl-none max-w-xs shadow-md animate-pulse">
             <Loader2 size={16} className="text-purple-600 animate-spin" />
-            <span className="text-xs text-slate-500 font-medium">답변을 생각하는 중...</span>
+            <span className="text-xs text-slate-400 font-semibold">전문 에이전트 분석 중...</span>
           </div>
         )}
 
@@ -212,7 +287,7 @@ export function ChatWindow() {
       </div>
 
       {/* 입력바 */}
-      <div className="bg-white">
+      <div className="bg-white border-t border-slate-100 p-4">
         <InputBar
           input={input}
           handleInputChange={handleInputChange}
