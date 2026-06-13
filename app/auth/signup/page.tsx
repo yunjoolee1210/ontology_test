@@ -544,8 +544,8 @@ export default function SignupPage() {
                           <UserCheck size={16} />
                         </div>
                         <div>
-                          <h4 className="font-bold text-slate-800 text-[13px]">환우 맞춤형 동향 가이드</h4>
-                          <p className="text-slate-400 text-[11px] leading-relaxed">신장 병기 상태 및 투석 요법, 당뇨 종류에 최적화된 식사 가이드가 대시보드에 매칭됩니다.</p>
+                          <h4 className="font-bold text-slate-800 text-[13px]">당뇨·신장 맞춤형 식사 가이드</h4>
+                          <p className="text-slate-400 text-[11px] leading-relaxed">당뇨 조절 방식 및 신장 기능 상태에 최적화된 맞춤형 식사 가이드가 대시보드에 매칭됩니다.</p>
                         </div>
                       </div>
 
@@ -891,8 +891,8 @@ export default function SignupPage() {
                 {step === 'review' && (
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <h2 className="text-base font-extrabold text-slate-800">프로필 요약 및 영양소 한계값</h2>
-                      <p className="text-[11px] text-slate-400 font-semibold">입력 데이터를 기반으로 연동된 신장 건강 기수 및 추천 일일 영양 제한 가이드라인입니다.</p>
+                      <h2 className="text-base font-extrabold text-slate-800">프로필 요약 및 일일 제한 기준선</h2>
+                      <p className="text-[11px] text-slate-400 font-semibold">입력 데이터를 분석하여 적용된 당뇨·신장 조절 지침 및 일일 영양 제한 권장치입니다.</p>
                     </div>
 
                     <div className="space-y-3.5 text-xs font-semibold">
@@ -900,7 +900,7 @@ export default function SignupPage() {
                       {hasCKD ? (
                         <div className="p-3.5 bg-purple-50 border border-purple-100 rounded-2xl flex items-center justify-between">
                           <div>
-                            <span className="text-[9px] text-[#6D3FA0] block font-bold">MDRD 공식 자동 신장 계산</span>
+                            <span className="text-[9px] text-[#6D3FA0] block font-bold">MDRD 공식 신장 지표 판정</span>
                             <h4 className="text-xs font-extrabold text-slate-800">신장 기능: eGFR {computedEgfr} mL/min</h4>
                           </div>
                           <span className="text-[11px] font-black px-2.5 py-1.5 rounded-lg bg-purple-600 text-white shadow-2xs">
@@ -910,7 +910,7 @@ export default function SignupPage() {
                       ) : (
                         <div className="p-3.5 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-between">
                           <div>
-                            <span className="text-[9px] text-emerald-600 block font-bold">신장 건강 프로필</span>
+                            <span className="text-[9px] text-emerald-600 block font-bold">신장 기능 평가</span>
                             <h4 className="text-xs font-extrabold text-slate-800">일반 신장 기능 (미손상)</h4>
                           </div>
                           <span className="text-[11px] font-black px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white shadow-2xs">

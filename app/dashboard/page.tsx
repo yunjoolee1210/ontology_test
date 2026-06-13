@@ -14,7 +14,8 @@ import {
   ChevronRight, 
   Edit3, 
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
 import { UserProfile } from '../../lib/types/chat';
 
@@ -1007,67 +1008,30 @@ export default function DashboardPage() {
       {/* WELCOME MODAL FOR NEW SIGNUPS */}
       {showWelcomeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in text-slate-800">
-          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 p-8 space-y-6 text-center relative overflow-hidden">
+          <div className="bg-white rounded-3xl max-w-sm w-full shadow-2xl border border-slate-100 p-6 space-y-4 text-center relative overflow-hidden">
             {/* Decorative spheres */}
-            <div className="absolute top-0 left-0 w-24 h-24 bg-purple-100 rounded-full blur-3xl opacity-60"></div>
-            <div className="absolute bottom-0 right-0 w-24 h-24 bg-emerald-100 rounded-full blur-3xl opacity-60"></div>
+            <div className="absolute top-0 left-0 w-20 h-20 bg-purple-100 rounded-full blur-2xl opacity-40"></div>
+            <div className="absolute bottom-0 right-0 w-20 h-20 bg-emerald-100 rounded-full blur-2xl opacity-40"></div>
 
-            <div className="p-4 bg-gradient-to-tr from-[#6D3FA0] to-purple-600 text-white rounded-3xl inline-flex shadow-lg animate-bounce">
-              <HeartPulse size={36} className="animate-pulse" />
+            <div className="p-3 bg-gradient-to-tr from-[#6D3FA0] to-purple-600 text-white rounded-2xl inline-flex shadow-md">
+              <Sparkles size={24} className="animate-pulse" />
             </div>
 
             <div className="space-y-2">
-              <h2 className="text-xl font-black text-slate-850">🎉 가입과 온보딩 완료!</h2>
-              <p className="text-xs text-[#6D3FA0] font-extrabold uppercase tracking-wide">
-                환우 맞춤형 건강 관리가 시작됩니다
+              <h2 className="text-base font-black text-slate-850">🎉 가입과 온보딩 완료!</h2>
+              <p className="text-[11px] text-[#6D3FA0] font-extrabold uppercase tracking-wide">
+                맞춤형 건강 관리가 시작됩니다
               </p>
               <p className="text-[11px] text-slate-500 leading-relaxed font-semibold pt-1">
-                작성해주신 신체 지표 및 크레아티닌 검사결과를 기준으로 분석된 환우님의 콩팥 건강 정보와 영양소 기준 한계치입니다.
+                입력하신 당뇨·신장 조절 지표에 최적화된 식사 권장 제한량과 데일리 수칙이 대시보드에 적용되었습니다.
               </p>
-            </div>
-
-            {/* Analysis Box */}
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left text-xs font-semibold space-y-2 relative">
-              <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
-                <span className="text-slate-400">신장 건강 상태</span>
-                <span className="text-xs font-black text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-100">
-                  {profile?.ckd_stage || '1~2기'} (eGFR: {profile?.egfr || '--'}ml)
-                </span>
-              </div>
-              <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
-                <span className="text-slate-400">동반 만성 질환</span>
-                <span className="font-extrabold text-slate-800">
-                  당뇨: {profile?.diabetes_type !== '없음' ? `${profile?.diabetes_type} 당뇨` : '해당없음'}
-                </span>
-              </div>
-              <div className="pt-1 space-y-1">
-                <span className="text-[10px] text-slate-400 block font-bold">적용된 일일 영양소 권장량 제한선</span>
-                <div className="grid grid-cols-4 gap-1.5 text-center text-[10px] font-black">
-                  <div className="p-1.5 bg-white rounded-xl border border-slate-200/60">
-                    <span className="text-[8px] text-slate-400 block font-bold">당류</span>
-                    <span className="text-slate-800">{profile?.limit_sugar || '50'}g</span>
-                  </div>
-                  <div className="p-1.5 bg-white rounded-xl border border-slate-200/60">
-                    <span className="text-[8px] text-slate-400 block font-bold">나트륨</span>
-                    <span className="text-[#C0392B]">{profile?.limit_sodium || '2000'}mg</span>
-                  </div>
-                  <div className="p-1.5 bg-white rounded-xl border border-slate-200/60">
-                    <span className="text-[8px] text-slate-400 block font-bold">칼륨</span>
-                    <span className="text-purple-750">{profile?.limit_potassium || '3500'}mg</span>
-                  </div>
-                  <div className="p-1.5 bg-white rounded-xl border border-slate-200/60">
-                    <span className="text-[8px] text-slate-400 block font-bold">인</span>
-                    <span className="text-indigo-700">{profile?.limit_phosphorus || '1000'}mg</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <button
               onClick={() => setShowWelcomeModal(false)}
-              className="w-full py-3.5 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 text-white rounded-2xl text-xs font-bold transition-all shadow-md hover:opacity-90 active:scale-[0.98]"
+              className="w-full py-3 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-[0.98]"
             >
-              대시보드 관리 시작하기
+              대시보드 시작하기
             </button>
           </div>
         </div>
