@@ -281,6 +281,14 @@ export default function DashboardPage() {
         statusColor: 'text-yellow-750 bg-yellow-50 border-yellow-100'
       };
     }
+    if (stage.includes('정상')) {
+      return {
+        waterTarget: 8, // 8컵 (2L)
+        waterDesc: '당뇨 조절 및 노폐물 배출을 위해 하루 1.5L ~ 2L의 깨끗한 수분 섭취를 유지해 주세요.',
+        potassiumAlert: '💡 일반: 과도한 편식을 피하고 신선한 채소와 균형 잡힌 영양을 고루 섭취하세요.',
+        statusColor: 'text-emerald-700 bg-emerald-50 border-emerald-100'
+      };
+    }
     return {
       waterTarget: 8, // 8컵 (2L)
       waterDesc: '신장 노폐물의 원활한 배출을 위해 일일 1.5L ~ 2L의 깨끗한 물 섭취를 지향하세요.',
@@ -619,7 +627,11 @@ export default function DashboardPage() {
                 }`}>
                   {checklist.meds && <Plus size={12} className="stroke-[3]" />}
                 </div>
-                <span>정시 복약 완료 (처방약 및 이뇨제 복용 시간 확인)</span>
+                <span>
+                  {profile?.diabetes_type !== '없음' && (profile?.ckd_stage?.includes('정상') || !profile?.ckd_stage)
+                    ? '정시 복약 완료 (당뇨 처방약 및 인슐린 시간 확인)'
+                    : '정시 복약 완료 (처방약 및 이뇨제/혈압약 복용 시간 확인)'}
+                </span>
               </div>
             </button>
 
@@ -637,7 +649,13 @@ export default function DashboardPage() {
                 }`}>
                   {checklist.diet && <Plus size={12} className="stroke-[3]" />}
                 </div>
-                <span>저염식·저칼륨 수칙 준수 (식단 칼륨/염분 조절 조리)</span>
+                <span>
+                  {profile?.diabetes_type !== '없음' && (profile?.ckd_stage?.includes('정상') || !profile?.ckd_stage)
+                    ? '저당·식이 조절 준수 (단순당 배제 및 당 조절 잡곡 식사)'
+                    : (profile?.diabetes_type === '없음'
+                        ? '저염식·저칼륨 수칙 준수 (식단 칼륨/염분 조절 조리)'
+                        : '복합 식이 조절 준수 (저염·저칼륨 및 저당 식사 요법)')}
+                </span>
               </div>
             </button>
 
