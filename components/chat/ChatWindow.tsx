@@ -314,6 +314,13 @@ export function ChatWindow() {
     });
   };
 
+  const handleSuggestionClick = (prompt: string) => {
+    append({
+      role: 'user',
+      content: prompt
+    });
+  };
+
   return (
     <div className={`flex w-full h-[calc(100vh-120px)] bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-lg mx-auto ${userId ? 'max-w-6xl' : 'max-w-4xl'}`}>
       {/* LNB Sidebar - Only show when logged in */}
@@ -452,6 +459,7 @@ export function ChatWindow() {
                   agentType={m.role === 'assistant' ? meta.agentType : undefined}
                   sources={m.role === 'assistant' ? meta.sources : undefined}
                   onActionClick={handleActionClick}
+                  onSuggestionClick={handleSuggestionClick}
                 />
               );
             })

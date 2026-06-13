@@ -9,10 +9,37 @@ interface MessageBubbleProps {
   agentType?: Intent;
   sources?: Source[];
   onActionClick?: (actionType: string) => void;
+  onSuggestionClick?: (prompt: string) => void;
 }
 
-export function MessageBubble({ role, content, agentType, sources, onActionClick }: MessageBubbleProps) {
+export function MessageBubble({ role, content, agentType, sources, onActionClick, onSuggestionClick }: MessageBubbleProps) {
   const isUser = role === 'user';
+
+  // Extract suggestions from content
+  let cleanContent = content;
+  let parsedSuggestions: { label: string; prompt: string }[] = [];
+  
+  const suggestionsRegex = /\[SUGGESTIONS\]([\s\S]*?)\[\/SUGGESTIONS\]/;
+  const match = content.match(suggestionsRegex);
+  if (match) {
+    cleanContent = content.replace(suggestionsRegex, '').trim();
+    const suggestionsText = match[1];
+    const lines = suggestionsText.split('\n');
+    for (let line of lines) {
+      line = line.trim();
+      if (line.startsWith('-') || line.startsWith('*')) {
+        const item = line.substring(1).trim();
+        const colonIdx = item.indexOf(':');
+        if (colonIdx !== -1) {
+          const label = item.substring(0, colonIdx).trim();
+          const prompt = item.substring(colonIdx + 1).trim();
+          parsedSuggestions.push({ label, prompt });
+        } else {
+          parsedSuggestions.push({ label: item, prompt: item });
+        }
+      }
+    }
+  }
 
   const parseBold = (text: string): React.ReactNode[] => {
     const boldRegex = /\*\*(.*?)\*\*/g;
@@ -142,8 +169,28 @@ export function MessageBubble({ role, content, agentType, sources, onActionClick
         )}
 
         <div className={`space-y-1.5 text-sm leading-relaxed ${isUser ? 'text-purple-50' : 'text-slate-700'}`}>
-          {formatContent(content)}
+          {formatContent(cleanContent)}
         </div>
+
+        {/* 제안/후속 질문 버튼 표시 */}
+        {!isUser && parsedSuggestions.length > 0 && (
+          <div className="mt-4 pt-3 border-t border-slate-150 space-y-2">
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <span>🎯 추천 후속 질문 & 다음 태스크</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {parsedSuggestions.map((sug, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => onSuggestionClick && onSuggestionClick(sug.prompt)}
+                  className="text-xs px-3 py-2 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-600 hover:text-white hover:border-purple-600 text-purple-700 font-semibold transition-all duration-200 shadow-2xs active:scale-[0.98] text-left"
+                >
+                  {sug.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 출처 패널 표시 */}
         {!isUser && sources && sources.length > 0 && (
