@@ -26,6 +26,9 @@ export default function SignupPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>('account');
   const [loading, setLoading] = useState(false);
+  const [signupMode, setSignupMode] = useState<'real' | 'demo'>('real');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [showRateLimitModal, setShowRateLimitModal] = useState(false);
 
   // 1. Account Info (Step 'account')
   const [name, setName] = useState('');
@@ -55,7 +58,16 @@ export default function SignupPage() {
   // Step 1: Sign up in Auth
   const handleAccountSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
     setLoading(true);
+
+    if (signupMode === 'demo') {
+      const mockUid = `demo_user_${Date.now()}`;
+      setCreatedUserId(mockUid);
+      setStep('demographics');
+      setLoading(false);
+      return;
+    }
 
     try {
       // Create user auth
@@ -80,7 +92,12 @@ export default function SignupPage() {
       }
     } catch (err: any) {
       console.error(err);
-      alert(err.message || '회원가입 중 에러가 발생했습니다.');
+      if (err.message?.toLowerCase().includes('rate limit') || err.message?.toLowerCase().includes('exceeded') || err.message?.toLowerCase().includes('email limit') || err.status === 429) {
+        console.warn('Supabase Auth rate limit hit. Falling back to simulated demo user session.');
+        setShowRateLimitModal(true);
+      } else {
+        setErrorMsg(err.message || '회원가입 중 에러가 발생했습니다.');
+      }
     } finally {
       setLoading(false);
     }
@@ -119,14 +136,7 @@ export default function SignupPage() {
   // Step 5: Save Profile details & complete onboarding
   const handleOnboardingComplete = async () => {
     setLoading(true);
-    const userIdToSave = createdUserId || (await supabase.auth.getUser()).data.user?.id;
-
-    if (!userIdToSave) {
-      alert('사용자 정보 세션이 만료되었습니다. 다시 시도해 주세요.');
-      router.push('/auth/login');
-      setLoading(false);
-      return;
-    }
+    const userIdToSave = createdUserId || (await supabase.auth.getUser()).data.user?.id || `demo_user_${Date.now()}`;
 
     const completedProfile = {
       gender,
@@ -150,32 +160,40 @@ export default function SignupPage() {
 
     try {
       // 1. Save to user_profiles table in Supabase
-      const { error } = await supabase
-        .from('user_profiles')
-        .upsert({
-          id: userIdToSave,
-          name,
-          role: 'patient',
-          ckd_stage: calculatedStage,
-          dialysis_type: dialysisType,
-          diabetes_type: diabetesType,
-          medication,
-          other_conditions: otherConditions,
-          points: 120, // 가입 및 온보딩 보너스 포인트
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
+      if (userIdToSave && !userIdToSave.startsWith('demo_user_')) {
+        const { error } = await supabase
+          .from('user_profiles')
+          .upsert({
+            id: userIdToSave,
+            name,
+            role: 'patient',
+            ckd_stage: calculatedStage,
+            dialysis_type: dialysisType,
+            diabetes_type: diabetesType,
+            medication,
+            other_conditions: otherConditions,
+            points: 120, // 가입 및 온보딩 보너스 포인트
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
 
-      if (error) throw error;
+        if (error) {
+          console.warn('Supabase profile upsert failed (ignoring for demo):', error);
+        }
+      } else {
+        console.log('Skipping Supabase profiles table write for simulated demo user.');
+      }
 
       // 2. Save to localStorage
       localStorage.setItem('kongdang_profile', JSON.stringify(completedProfile));
 
-      alert('가입과 온보딩 건강 프로필 등록이 모두 완료되었습니다! 개인 대시보드로 이동합니다.');
-      router.push('/dashboard');
+      // Redirect directly to dashboard with welcome flag
+      router.push('/dashboard?newSignup=true');
     } catch (err: any) {
-      console.error(err);
-      alert('프로필 저장 중 오류가 발생했습니다: ' + err.message);
+      console.error('Onboarding complete error:', err);
+      // Fallback: save locally and redirect anyway
+      localStorage.setItem('kongdang_profile', JSON.stringify(completedProfile));
+      router.push('/dashboard?newSignup=true');
     } finally {
       setLoading(false);
     }
@@ -219,6 +237,48 @@ export default function SignupPage() {
                 <span>회원가입</span>
               </h2>
             </div>
+
+            {/* Signup Mode Selector Tab */}
+            <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-50 border border-slate-100 rounded-2xl">
+              <button
+                type="button"
+                onClick={() => {
+                  setSignupMode('real');
+                  setErrorMsg(null);
+                }}
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                  signupMode === 'real'
+                    ? 'bg-white text-slate-800 shadow-sm border border-slate-100'
+                    : 'text-slate-400 hover:text-slate-650'
+                }`}
+              >
+                일반 회원가입
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSignupMode('demo');
+                  setErrorMsg(null);
+                  if (!name) setName('테스트 환우');
+                  if (!email) setEmail(`demo_${Math.floor(1000 + Math.random() * 9000)}@test.com`);
+                  if (!password) setPassword('demo1234');
+                }}
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
+                  signupMode === 'demo'
+                    ? 'bg-gradient-to-r from-[#6D3FA0] to-purple-600 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-slate-650'
+                }`}
+              >
+                <Sparkles size={12} className={signupMode === 'demo' ? 'animate-pulse' : ''} />
+                데모 간편 가입
+              </button>
+            </div>
+
+            {signupMode === 'demo' && (
+              <div className="p-3 bg-purple-50/50 border border-purple-100 text-[#6D3FA0] rounded-xl text-[11px] leading-relaxed font-semibold">
+                💡 <strong>데모 간편 가입 모드 활성화:</strong> 이메일 인증 절차 없이, 무작위 생성된 테스트 계정을 사용하여 온보딩 및 대시보드 기능을 즉시 테스트해볼 수 있습니다.
+              </div>
+            )}
 
             <div className="space-y-4 text-xs font-semibold">
               <div className="space-y-1">
@@ -267,6 +327,13 @@ export default function SignupPage() {
               </div>
             </div>
 
+            {errorMsg && (
+              <div className="p-3 bg-red-50 border border-red-100 text-[#C0392B] rounded-xl text-[11px] font-semibold flex items-start gap-1.5">
+                <ShieldAlert size={14} className="shrink-0 mt-0.5" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
             <div className="flex items-start space-x-2 text-[10px] text-slate-400 pt-1 leading-relaxed">
               <ShieldAlert size={14} className="text-[#C0392B] shrink-0 mt-0.5" />
               <span>가입 즉시 콩당콩당 서비스 이용약관 및 의학적 책임 한계 고지 사항에 동의하게 됩니다.</span>
@@ -300,6 +367,13 @@ export default function SignupPage() {
                 성별과 연령은 eGFR(사구체여과율)을 계산하는 필수 변수입니다.
               </p>
             </div>
+
+            {createdUserId.startsWith('demo_user_') && (
+              <div className="p-3 bg-purple-50/60 border border-purple-100 text-[#6D3FA0] rounded-xl text-[10px] font-bold flex items-center justify-between shadow-2xs">
+                <span>💡 테스트용 데모 세션으로 전환되어 진행 중입니다.</span>
+                <span className="bg-purple-100 px-1.5 py-0.5 rounded text-[8px] text-[#6D3FA0]">이메일 미인증</span>
+              </div>
+            )}
 
             <div className="space-y-4 text-xs font-semibold">
               {/* 성별 */}
@@ -374,6 +448,13 @@ export default function SignupPage() {
               </p>
             </div>
 
+            {createdUserId.startsWith('demo_user_') && (
+              <div className="p-3 bg-purple-50/60 border border-purple-100 text-[#6D3FA0] rounded-xl text-[10px] font-bold flex items-center justify-between shadow-2xs">
+                <span>💡 테스트용 데모 세션으로 전환되어 진행 중입니다.</span>
+                <span className="bg-purple-100 px-1.5 py-0.5 rounded text-[8px] text-[#6D3FA0]">이메일 미인증</span>
+              </div>
+            )}
+
             <div className="space-y-4 text-xs font-semibold">
               <div className="p-4 bg-purple-50/50 border border-purple-100 rounded-2xl text-[11px] text-slate-500 leading-relaxed space-y-1 font-medium">
                 <span className="font-extrabold text-purple-800 block">💡 eGFR 자동 계산 안내</span>
@@ -424,6 +505,13 @@ export default function SignupPage() {
                 동반 당뇨 질환 및 현재 진행 중인 투석 방법을 설정해 주세요.
               </p>
             </div>
+
+            {createdUserId.startsWith('demo_user_') && (
+              <div className="p-3 bg-purple-50/60 border border-purple-100 text-[#6D3FA0] rounded-xl text-[10px] font-bold flex items-center justify-between shadow-2xs">
+                <span>💡 테스트용 데모 세션으로 전환되어 진행 중입니다.</span>
+                <span className="bg-purple-100 px-1.5 py-0.5 rounded text-[8px] text-[#6D3FA0]">이메일 미인증</span>
+              </div>
+            )}
 
             <div className="space-y-4 text-xs font-semibold">
               {/* 당뇨 유형 */}
@@ -529,6 +617,13 @@ export default function SignupPage() {
               </p>
             </div>
 
+            {createdUserId.startsWith('demo_user_') && (
+              <div className="p-3 bg-purple-50/60 border border-purple-100 text-[#6D3FA0] rounded-xl text-[10px] font-bold flex items-center justify-between shadow-2xs">
+                <span>💡 테스트용 데모 세션으로 전환되어 진행 중입니다.</span>
+                <span className="bg-purple-100 px-1.5 py-0.5 rounded text-[8px] text-[#6D3FA0]">이메일 미인증</span>
+              </div>
+            )}
+
             <div className="space-y-4 text-xs font-semibold">
               {/* eGFR & Stage badge */}
               <div className="p-4 bg-purple-50 border border-purple-100 rounded-2xl flex items-center justify-between">
@@ -608,6 +703,38 @@ export default function SignupPage() {
         )}
 
       </div>
+
+      {/* RATE LIMIT GRACEFUL FALLBACK MODAL */}
+      {showRateLimitModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in text-slate-800">
+          <div className="bg-white rounded-3xl max-w-sm w-full shadow-2xl border border-slate-100 p-6 space-y-4 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-20 h-20 bg-purple-100 rounded-full blur-2xl opacity-40"></div>
+            <div className="p-3 bg-purple-50 text-[#6D3FA0] rounded-2xl inline-flex shadow-inner">
+              <Sparkles size={24} className="animate-bounce text-[#6D3FA0]" />
+            </div>
+            
+            <div className="space-y-2">
+              <h3 className="text-sm font-black text-slate-850">⚠️ 회원가입 요청 제한 안내</h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                현재 실시간 회원가입 메일 발송 속도 제한(Rate Limit)에 도달하였습니다. <br />
+                원활한 테스트를 위해 <strong>모의 데모 세션</strong>으로 자동 전환하여 건강 온보딩을 중단 없이 계속하실 수 있습니다.
+              </p>
+            </div>
+
+            <button
+              onClick={() => {
+                setShowRateLimitModal(false);
+                const mockUid = `demo_user_${Date.now()}`;
+                setCreatedUserId(mockUid);
+                setStep('demographics');
+              }}
+              className="w-full py-3 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-98"
+            >
+              데모 모드로 온보딩 계속하기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -22,6 +22,15 @@ import { supabase } from '../../lib/rag/supabaseClient';
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [successToast, setSuccessToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setSuccessToast(msg);
+    setTimeout(() => {
+      setSuccessToast(null);
+    }, 3000);
+  };
   
   // 대시보드 자가기록 상태
   const [waterCount, setWaterCount] = useState<number>(0); // 컵 단위 (250ml)
@@ -143,11 +152,18 @@ export default function DashboardPage() {
     }
 
     setIsEditingProfile(false);
-    alert('건강 프로필이 성공적으로 저장되었습니다!');
+    showToast('건강 프로필이 성공적으로 저장되었습니다!');
   };
 
   // 로컬스토리지 연동
   useEffect(() => {
+    // Check for signup complete query param
+    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    if (searchParams && searchParams.get('newSignup') === 'true') {
+      setShowWelcomeModal(true);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     // 1. 프로필 정보 로드
     const savedProfile = localStorage.getItem('kongdang_profile');
     if (savedProfile) {
@@ -967,6 +983,83 @@ export default function DashboardPage() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* WELCOME MODAL FOR NEW SIGNUPS */}
+      {showWelcomeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in text-slate-800">
+          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 p-8 space-y-6 text-center relative overflow-hidden">
+            {/* Decorative spheres */}
+            <div className="absolute top-0 left-0 w-24 h-24 bg-purple-100 rounded-full blur-3xl opacity-60"></div>
+            <div className="absolute bottom-0 right-0 w-24 h-24 bg-emerald-100 rounded-full blur-3xl opacity-60"></div>
+
+            <div className="p-4 bg-gradient-to-tr from-[#6D3FA0] to-purple-600 text-white rounded-3xl inline-flex shadow-lg animate-bounce">
+              <HeartPulse size={36} className="animate-pulse" />
+            </div>
+
+            <div className="space-y-2">
+              <h2 className="text-xl font-black text-slate-850">🎉 가입과 온보딩 완료!</h2>
+              <p className="text-xs text-[#6D3FA0] font-extrabold uppercase tracking-wide">
+                환우 맞춤형 건강 관리가 시작됩니다
+              </p>
+              <p className="text-[11px] text-slate-500 leading-relaxed font-semibold pt-1">
+                작성해주신 신체 지표 및 크레아티닌 검사결과를 기준으로 분석된 환우님의 콩팥 건강 정보와 영양소 기준 한계치입니다.
+              </p>
+            </div>
+
+            {/* Analysis Box */}
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left text-xs font-semibold space-y-2 relative">
+              <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
+                <span className="text-slate-400">신장 건강 상태</span>
+                <span className="text-xs font-black text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-100">
+                  {profile?.ckd_stage || '1~2기'} (eGFR: {profile?.egfr || '--'}ml)
+                </span>
+              </div>
+              <div className="flex justify-between items-center border-b border-slate-200/60 pb-2">
+                <span className="text-slate-400">동반 만성 질환</span>
+                <span className="font-extrabold text-slate-800">
+                  당뇨: {profile?.diabetes_type !== '없음' ? `${profile?.diabetes_type} 당뇨` : '해당없음'}
+                </span>
+              </div>
+              <div className="pt-1 space-y-1">
+                <span className="text-[10px] text-slate-400 block font-bold">적용된 일일 영양소 권장량 제한선</span>
+                <div className="grid grid-cols-4 gap-1.5 text-center text-[10px] font-black">
+                  <div className="p-1.5 bg-white rounded-xl border border-slate-200/60">
+                    <span className="text-[8px] text-slate-400 block font-bold">당류</span>
+                    <span className="text-slate-800">{profile?.limit_sugar || '50'}g</span>
+                  </div>
+                  <div className="p-1.5 bg-white rounded-xl border border-slate-200/60">
+                    <span className="text-[8px] text-slate-400 block font-bold">나트륨</span>
+                    <span className="text-[#C0392B]">{profile?.limit_sodium || '2000'}mg</span>
+                  </div>
+                  <div className="p-1.5 bg-white rounded-xl border border-slate-200/60">
+                    <span className="text-[8px] text-slate-400 block font-bold">칼륨</span>
+                    <span className="text-purple-750">{profile?.limit_potassium || '3500'}mg</span>
+                  </div>
+                  <div className="p-1.5 bg-white rounded-xl border border-slate-200/60">
+                    <span className="text-[8px] text-slate-400 block font-bold">인</span>
+                    <span className="text-indigo-700">{profile?.limit_phosphorus || '1000'}mg</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowWelcomeModal(false)}
+              className="w-full py-3.5 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 text-white rounded-2xl text-xs font-bold transition-all shadow-md hover:opacity-90 active:scale-[0.98]"
+            >
+              대시보드 관리 시작하기
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* SUCCESS TOAST NOTIFICATION */}
+      {successToast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 text-white px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-xl border border-slate-700/50 animate-fade-in backdrop-blur-md">
+          <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+          <span>{successToast}</span>
         </div>
       )}
     </div>
