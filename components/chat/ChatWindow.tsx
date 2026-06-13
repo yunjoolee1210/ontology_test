@@ -427,25 +427,14 @@ export function ChatWindow() {
                 </p>
               </div>
 
-              {/* Health Workflows Cards */}
-              <div className="w-full max-w-2xl space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {workflows.map(wf => (
-                    <button
-                      key={wf.id}
-                      onClick={() => handleExampleClick(wf.prompt)}
-                      className="flex flex-col text-left p-4 bg-white border border-slate-100 rounded-3xl hover:border-purple-200 hover:shadow-md hover:scale-[1.01] transition-all duration-300 group relative overflow-hidden shadow-xs"
-                    >
-                      <span className="text-2xl mb-2.5 block">{wf.icon}</span>
-                      <h5 className="text-xs font-bold text-slate-800 mb-1 flex items-center gap-1">
-                        {wf.title}
-                      </h5>
-                      <p className="text-[10px] text-slate-400 font-semibold leading-relaxed group-hover:text-slate-500">
-                        {wf.desc}
-                      </p>
-                    </button>
-                  ))}
-                </div>
+              {/* Clean Welcome greeting for Perplexity-Health style */}
+              <div className="p-6 bg-purple-550/10 border border-purple-100/40 rounded-3xl max-w-md w-full text-center space-y-3 shadow-xs">
+                <span className="text-[10px] font-black text-purple-600 bg-purple-100/60 px-3 py-1 rounded-md">
+                  💡 콩당콩당 AI 케어 파트너
+                </span>
+                <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                  무엇이든 물어보세요! 신장병·당뇨 복합 환자를 위해 1차 진료 지침, 복지 혜택, 식단 정보 등을 맞춤형으로 찾아드립니다.
+                </p>
               </div>
             </div>
           ) : (

@@ -1,256 +1,94 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { User, Users, ShieldAlert, CheckCircle2, ChevronRight, Activity, ArrowRight } from 'lucide-react';
+import React from 'react';
+import Link from 'next/link';
+import { MessageSquare, LayoutDashboard, ShieldAlert, Bot, Sparkles, Heart } from 'lucide-react';
 import { CuteLogoIcon } from '../../components/layout/GNB';
-import { supabase } from '../../lib/rag/supabaseClient';
 
-type Role = 'patient' | 'caregiver' | 'researcher';
-type Condition = 'kidney' | 'diabetes';
-
-export default function HomeOnboardingPage() {
-  const router = useRouter();
-  const [step, setStep] = useState<1 | 2>(1);
-  const [role, setRole] = useState<Role | null>(null);
-  const [conditions, setConditions] = useState<Condition[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  // Check login status on mount
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } }));
-      if (user) {
-        setIsLoggedIn(true);
-        setUserId(user.id);
-        
-        // Try fetching existing profile
-        const { data: profile } = await supabase
-          .from('user_profiles')
-          .select('role, conditions')
-          .eq('id', user.id)
-          .single();
-
-        if (profile) {
-          setRole(profile.role as Role);
-          setConditions(profile.conditions as Condition[]);
-        }
-      } else {
-        // Load from localStorage if not logged in
-        const savedProfile = localStorage.getItem('kongdang_profile');
-        if (savedProfile) {
-          try {
-            const parsed = JSON.parse(savedProfile);
-            if (parsed.role) setRole(parsed.role);
-            if (parsed.conditions) setConditions(parsed.conditions);
-          } catch (e) {
-            console.error(e);
-          }
-        }
-      }
-    };
-    checkUser();
-  }, []);
-
-  const handleRoleSelect = (selectedRole: Role) => {
-    setRole(selectedRole);
-    setStep(2);
-  };
-
-  const toggleCondition = (condition: Condition) => {
-    setConditions(prev => 
-      prev.includes(condition) 
-        ? prev.filter(c => c !== condition) 
-        : [...prev, condition]
-    );
-  };
-
-  const handleSave = async () => {
-    if (!role) {
-      alert('사용자 역할을 먼저 선택해 주세요.');
-      setStep(1);
-      return;
-    }
-    if (conditions.length === 0) {
-      alert('적어도 하나의 관심 질환을 선택해 주세요.');
-      return;
-    }
-
-    setLoading(true);
-    const profileData = { role, conditions };
-
-    try {
-      // 1. LocalStorage 저장 (비로그인/로그인 공통)
-      localStorage.setItem('kongdang_profile', JSON.stringify(profileData));
-
-      // 2. 로그인 상태인 경우 Supabase 저장
-      if (isLoggedIn && userId) {
-        const { error } = await supabase
-          .from('user_profiles')
-          .upsert({
-            id: userId,
-            role,
-            conditions,
-            updated_at: new Date().toISOString()
-          });
-
-        if (error) throw error;
-      }
-      
-      // 저장 성공 후 챗봇 화면으로 이동
-      router.push('/chat');
-    } catch (e: any) {
-      console.error(e);
-      alert('설정 저장 중 오류가 발생했으나, 로컬 브라우저에 임시 저장되었습니다.');
-      router.push('/chat');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function HomeLandingPage() {
   return (
-    <div className="w-full max-w-2xl mx-auto py-10 animate-fade-in px-4">
-      {/* 로고 및 서비스 타이틀 */}
-      <div className="text-center space-y-3 mb-10">
-        <div className="p-3.5 rounded-3xl bg-gradient-to-tr from-[#6D3FA0] to-[#C0392B] text-white shadow-xl inline-flex animate-pulse">
-          <CuteLogoIcon size={36} />
+    <div className="w-full max-w-4xl mx-auto py-12 px-6 space-y-16 animate-fade-in text-slate-800">
+      {/* 1. Hero Section */}
+      <div className="text-center space-y-6 pt-4">
+        <div className="p-4 rounded-3xl bg-gradient-to-tr from-[#6D3FA0] to-[#C0392B] text-white shadow-xl inline-flex animate-bounce">
+          <CuteLogoIcon size={40} />
         </div>
-        <h1 className="text-3xl font-black tracking-tight text-slate-800">
-          콩당콩당에 오신 것을 환영합니다
-        </h1>
-        <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
-          만성 신장병(CKD)과 당뇨병(DM) 관리를 위한 최신 RAG 논문 검색 및 보건복지 혜택 안내를 한눈에 받아보세요.
-        </p>
-      </div>
-
-      {/* 카드 스태퍼 */}
-      <div className="bg-white border border-slate-100 rounded-3xl shadow-xl p-8 relative overflow-hidden">
-        {/* 장식용 블러 레이어 */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-red-100 rounded-full blur-3xl opacity-50"></div>
-
-        {/* 단계 진행바 */}
-        <div className="flex items-center justify-center space-x-3 mb-8 relative">
-          <button 
-            onClick={() => setStep(1)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step === 1 ? 'bg-purple-700 text-white shadow-md' : 'bg-purple-100 text-purple-700 hover:bg-purple-200'}`}
-          >
-            1
-          </button>
-          <div className={`w-12 h-0.5 rounded ${step === 2 ? 'bg-purple-700' : 'bg-slate-200'}`}></div>
-          <button 
-            disabled={!role}
-            onClick={() => setStep(2)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${step === 2 ? 'bg-purple-700 text-white shadow-md' : 'bg-slate-100 text-slate-400 disabled:opacity-50'}`}
-          >
-            2
-          </button>
+        <div className="space-y-3">
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight bg-gradient-to-r from-[#6D3FA0] via-purple-700 to-[#C0392B] bg-clip-text text-transparent">
+            콩당콩당
+          </h1>
+          <p className="text-base sm:text-lg font-bold text-slate-650 max-w-xl mx-auto leading-relaxed">
+            콩팥병·당뇨 복합 환자를 위한 의도 탐지 기반 멀티에이전트 AI 케어 파트너
+          </p>
+          <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+            만성 신장병(CKD)과 당뇨병(DM) 맞춤형 의학 검증 데이터, 복지 혜택, 식단 지침, 그리고 전문 병원 매칭 서비스를 편리한 대화형 인터페이스로 지원합니다.
+          </p>
         </div>
 
-        {/* Step 1: 역할 선택 */}
-        {step === 1 && (
-          <div className="space-y-6 relative animate-slide-right">
-            <div className="text-center">
-              <h2 className="text-lg font-bold text-slate-800">Step 1. 당신은 누구신가요?</h2>
-              <p className="text-xs text-slate-400 mt-1">개인 맞춤형 에이전트 구성을 위해 역할을 선택해 주세요.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                { id: 'patient', title: '환자', desc: '직접 수치를 보며 건강을 관리하고 정보를 탐색합니다.', icon: User, color: 'from-blue-500 to-indigo-600' },
-                { id: 'caregiver', title: '간병인/보호자', desc: '환우를 곁에서 서포트하며 복지 혜택과 복약 정보를 탐색합니다.', icon: Users, color: 'from-purple-500 to-pink-600' },
-                { id: 'researcher', title: '전문 연구자', desc: '의료진 및 연구원으로서 PubMed 논문 및 임상 자료를 분석합니다.', icon: Activity, color: 'from-emerald-500 to-teal-600' }
-              ].map(item => {
-                const Icon = item.icon;
-                const isSelected = role === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleRoleSelect(item.id as Role)}
-                    className={`p-6 rounded-2xl border text-left flex flex-col justify-between space-y-4 hover:shadow-lg transition-all duration-300 group cursor-pointer ${isSelected ? 'border-purple-600 bg-purple-50/40 ring-2 ring-purple-600/20' : 'border-slate-100 bg-slate-50/50 hover:bg-slate-50'}`}
-                  >
-                    <div className={`p-3 rounded-xl bg-gradient-to-tr ${item.color} text-white shadow-md w-11 h-11 flex items-center justify-center group-hover:scale-105 transition-transform`}>
-                      <Icon size={20} />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                        {item.title}
-                        {isSelected && <CheckCircle2 size={14} className="text-purple-600" />}
-                      </h3>
-                      <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">{item.desc}</p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Step 2: 관심 질환 선택 */}
-        {step === 2 && (
-          <div className="space-y-6 relative animate-slide-left">
-            <div className="text-center">
-              <h2 className="text-lg font-bold text-slate-800">Step 2. 관심 질환은 무엇인가요?</h2>
-              <p className="text-xs text-slate-400 mt-1">관심 있으신 만성질환을 선택해 주세요 (복수 선택 가능).</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                { id: 'kidney', title: '신장병 (콩팥병)', desc: '만성 신부전, 투석, 산정특례 및 식단 관리 정보 매칭', details: '💧 사구체여과율(eGFR) 추적' },
-                { id: 'diabetes', title: '당뇨병', desc: '혈당 조절, 당화혈색소, 당뇨병 합병증 연구 및 영양 정보 매칭', details: '🩸 인슐린 및 혈당 추적' }
-              ].map(item => {
-                const isSelected = conditions.includes(item.id as Condition);
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => toggleCondition(item.id as Condition)}
-                    className={`p-6 rounded-2xl border text-left flex flex-col justify-between space-y-4 hover:shadow-lg transition-all duration-300 group cursor-pointer ${isSelected ? 'border-purple-600 bg-purple-50/40 ring-2 ring-purple-600/20' : 'border-slate-100 bg-slate-50/50 hover:bg-slate-50'}`}
-                  >
-                    <div className="flex justify-between items-start">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${isSelected ? 'bg-purple-100 text-purple-700' : 'bg-slate-200 text-slate-600'}`}>
-                        {item.details}
-                      </span>
-                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${isSelected ? 'border-purple-600 bg-purple-600 text-white' : 'border-slate-300'}`}>
-                        {isSelected && <CheckCircle2 size={12} className="fill-white text-purple-600" />}
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-800">{item.title}</h3>
-                      <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">{item.desc}</p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* 하단 제어 버튼 */}
-            <div className="flex items-center justify-between border-t border-slate-100 pt-6 mt-4">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-50 transition-colors"
-              >
-                이전 단계로
-              </button>
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={loading || conditions.length === 0}
-                className="px-6 py-2.5 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 text-white rounded-xl text-xs font-bold shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center space-x-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? '저장 중...' : '맞춤 설정 완료'}
-                {!loading && <ArrowRight size={14} />}
-              </button>
-            </div>
-          </div>
-        )}
+        {/* CTA 버튼 그룹 */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <Link
+            href="/chat"
+            className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#6D3FA0] to-purple-800 text-white rounded-2xl font-black text-sm flex items-center justify-center space-x-2 shadow-lg hover:opacity-95 active:scale-[0.98] transition-all"
+          >
+            <MessageSquare size={16} />
+            <span>AI 챗봇과 대화 시작하기</span>
+          </Link>
+          <Link
+            href="/dashboard"
+            className="w-full sm:w-auto px-8 py-4 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-sm flex items-center justify-center space-x-2 shadow-sm hover:bg-slate-50 active:scale-[0.98] transition-all"
+          >
+            <LayoutDashboard size={16} className="text-[#C0392B]" />
+            <span>건강 대시보드로 이동</span>
+          </Link>
+        </div>
       </div>
 
-      <div className="flex justify-center items-center space-x-2 text-[10px] text-slate-400 mt-6 leading-relaxed">
-        <ShieldAlert size={14} className="text-[#C0392B]" />
-        <span>콩당콩당 서비스는 건강 관리 보조 목적으로만 사용되며 의료진의 진단을 대신하지 않습니다.</span>
+      {/* 2. Features Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+        {[
+          {
+            title: '🩺 증상 문진 에이전트',
+            desc: '구어체 증상의 임상 표준 의학 용어 매핑 및 4단계 위험도 분류',
+            details: '부종, 거품뇨 등 흔히 호소하는 증상들을 분석하고 방문 권장 기한과 행동 대처 요령을 즉각 조언합니다.'
+          },
+          {
+            title: '🥗 맞춤 식단 및 생활 가이드',
+            desc: '신장 단계별 칼륨/인 섭취 한도 및 당뇨 환자 운동 조언',
+            details: '바나나, 김치 등 특정 식품의 안전 등급 판정과 함께 대체 한식 식품 추천 및 저칼륨 조리 팁을 제공합니다.'
+          },
+          {
+            title: '🏛️ 보건복지 혜택 연계',
+            desc: '산정특례 V코드 등록 및 신장장애인 급여 지원 안내',
+            details: '투석 개시 전후로 받을 수 있는 본인부담금 경감 제도와 소모성 재료비 환급 방법, 신청 시 구비서류를 정리해 줍니다.'
+          },
+          {
+            title: '🏥 투석 전문 병원 탐색',
+            desc: '위치 정보 기반 혈액/복막/야간 투석실 운영 기관 실시간 안내',
+            details: '내 주변 반경 5km 이내의 투석 의료기관 리스트를 조회하고, 혈액/복막/야간 투석실 보유 여부를 편리하게 확인하세요.'
+          }
+        ].map((feat, idx) => (
+          <div
+            key={idx}
+            className="p-6 bg-white border border-slate-100 rounded-3xl shadow-sm space-y-2.5 hover:shadow-md transition-shadow relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-full blur-3xl opacity-40"></div>
+            <h4 className="text-sm font-black text-slate-800">{feat.title}</h4>
+            <p className="text-[11px] font-bold text-[#6D3FA0]">{feat.desc}</p>
+            <p className="text-xs text-slate-500 leading-relaxed font-medium">{feat.details}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* 3. Medical Warning Disclaimer */}
+      <div className="p-5 bg-red-50/50 border border-red-100 rounded-3xl flex items-start space-x-3.5 shadow-2xs">
+        <ShieldAlert size={20} className="text-[#C0392B] shrink-0 mt-0.5" />
+        <div className="space-y-1 text-left">
+          <h5 className="text-xs font-black text-[#C0392B]">의료적 주의 고지</h5>
+          <p className="text-[10px] text-slate-500 leading-relaxed font-semibold">
+            콩당콩당 서비스는 건강 관리 및 의학 정보 탐색 보조 목적으로만 사용되며, 의사의 전문적인 진료나 진단을 대신할 수 없습니다. 증상이 심각하거나 응급 상황인 경우 반드시 119에 연락하거나 상급 종합병원의 응급실을 내원하시기 바랍니다.
+          </p>
+        </div>
       </div>
     </div>
   );
