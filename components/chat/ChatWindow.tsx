@@ -231,7 +231,6 @@ export function ChatWindow() {
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center min-h-full py-8 space-y-6 animate-fade-in">
             <div className="text-center space-y-2 max-w-lg">
-              <span className="text-3xl">🫘</span>
               <h3 className="text-xl font-extrabold text-slate-800 tracking-tight">무엇이든 물어보세요</h3>
               <p className="text-xs text-slate-400 font-medium leading-relaxed">
                 만성 콩팥병(CKD)과 당뇨병(DM) 맞춤형 의학 검증 데이터, 복지 혜택, 식단 지침, 그리고 전문 병원 매칭 서비스를 원스톱으로 지원합니다.
@@ -240,7 +239,6 @@ export function ChatWindow() {
 
             {/* Health Workflows Cards */}
             <div className="w-full max-w-2xl space-y-3">
-              <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Health Workflows</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {workflows.map(wf => (
                   <button

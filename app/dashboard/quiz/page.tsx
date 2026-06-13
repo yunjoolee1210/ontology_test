@@ -77,7 +77,7 @@ export default function QuizPage() {
   return (
     <div className="w-full max-w-xl mx-auto py-6 space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
-        <Link href="/community" className="text-xs font-bold text-slate-500 hover:text-slate-700 flex items-center space-x-1">
+        <Link href="/dashboard" className="text-xs font-bold text-slate-500 hover:text-slate-700 flex items-center space-x-1">
           <ArrowLeft size={14} />
           <span>목록으로</span>
         </Link>

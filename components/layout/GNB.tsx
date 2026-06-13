@@ -3,14 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HeartPulse, MessageSquare, LineChart, Users, LogIn, Shield } from 'lucide-react';
+import { HeartPulse, MessageSquare, LineChart, LayoutDashboard, LogIn, Shield } from 'lucide-react';
 
 export function GNB() {
   const pathname = usePathname();
   const [menuItems, setMenuItems] = React.useState([
     { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
     { name: '트렌드', path: '/trend', icon: LineChart },
-    { name: '커뮤니티', path: '/community', icon: Users },
+    { name: '건강 대시보드', path: '/dashboard', icon: LayoutDashboard },
     { name: '로그인', path: '/auth/login', icon: LogIn },
   ]);
 
@@ -24,7 +24,7 @@ export function GNB() {
           setMenuItems([
             { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
             { name: '트렌드', path: '/trend', icon: LineChart },
-            { name: '커뮤니티', path: '/community', icon: Users },
+            { name: '건강 대시보드', path: '/dashboard', icon: LayoutDashboard },
             { name: '관리 콘솔', path: '/admin/dashboard', icon: Shield },
             { name: '마이페이지', path: '/mypage', icon: LogIn },
           ]);
@@ -38,7 +38,7 @@ export function GNB() {
     setMenuItems([
       { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
       { name: '트렌드', path: '/trend', icon: LineChart },
-      { name: '커뮤니티', path: '/community', icon: Users },
+      { name: '건강 대시보드', path: '/dashboard', icon: LayoutDashboard },
       { name: '마이페이지', path: '/mypage', icon: LogIn },
     ]);
   }, [pathname]);
