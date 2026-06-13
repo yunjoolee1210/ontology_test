@@ -19,11 +19,14 @@ export function MessageBubble({ role, content, agentType, sources, onActionClick
   let cleanContent = content;
   let parsedSuggestions: { label: string; prompt: string }[] = [];
   
-  const suggestionsRegex = /\[SUGGESTIONS\]([\s\S]*?)\[\/SUGGESTIONS\]/;
-  const match = content.match(suggestionsRegex);
-  if (match) {
-    cleanContent = content.replace(suggestionsRegex, '').trim();
-    const suggestionsText = match[1];
+  if (content.includes('[SUGGESTIONS]')) {
+    const parts = content.split('[SUGGESTIONS]');
+    cleanContent = parts[0].trim();
+    let suggestionsText = parts[1] || '';
+    
+    // Remove the closing tag if it exists
+    suggestionsText = suggestionsText.replace('[/SUGGESTIONS]', '').trim();
+    
     const lines = suggestionsText.split('\n');
     for (let line of lines) {
       line = line.trim();
