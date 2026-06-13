@@ -195,8 +195,8 @@ export default function SignupPage() {
               <HeartPulse size={20} className="animate-pulse" />
             </div>
             <div>
-              <h1 className="text-sm font-black tracking-tight">care-kidney.com/signup</h1>
-              <p className="text-[10px] text-slate-400 font-semibold">복합 질환 케어 및 맞춤형 온보딩</p>
+              <h1 className="text-sm font-black tracking-tight text-slate-800">콩당콩당 회원가입</h1>
+              <p className="text-[10px] text-slate-400 font-semibold">간편 가입 & 질환 프로필 등록</p>
             </div>
           </div>
 
@@ -247,7 +247,7 @@ export default function SignupPage() {
                     required
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="example@care-kidney.com"
+                    placeholder="example@email.com"
                     className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-[#6D3FA0] focus:border-[#6D3FA0] focus:bg-white transition-all font-semibold"
                   />
                   <Mail size={14} className="text-slate-400 absolute left-3.5 top-3.5" />

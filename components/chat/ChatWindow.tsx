@@ -526,16 +526,13 @@ export function ChatWindow() {
             <div className="flex flex-col items-center justify-center min-h-full py-8 space-y-6 animate-fade-in">
               {/* Simplified consolidated intro welcome message */}
               <div className="text-center space-y-4 max-w-lg">
-                <h3 className="text-xl font-extrabold text-slate-800 tracking-tight">무엇이든 물어보세요</h3>
-                <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-                  만성 콩팥병(CKD)과 당뇨병(DM) 맞춤형 의학 검증 데이터, 복지 혜택, 식단 지침, 그리고 전문 병원 매칭 서비스를 원스톱으로 지원합니다.
-                </p>
-                <div className="p-4 bg-purple-550/10 border border-purple-100/40 rounded-2xl text-center space-y-2 shadow-2xs">
-                  <span className="text-[10px] font-black text-purple-600 bg-purple-100/60 px-3 py-1 rounded-md inline-block">
+                <div className="p-6 bg-purple-550/10 border border-purple-100/40 rounded-3xl text-center space-y-2.5 shadow-2xs">
+                  <span className="text-[10px] font-black text-[#6D3FA0] bg-purple-100/60 px-3 py-1 rounded-md inline-block">
                     💡 콩당콩당 AI 케어 파트너
                   </span>
+                  <h3 className="text-sm font-extrabold text-slate-800 tracking-tight">무엇이든 물어보세요</h3>
                   <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    무엇이든 물어보세요! 신장병·당뇨 복합 환자를 위해 1차 진료 지침, 복지 혜택, 식단 정보 등을 맞춤형으로 찾아드립니다.
+                    신장병·당뇨 복합 환자를 위해 1차 진료 지침, 복지 혜택, 식단 지침, 그리고 전문 병원 정보를 개인 맞춤형으로 정확하게 안내해 드립니다.
                   </p>
                 </div>
               </div>
