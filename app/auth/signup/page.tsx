@@ -213,14 +213,11 @@ export default function SignupPage() {
         {/* STEP 1: Account Registration */}
         {step === 'account' && (
           <form onSubmit={handleAccountSubmit} className="space-y-5 relative">
-            <div className="text-center space-y-1">
+            <div className="text-center">
               <h2 className="text-base font-extrabold text-slate-800 flex items-center justify-center gap-1">
                 <Sparkles size={16} className="text-[#6D3FA0]" />
-                <span>가볍게 시작하는 회원가입</span>
+                <span>회원가입</span>
               </h2>
-              <p className="text-[11px] text-slate-400 leading-normal font-semibold">
-                기본 계정 정보 입력 후, Perplexity Health 스타일의 개인 맞춤형 질환 프로필 온보딩이 진행됩니다.
-              </p>
             </div>
 
             <div className="space-y-4 text-xs font-semibold">
@@ -521,7 +518,7 @@ export default function SignupPage() {
           </div>
         )}
 
-        {/* STEP 5: Review & Complete (Perplexity-Health summary) */}
+        {/* STEP 5: Review & Complete */}
         {step === 'review' && (
           <div className="space-y-5 relative text-left">
             <div className="text-center space-y-1">
