@@ -18,10 +18,10 @@ export default function HomeLandingPage() {
             콩당콩당
           </h1>
           <p className="text-base sm:text-lg font-bold text-slate-650 max-w-xl mx-auto leading-relaxed">
-            콩팥병·당뇨 복합 환자를 위한 의도 탐지 기반 멀티에이전트 AI 케어 파트너
+            당뇨병·고혈압·콩팥병 복합 만성질환 환자를 위한 AI 케어 파트너
           </p>
-          <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
-            만성 신장병(CKD)과 당뇨병(DM) 맞춤형 의학 검증 데이터, 복지 혜택, 식단 지침, 그리고 전문 병원 매칭 서비스를 편리한 대화형 인터페이스로 지원합니다.
+          <p className="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">
+            당뇨병(DM)과 만성 콩팥병(CKD), 고혈압 및 동반 합병증을 관리하는 환우분들을 위해 맞춤형 의학 검증 데이터, 식단 지침, 복지 혜택, 그리고 전문 합병증 연계 병원 매칭을 원스톱으로 지원합니다.
           </p>
         </div>
 
@@ -63,9 +63,9 @@ export default function HomeLandingPage() {
             details: '투석 개시 전후로 받을 수 있는 본인부담금 경감 제도와 소모성 재료비 환급 방법, 신청 시 구비서류를 정리해 줍니다.'
           },
           {
-            title: '🏥 투석 전문 병원 탐색',
-            desc: '위치 정보 기반 혈액/복막/야간 투석실 운영 기관 실시간 안내',
-            details: '내 주변 반경 5km 이내의 투석 의료기관 리스트를 조회하고, 혈액/복막/야간 투석실 보유 여부를 편리하게 확인하세요.'
+            title: '🏥 전문 병원 및 합병증 연계 탐색',
+            desc: '당뇨병·고혈압·콩팥병 복합 다학제 진료 및 투석 병원 실시간 안내',
+            details: '위치 기반 주변 전문 병원을 탐색하고, 혈액/복막/야간 투석실 보유 여부 및 당뇨망막증, 심혈관 합병증, 당뇨발 등 전문 다학제 진료가 가능한 종합병원 정보를 통합 안내합니다.'
           }
         ].map((feat, idx) => (
           <div
