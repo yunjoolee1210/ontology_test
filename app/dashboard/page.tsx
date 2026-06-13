@@ -758,39 +758,21 @@ export default function DashboardPage() {
       </div>
 
       {/* 4. 자가 진단 및 하단 네비게이션 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* 신약 정보 or 가이드 */}
-        <div className="p-6 bg-slate-50 border border-slate-100 rounded-3xl space-y-3 flex flex-col justify-between">
-          <div className="space-y-1.5">
-            <span className="text-[9px] font-black text-purple-600 tracking-wider uppercase">FOOD PROTECTION CHECK</span>
-            <h3 className="text-sm font-bold text-slate-800">신장·당뇨 3중 식품 성분 판정</h3>
+      <div className="w-full">
+        {/* 맞춤형 질문 안내 */}
+        <div className="p-6 bg-purple-50/30 border border-purple-100/40 rounded-3xl space-y-4 md:space-y-0 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+          <div className="space-y-1.5 flex-1">
+            <span className="text-[9px] font-black text-[#6D3FA0] tracking-wider uppercase">Personalized AI Consultation</span>
+            <h3 className="text-sm font-bold text-slate-800">내 질환 프로필 맞춤형 건강 상담</h3>
             <p className="text-xs text-slate-500 leading-relaxed font-medium">
-              먹고 싶은 음식이 환우님의 현재 콩팥병 기수(eGFR) 및 당뇨, 고혈압 상태에 안전한지 걱정되시나요? 성분 체크 및 대체 식품 추천을 즉시 받아보세요.
+              등록하신 성별, 키, 나이, 건체중, eGFR(사구체여과율) 및 일일 섭취 제한량 설정에 맞추어 평소 궁금하셨던 건강 상식이나 생활 지침을 AI 챗봇에게 편하게 질문해 보세요.
             </p>
           </div>
           <Link 
             href="/chat" 
-            className="w-full py-3 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-2xl font-bold text-xs flex items-center justify-center space-x-1 shadow-2xs mt-4"
+            className="w-full md:w-auto px-6 py-3 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-2xl font-bold text-xs flex items-center justify-center space-x-1.5 shadow-sm shrink-0 transition-all active:scale-[0.98]"
           >
-            <span>AI 챗봇에게 음식 물어보기</span>
-            <ChevronRight size={14} />
-          </Link>
-        </div>
-
-        {/* 자가 퀴즈 챌린지 */}
-        <div className="p-6 bg-purple-50/40 border border-purple-100/50 rounded-3xl space-y-3 flex flex-col justify-between">
-          <div className="space-y-1.5">
-            <span className="text-[9px] font-black text-[#6D3FA0] tracking-wider uppercase">DAILY CHALLENGE</span>
-            <h3 className="text-sm font-bold text-[#6D3FA0]">만성질환 OX 퀴즈 챌린지</h3>
-            <p className="text-xs text-slate-500 leading-relaxed font-medium">
-              신장 기능 저하 예방과 혈당 혈압 조절을 위한 올바른 의학 생활 습관 상식을 퀴즈로 재미있게 테스트하고 콩당 포인트를 쌓으세요!
-            </p>
-          </div>
-          <Link 
-            href="/dashboard/quiz" 
-            className="w-full py-3 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-2xl font-bold text-xs flex items-center justify-center space-x-1 shadow-sm mt-4"
-          >
-            <span>퀴즈 챌린지 풀기</span>
+            <span>AI 챗봇에게 물어보기</span>
             <ChevronRight size={14} />
           </Link>
         </div>
