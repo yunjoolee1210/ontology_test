@@ -2,6 +2,7 @@ import React from 'react';
 import { AgentBadge } from './AgentBadge';
 import { SourcePanel, Source } from './SourcePanel';
 import { Intent } from '../../lib/types/chat';
+import { HospitalSearchTab } from './HospitalSearchTab';
 
 interface MessageBubbleProps {
   role: 'user' | 'assistant';
@@ -174,6 +175,13 @@ export function MessageBubble({ role, content, agentType, sources, onActionClick
         <div className={`space-y-1.5 text-sm leading-relaxed ${isUser ? 'text-purple-50' : 'text-slate-700'}`}>
           {formatContent(cleanContent)}
         </div>
+
+        {/* 병원 정보 검색 위젯 임베딩 */}
+        {!isUser && agentType === 'hospital' && (
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <HospitalSearchTab />
+          </div>
+        )}
 
         {/* 제안/후속 질문 버튼 표시 */}
         {!isUser && parsedSuggestions.length > 0 && (

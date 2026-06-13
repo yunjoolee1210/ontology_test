@@ -436,6 +436,27 @@ export function ChatWindow() {
                   무엇이든 물어보세요! 신장병·당뇨 복합 환자를 위해 1차 진료 지침, 복지 혜택, 식단 정보 등을 맞춤형으로 찾아드립니다.
                 </p>
               </div>
+
+              {/* 2 Quick Start Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-xl">
+                <button
+                  onClick={() => handleExampleClick("최근 소변에 거품이 나고 몸이 붓는데 분석해줘.")}
+                  className="p-5 bg-white border border-slate-100 rounded-3xl hover:border-purple-200 hover:shadow-md hover:scale-[1.01] transition-all text-left space-y-2 group shadow-xs cursor-pointer"
+                >
+                  <span className="text-2xl">🩺</span>
+                  <h4 className="text-xs font-black text-slate-800">증상 문진 시작하기</h4>
+                  <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">거품뇨, 부종 등 콩팥병/당뇨 증상의 중증도와 긴급도를 진단합니다.</p>
+                </button>
+
+                <button
+                  onClick={() => handleExampleClick("투석 전문 병원 정보를 알려주세요.")}
+                  className="p-5 bg-white border border-slate-100 rounded-3xl hover:border-purple-200 hover:shadow-md hover:scale-[1.01] transition-all text-left space-y-2 group shadow-xs cursor-pointer"
+                >
+                  <span className="text-2xl">🏥</span>
+                  <h4 className="text-xs font-black text-slate-800">주변 병원 정보 찾기</h4>
+                  <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">위치 기반 혈액/복막/야간 투석 병원 정보를 검색하고 매칭합니다.</p>
+                </button>
+              </div>
             </div>
           ) : (
             messages.map(m => {
