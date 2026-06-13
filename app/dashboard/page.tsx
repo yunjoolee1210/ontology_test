@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { UserProfile } from '../../lib/types/chat';
 
+import { supabase } from '../../lib/rag/supabaseClient';
+
 export default function DashboardPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   
@@ -37,13 +39,135 @@ export default function DashboardPage() {
     bloodSugar: false
   });
 
+  // 프로필 모달 및 필드 상태
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [gender, setGender] = useState('남성');
+  const [age, setAge] = useState(60);
+  const [height, setHeight] = useState(170);
+  const [targetWeight, setTargetWeight] = useState(65);
+  const [creatinine, setCreatinine] = useState(1.2);
+  const [ckdStage, setCkdStage] = useState('1기');
+  const [dialysisType, setDialysisType] = useState('해당없음');
+  const [diabetesType, setDiabetesType] = useState('없음');
+  const [medication, setMedication] = useState('식이조절만');
+  const [otherConditions, setOtherConditions] = useState<string[]>([]);
+  const [limitSugar, setLimitSugar] = useState(50);
+  const [limitSodium, setLimitSodium] = useState(2000);
+  const [limitPotassium, setLimitPotassium] = useState(3500);
+  const [limitPhosphorus, setLimitPhosphorus] = useState(1000);
+
+  const getStageFromEGFR = (egfr: number) => {
+    if (egfr >= 90) return '1기';
+    if (egfr >= 60) return '2기';
+    if (egfr >= 45) return '3a기';
+    if (egfr >= 30) return '3b기';
+    if (egfr >= 15) return '4기';
+    return '5기(투석전)';
+  };
+
+  const handleAutoFillLimits = (stage: string, diabetes: string) => {
+    let sugar = 50;
+    let sodium = 2000;
+    let potassium = 3500;
+    let phosphorus = 1000;
+
+    if (stage.includes('3') || stage.includes('4') || stage.includes('5') || stage.includes('투석')) {
+      potassium = 2000;
+      phosphorus = 800;
+      if (stage.includes('4') || stage.includes('5') || stage.includes('투석')) {
+        potassium = 1500;
+      }
+    }
+
+    if (diabetes !== '없음') {
+      sugar = 30;
+    }
+
+    setLimitSugar(sugar);
+    setLimitSodium(sodium);
+    setLimitPotassium(potassium);
+    setLimitPhosphorus(phosphorus);
+  };
+
+  const handleProfileSave = async () => {
+    const genderCoeff = (gender === '여성' || gender === 'female') ? 0.742 : 1.0;
+    const computedEgfr = Math.round(175 * Math.pow(creatinine, -1.154) * Math.pow(age, -0.203) * genderCoeff);
+    
+    let finalCkdStage = ckdStage;
+    if (dialysisType !== '해당없음') {
+      finalCkdStage = '5기 (투석 환자)';
+    } else {
+      finalCkdStage = getStageFromEGFR(computedEgfr);
+    }
+
+    const updatedProfile: UserProfile = {
+      ...profile,
+      gender,
+      age,
+      height,
+      target_weight: targetWeight,
+      creatinine,
+      egfr: computedEgfr,
+      ckd_stage: finalCkdStage,
+      dialysis_type: dialysisType,
+      diabetes_type: diabetesType,
+      medication,
+      other_conditions: otherConditions,
+      limit_sugar: limitSugar,
+      limit_sodium: limitSodium,
+      limit_potassium: limitPotassium,
+      limit_phosphorus: limitPhosphorus
+    };
+
+    setProfile(updatedProfile);
+    localStorage.setItem('kongdang_profile', JSON.stringify(updatedProfile));
+
+    const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } }));
+    if (user) {
+      try {
+        await supabase
+          .from('user_profiles')
+          .upsert({
+            id: user.id,
+            role: profile?.role || 'patient',
+            ckd_stage: finalCkdStage,
+            dialysis_type: dialysisType,
+            diabetes_type: diabetesType,
+            medication,
+            other_conditions: otherConditions,
+            updated_at: new Date().toISOString()
+          });
+      } catch (e) {
+        console.error('Supabase sync error:', e);
+      }
+    }
+
+    setIsEditingProfile(false);
+    alert('건강 프로필이 성공적으로 저장되었습니다!');
+  };
+
   // 로컬스토리지 연동
   useEffect(() => {
     // 1. 프로필 정보 로드
     const savedProfile = localStorage.getItem('kongdang_profile');
     if (savedProfile) {
       try {
-        setProfile(JSON.parse(savedProfile));
+        const parsed = JSON.parse(savedProfile);
+        setProfile(parsed);
+        setGender(parsed.gender || '남성');
+        setAge(parsed.age || 60);
+        setHeight(parsed.height || 170);
+        setTargetWeight(parsed.target_weight || 65);
+        setCreatinine(parsed.creatinine || 1.2);
+        setCkdStage(parsed.ckd_stage || '1기');
+        setDialysisType(parsed.dialysis_type || '해당없음');
+        setDiabetesType(parsed.diabetes_type || '없음');
+        setMedication(parsed.medication || '식이조절만');
+        setOtherConditions(parsed.other_conditions || []);
+        setLimitSugar(parsed.limit_sugar || 50);
+        setLimitSodium(parsed.limit_sodium || 2000);
+        setLimitPotassium(parsed.limit_potassium || 3500);
+        setLimitPhosphorus(parsed.limit_phosphorus || 1000);
       } catch (e) {
         console.error(e);
       }
@@ -167,6 +291,14 @@ export default function DashboardPage() {
   };
   const bpEval = getBpStatus(systolic, diastolic);
 
+  const currentEgfr = (age && creatinine) 
+    ? Math.round(175 * Math.pow(creatinine, -1.154) * Math.pow(age, -0.203) * ((gender === '여성' || gender === 'female') ? 0.742 : 1.0))
+    : null;
+
+  const currentStage = currentEgfr !== null 
+    ? (dialysisType !== '해당없음' ? '5기 (투석 환자)' : getStageFromEGFR(currentEgfr))
+    : (profile?.ckd_stage || '1~2기');
+
   return (
     <div className="w-full max-w-6xl mx-auto py-6 px-4 space-y-8 animate-fade-in text-slate-800">
       
@@ -174,8 +306,8 @@ export default function DashboardPage() {
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-purple-900 via-[#6D3FA0] to-indigo-900 text-white shadow-xl relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:scale-105 transition-transform duration-700" />
         
-        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center space-y-6 md:space-y-0">
-          <div className="space-y-3">
+        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center space-y-6 md:space-y-0 gap-6">
+          <div className="space-y-3 flex-1">
             <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-[10px] font-black tracking-widest bg-white/20 uppercase shadow-2xs">
               <Activity size={12} className="animate-pulse" />
               <span>Personal Health Dashboard</span>
@@ -185,27 +317,66 @@ export default function DashboardPage() {
               환우님의 복합 만성질환 상태를 고려한 실시간 수분 섭취 가이드라인, 생활 습관 관리 리스트 및 생체 지표 모니터링 동향을 관리합니다.
             </p>
           </div>
-
-          <div className="bg-white/10 backdrop-blur-md border border-white/10 p-5 rounded-2xl space-y-3 w-full md:w-auto min-w-[280px] shadow-sm">
+ 
+          <div className="bg-white/10 backdrop-blur-md border border-white/10 p-5 rounded-2xl space-y-3 w-full md:w-auto min-w-[320px] shadow-sm">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-purple-200">현재 내 질환 프로필</span>
-              <Link href="/mypage" className="text-[10px] font-black text-white hover:underline flex items-center gap-0.5">
+              <button 
+                onClick={() => setIsEditingProfile(true)}
+                className="text-[10px] font-black text-white hover:underline flex items-center gap-0.5 cursor-pointer bg-white/10 px-2 py-0.5 rounded-md"
+              >
                 <Edit3 size={10} />
                 수정
-              </Link>
+              </button>
             </div>
-            <div className="grid grid-cols-2 gap-2.5 text-xs">
-              <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
-                <span className="text-[10px] text-purple-300 block mb-0.5 font-bold">콩팥 병기 단계</span>
-                <span className="font-extrabold">{profile?.ckd_stage || '1~2기'}</span>
+            
+            <div className="grid grid-cols-2 gap-2 text-[11px]">
+              <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-purple-300 block font-bold">인적 정보</span>
+                <span className="font-extrabold">{profile?.gender || '남성'} | {profile?.age || '60'}세</span>
               </div>
-              <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
-                <span className="text-[10px] text-purple-300 block mb-0.5 font-bold">당뇨병 유형</span>
+              <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-purple-300 block font-bold">신체 조건</span>
+                <span className="font-extrabold">{profile?.height || '170'}cm | {profile?.target_weight || '65'}kg(목표)</span>
+              </div>
+              <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-purple-300 block font-bold">크레아티닌 / eGFR</span>
+                <span className="font-extrabold text-amber-200">{profile?.creatinine || '1.2'}mg/dL ({profile?.egfr || '68'}ml)</span>
+              </div>
+              <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-purple-300 block font-bold">콩팥 병기 단계</span>
+                <span className="font-extrabold text-amber-200">{profile?.ckd_stage || '1~2기'}</span>
+              </div>
+              <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-purple-300 block font-bold">당뇨병 유형</span>
                 <span className="font-extrabold">{profile?.diabetes_type !== '없음' ? `${profile?.diabetes_type}` : '해당없음'}</span>
               </div>
-              <div className="bg-white/5 p-2.5 rounded-xl border border-white/5 col-span-2">
-                <span className="text-[10px] text-purple-300 block mb-0.5 font-bold">진행 중인 투석 방법</span>
-                <span className="font-extrabold">{profile?.dialysis_type || '투석 안함'}</span>
+              <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-purple-300 block font-bold">투석 여부</span>
+                <span className="font-extrabold truncate">{profile?.dialysis_type || '투석 안함'}</span>
+              </div>
+
+              {/* 영양소 섭취 제한량 */}
+              <div className="bg-white/5 p-2 rounded-xl border border-white/5 col-span-2 space-y-1">
+                <span className="text-[9px] text-purple-300 block font-bold">일일 영양 제한 섭취량</span>
+                <div className="grid grid-cols-4 gap-1 text-[9px] text-center font-bold">
+                  <div className="bg-white/5 p-1 rounded-md">
+                    <span className="text-[8px] text-purple-300 block">당류</span>
+                    <span className="text-white">{profile?.limit_sugar || '50'}g</span>
+                  </div>
+                  <div className="bg-white/5 p-1 rounded-md">
+                    <span className="text-[8px] text-purple-300 block">나트륨</span>
+                    <span className="text-white">{profile?.limit_sodium || '2000'}mg</span>
+                  </div>
+                  <div className="bg-white/5 p-1 rounded-md">
+                    <span className="text-[8px] text-purple-300 block">칼륨</span>
+                    <span className="text-white">{profile?.limit_potassium || '3500'}mg</span>
+                  </div>
+                  <div className="bg-white/5 p-1 rounded-md">
+                    <span className="text-[8px] text-purple-300 block">인</span>
+                    <span className="text-white">{profile?.limit_phosphorus || '1000'}mg</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -617,6 +788,197 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* 건강 프로필 수정 모달 */}
+      {isEditingProfile && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in text-slate-800">
+          <div className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 space-y-5 relative">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h3 className="text-base font-black text-slate-800">질환 프로필 및 섭취 제한 관리</h3>
+              <button 
+                onClick={() => setIsEditingProfile(false)}
+                className="text-slate-400 hover:text-slate-600 transition-colors font-bold text-sm"
+              >
+                ✕
+              </button>
+            </div>
+            
+            {/* Form Fields */}
+            <div className="space-y-4 text-xs">
+              {/* 성별, 나이, 키, 건체중 */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500">성별</label>
+                  <select 
+                    value={gender} 
+                    onChange={e => setGender(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-purple-600 focus:bg-white cursor-pointer"
+                  >
+                    <option value="남성">남성</option>
+                    <option value="여성">여성</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500">나이 (세)</label>
+                  <input 
+                    type="number" 
+                    value={age} 
+                    onChange={e => setAge(parseInt(e.target.value) || 0)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-purple-600 focus:bg-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500">키 (cm)</label>
+                  <input 
+                    type="number" 
+                    value={height} 
+                    onChange={e => setHeight(parseInt(e.target.value) || 0)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-purple-600 focus:bg-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500">건체중 (목표체중, kg)</label>
+                  <input 
+                    type="number" 
+                    value={targetWeight} 
+                    onChange={e => setTargetWeight(parseInt(e.target.value) || 0)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-purple-600 focus:bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* 최근 혈액검사 크레아티닌 */}
+              <div className="p-4 bg-purple-50/50 rounded-2xl border border-purple-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-[#6D3FA0] flex items-center gap-1">
+                    <span>최근 혈액검사 크레아티닌 (Cr)</span>
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      value={creatinine} 
+                      onChange={e => setCreatinine(parseFloat(e.target.value) || 0)}
+                      className="w-24 p-2 bg-white border border-purple-200 rounded-xl font-black text-purple-700 focus:outline-none focus:ring-1 focus:ring-purple-600 text-center"
+                    />
+                    <span className="font-bold text-slate-450">mg/dL</span>
+                  </div>
+                </div>
+                {/* 실시간 계산 결과 */}
+                <div className="text-right">
+                  <span className="text-[10px] text-slate-400 block font-bold">실시간 사구체여과율 (eGFR)</span>
+                  <div className="flex items-center justify-end gap-1.5 mt-0.5">
+                    <span className="text-sm font-black text-purple-700">
+                      {currentEgfr !== null ? `${currentEgfr} ml/min` : '계산 불가'}
+                    </span>
+                    <span className="text-[10px] text-purple-600 bg-purple-100/60 px-2 py-0.5 rounded-md font-bold">
+                      {currentStage}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 당뇨 및 투석 정보 */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500">당뇨 유형</label>
+                  <select 
+                    value={diabetesType} 
+                    onChange={e => setDiabetesType(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-purple-600 focus:bg-white cursor-pointer"
+                  >
+                    <option value="없음">해당없음</option>
+                    <option value="1형">1형 당뇨</option>
+                    <option value="2형">2형 당뇨</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500">진행 중인 투석 방법</label>
+                  <select 
+                    value={dialysisType} 
+                    onChange={e => setDialysisType(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-purple-600 focus:bg-white cursor-pointer"
+                  >
+                    <option value="해당없음">투석 안함</option>
+                    <option value="혈액투석">혈액투석</option>
+                    <option value="복막투석">복막투석</option>
+                    <option value="신장이식 후">신장이식 후</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* 섭취 제한량 권장 버튼 */}
+              <div className="flex justify-between items-center border-t border-slate-100 pt-3 mt-2">
+                <span className="font-bold text-slate-600">일일 섭취 제한량 설정</span>
+                <button
+                  type="button"
+                  onClick={() => handleAutoFillLimits(currentStage, diabetesType)}
+                  className="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-[#6D3FA0] border border-purple-200 rounded-lg text-[10px] font-bold transition-all"
+                >
+                  ⚕️ 의학적 권장량 자동 계산
+                </button>
+              </div>
+
+              {/* 영양소별 제한량 입력 */}
+              <div className="grid grid-cols-2 gap-3 bg-slate-50/50 p-3 rounded-2xl border border-slate-100">
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500 block">당류 제한 (g)</label>
+                  <input 
+                    type="number" 
+                    value={limitSugar} 
+                    onChange={e => setLimitSugar(parseInt(e.target.value) || 0)}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-lg text-center font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-purple-600"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500 block">나트륨 제한 (mg)</label>
+                  <input 
+                    type="number" 
+                    value={limitSodium} 
+                    onChange={e => setLimitSodium(parseInt(e.target.value) || 0)}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-lg text-center font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-purple-600"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500 block">칼륨 제한 (mg)</label>
+                  <input 
+                    type="number" 
+                    value={limitPotassium} 
+                    onChange={e => setLimitPotassium(parseInt(e.target.value) || 0)}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-lg text-center font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-purple-600"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-500 block">인 제한 (mg)</label>
+                  <input 
+                    type="number" 
+                    value={limitPhosphorus} 
+                    onChange={e => setLimitPhosphorus(parseInt(e.target.value) || 0)}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-lg text-center font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-purple-600"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 border-t border-slate-100 pt-4">
+              <button
+                type="button"
+                onClick={() => setIsEditingProfile(false)}
+                className="flex-1 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 transition-all text-center"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={handleProfileSave}
+                className="flex-1 py-2.5 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 text-white rounded-xl text-xs font-bold shadow-md hover:opacity-90 active:scale-[0.98] transition-all text-center"
+              >
+                저장 완료
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { HeartPulse, User, Users, ShieldAlert, CheckCircle2, ChevronRight, Activity, ArrowRight } from 'lucide-react';
+import { User, Users, ShieldAlert, CheckCircle2, ChevronRight, Activity, ArrowRight } from 'lucide-react';
+import { CuteLogoIcon } from '../../components/layout/GNB';
 import { supabase } from '../../lib/rag/supabaseClient';
 
 type Role = 'patient' | 'caregiver' | 'researcher';
@@ -114,7 +115,7 @@ export default function HomeOnboardingPage() {
       {/* 로고 및 서비스 타이틀 */}
       <div className="text-center space-y-3 mb-10">
         <div className="p-3.5 rounded-3xl bg-gradient-to-tr from-[#6D3FA0] to-[#C0392B] text-white shadow-xl inline-flex animate-pulse">
-          <HeartPulse size={36} />
+          <CuteLogoIcon size={36} />
         </div>
         <h1 className="text-3xl font-black tracking-tight text-slate-800">
           콩당콩당에 오신 것을 환영합니다

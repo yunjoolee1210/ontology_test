@@ -6,6 +6,17 @@ export interface UserProfile {
   diabetes_type?: string;   // "없음" | "1형" | "2형"
   medication?: string;      // "경구약" | "인슐린" | "경구약+인슐린" | "식이조절만"
   other_conditions?: string[]; // ["고혈압"]
+  gender?: string;          // "남성" | "여성"
+  age?: number;             // 나이
+  height?: number;          // 키 (cm)
+  target_weight?: number;   // 건체중 = 목표 체중 (kg)
+  creatinine?: number;      // 최근 혈액검사 크레아티닌 (mg/dL)
+  egfr?: number;            // 사구체여과율 (ml/min/1.73m²)
+  limit_sugar?: number;      // 제한섭취량: 당 (g)
+  limit_sodium?: number;     // 제한섭취량: 나트륨 (mg)
+  limit_potassium?: number;  // 제한섭취량: 칼륨 (mg)
+  limit_phosphorus?: number; // 제한섭취량: 인 (mg)
+  role?: string;             // "patient" | "caregiver" | "researcher"
 }
 
 export interface Entity {

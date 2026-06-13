@@ -3,44 +3,60 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HeartPulse, MessageSquare, LineChart, LayoutDashboard, LogIn, Shield } from 'lucide-react';
+import { MessageSquare, LayoutDashboard, LogIn } from 'lucide-react';
+
+export function CuteLogoIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="white"
+      xmlns="http://www.w3.org/2000/svg"
+      className="inline-block transition-transform duration-350 group-hover:scale-110"
+    >
+      {/* Cute rounded heart */}
+      <path
+        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+      />
+      {/* Cute smiling face overlay */}
+      <circle cx="9" cy="9.5" r="1.2" fill="#6D3FA0" />
+      <circle cx="15" cy="9.5" r="1.2" fill="#6D3FA0" />
+      <path
+        d="M10.5 13c.5.8 2.5.8 3 0"
+        stroke="#6D3FA0"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
 
 export function GNB() {
   const pathname = usePathname();
   const [menuItems, setMenuItems] = React.useState([
     { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
-    { name: '트렌드', path: '/trend', icon: LineChart },
     { name: '건강 대시보드', path: '/dashboard', icon: LayoutDashboard },
     { name: '로그인', path: '/auth/login', icon: LogIn },
   ]);
 
   React.useEffect(() => {
-    // 콩당 프로필이 연구자(researcher)거나 관리자일 경우 관리 콘솔 추가 노출
+    // 콩당 프로필이 존재할 시 로그인/마이페이지 분기
     const saved = localStorage.getItem('kongdang_profile');
     if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.role === 'researcher') {
-          setMenuItems([
-            { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
-            { name: '트렌드', path: '/trend', icon: LineChart },
-            { name: '건강 대시보드', path: '/dashboard', icon: LayoutDashboard },
-            { name: '관리 콘솔', path: '/admin/dashboard', icon: Shield },
-            { name: '마이페이지', path: '/mypage', icon: LogIn },
-          ]);
-          return;
-        }
-      } catch (e) {
-        console.error(e);
-      }
+      setMenuItems([
+        { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
+        { name: '건강 대시보드', path: '/dashboard', icon: LayoutDashboard },
+        { name: '마이페이지', path: '/mypage', icon: LogIn },
+      ]);
+    } else {
+      setMenuItems([
+        { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
+        { name: '건강 대시보드', path: '/dashboard', icon: LayoutDashboard },
+        { name: '로그인', path: '/auth/login', icon: LogIn },
+      ]);
     }
-    // 기본 게스트/일반 유저 메뉴
-    setMenuItems([
-      { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
-      { name: '트렌드', path: '/trend', icon: LineChart },
-      { name: '건강 대시보드', path: '/dashboard', icon: LayoutDashboard },
-      { name: '마이페이지', path: '/mypage', icon: LogIn },
-    ]);
   }, [pathname]);
 
   return (
@@ -48,8 +64,8 @@ export function GNB() {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* 로고 */}
         <Link href="/" className="flex items-center space-x-2 group">
-          <div className="p-1.5 rounded-lg bg-gradient-to-tr from-[#6D3FA0] to-[#C0392B] text-white shadow-md group-hover:scale-105 transition-all">
-            <HeartPulse size={20} className="animate-pulse" />
+          <div className="p-1.5 rounded-xl bg-gradient-to-tr from-[#6D3FA0] to-[#C0392B] text-white shadow-md group-hover:scale-105 transition-all">
+            <CuteLogoIcon size={20} />
           </div>
           <span className="text-lg font-black tracking-tight bg-gradient-to-r from-[#6D3FA0] to-[#C0392B] bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
             콩당콩당

@@ -99,11 +99,22 @@ export async function hospitalAgent(message: string, userProfile?: UserProfile):
     // LLM을 이용해 사용자 쿼리와 프로필에 가장 잘 매칭되는 병원 2~3곳을 추천
     const profileText = userProfile 
       ? `[환자 프로필]
+- 성별: ${userProfile.gender || '미입력'}
+- 나이: ${userProfile.age ? userProfile.age + '세' : '미입력'}
+- 키: ${userProfile.height ? userProfile.height + 'cm' : '미입력'}
+- 건체중 (목표 체중): ${userProfile.target_weight ? userProfile.target_weight + 'kg' : '미입력'}
+- 크레아티닌: ${userProfile.creatinine ? userProfile.creatinine + 'mg/dL' : '미입력'}
+- 사구체여과율 (eGFR): ${userProfile.egfr ? userProfile.egfr + 'ml/min/1.73m²' : '미입력'}
 - 콩팥 단계: ${userProfile.ckd_stage || '미입력'}
 - 투석 방법: ${userProfile.dialysis_type || '해당없음'}
 - 당뇨 유형: ${userProfile.diabetes_type || '없음'}
 - 복약 상태: ${userProfile.medication || '미입력'}
-- 기타 질환: ${(userProfile.other_conditions || []).join(', ') || '없음'}`
+- 기타 질환: ${(userProfile.other_conditions || []).join(', ') || '없음'}
+- 일일 영양 섭취 제한량:
+  * 당류: ${userProfile.limit_sugar ? userProfile.limit_sugar + 'g 이하' : '개별 맞춤 설정 필요'}
+  * 나트륨: ${userProfile.limit_sodium ? userProfile.limit_sodium + 'mg 이하' : '개별 맞춤 설정 필요'}
+  * 칼륨: ${userProfile.limit_potassium ? userProfile.limit_potassium + 'mg 이하' : '개별 맞춤 설정 필요'}
+  * 인: ${userProfile.limit_phosphorus ? userProfile.limit_phosphorus + 'mg 이하' : '개별 맞춤 설정 필요'}`
       : '환자 건강 프로필 정보 없음';
 
     const dbContext = CURATED_HOSPITALS.map((h, idx) => 
