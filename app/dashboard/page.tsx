@@ -233,36 +233,44 @@ export default function DashboardPage() {
 
   // 신장 단계별 맞춤형 수분/칼륨 가이드 도출
   const getKidneyGuide = (stage: string) => {
-    switch (stage) {
-      case '5기 (투석 환자)':
-        return {
-          waterTarget: 2, // 2컵 (500ml) + 소변량
-          waterDesc: '투석 환자는 과도한 수분 섭취 시 폐부종 위험이 크므로 500ml 이내로 철저히 조절하세요.',
-          potassiumAlert: '🚨 초고위험: 바나나, 토마토, 시금치 등 고칼륨 식품은 절대 피하고 전처리 필수!',
-          statusColor: 'text-red-600 bg-red-50 border-red-100'
-        };
-      case '4기 (중증 신기능 저하)':
-        return {
-          waterTarget: 4, // 4컵 (1L)
-          waterDesc: '소변량이 줄어든 경우 수분 저류 현상이 생길 수 있으니 1L 내외로 계량해서 드세요.',
-          potassiumAlert: '⚠️ 위험: 칼륨 배설 능력이 매우 떨어지므로 야채는 끓는 물에 데쳐서 드세요.',
-          statusColor: 'text-amber-600 bg-amber-50 border-amber-100'
-        };
-      case '3기 (중등도 신기능 저하)':
-        return {
-          waterTarget: 6, // 6컵 (1.5L)
-          waterDesc: '갈증이 날 때 충분히 마시되, 급격히 들이켜지 않고 조금씩 나누어 마십니다.',
-          potassiumAlert: '⚠️ 주의: 채소류는 2시간 이상 물에 담가둔 후 조리하여 칼륨을 빼주세요.',
-          statusColor: 'text-yellow-700 bg-yellow-50 border-yellow-100'
-        };
-      default:
-        return {
-          waterTarget: 8, // 8컵 (2L)
-          waterDesc: '신장 노폐물의 원활한 배출을 위해 일일 1.5L ~ 2L의 깨끗한 물 섭취를 지향하세요.',
-          potassiumAlert: '💡 일반: 과도한 편식을 피하고, 매끼 신선한 야채와 양질의 한식을 드세요.',
-          statusColor: 'text-[#6D3FA0] bg-purple-50 border-purple-100'
-        };
+    if (stage.includes('5기') && stage.includes('투석')) {
+      return {
+        waterTarget: 2, // 2컵 (500ml)
+        waterDesc: '투석 환자는 과도한 수분 섭취 시 폐부종 위험이 크므로 500ml 이내로 철저히 조절하세요.',
+        potassiumAlert: '🚨 초고위험: 바나나, 토마토, 시금치 등 고칼륨 식품은 절대 피하고 전처리 필수!',
+        statusColor: 'text-red-600 bg-red-50 border-red-100'
+      };
     }
+    if (stage.includes('5기')) { // 5기(투석전)
+      return {
+        waterTarget: 4, // 4컵 (1L)
+        waterDesc: '말기 신부전 환자는 소변량이 적으므로 일일 수분 섭취량을 1L 이내로 철저히 계량하여 드십시오.',
+        potassiumAlert: '🚨 초고위험: 칼륨 배설 능력이 소실에 가까우므로 과일/야채 섭취 시 전처리가 필수적입니다.',
+        statusColor: 'text-red-650 bg-red-50/50 border-red-150'
+      };
+    }
+    if (stage.includes('4기')) {
+      return {
+        waterTarget: 4, // 4컵 (1L)
+        waterDesc: '소변량이 줄어든 경우 수분 저류 현상이 생길 수 있으니 1L 내외로 계량해서 드세요.',
+        potassiumAlert: '⚠️ 위험: 칼륨 배설 능력이 매우 떨어지므로 야채는 끓는 물에 데쳐서 드세요.',
+        statusColor: 'text-amber-600 bg-amber-50 border-amber-100'
+      };
+    }
+    if (stage.includes('3')) { // 3a기, 3b기 매칭
+      return {
+        waterTarget: 6, // 6컵 (1.5L)
+        waterDesc: '갈증이 날 때 충분히 마시되, 급격히 들이켜지 않고 조금씩 나누어 마십니다.',
+        potassiumAlert: '⚠️ 주의: 채소류는 2시간 이상 물에 담가둔 후 조리하여 칼륨을 빼주세요.',
+        statusColor: 'text-yellow-750 bg-yellow-50 border-yellow-100'
+      };
+    }
+    return {
+      waterTarget: 8, // 8컵 (2L)
+      waterDesc: '신장 노폐물의 원활한 배출을 위해 일일 1.5L ~ 2L의 깨끗한 물 섭취를 지향하세요.',
+      potassiumAlert: '💡 일반: 과도한 편식을 피하고, 매끼 신선한 야채와 양질의 한식을 드세요.',
+      statusColor: 'text-[#6D3FA0] bg-purple-50 border-purple-100'
+    };
   };
 
   const ckdGuide = getKidneyGuide(profile?.ckd_stage || '1~2기');
