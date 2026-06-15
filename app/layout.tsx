@@ -1,9 +1,8 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { GNB } from '../components/layout/GNB';
-import { Footer } from '../components/layout/Footer';
 import './globals.css';
+import { LayoutWrapper } from './layout-wrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,11 +19,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${inter.className} min-h-screen flex flex-col bg-slate-50 text-slate-800`}>
-        <GNB />
-        <main className="flex-1 w-full max-w-6xl mx-auto px-6 py-8">
-          {children}
-        </main>
-        <Footer />
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );

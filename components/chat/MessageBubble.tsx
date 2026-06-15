@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AgentBadge } from './AgentBadge';
 import { SourcePanel, Source } from './SourcePanel';
 import { Intent } from '../../lib/types/chat';
-import { HospitalSearchTab } from './HospitalSearchTab';
+
+import { Star, Save } from 'lucide-react';
+import { supabase } from '../../lib/rag/supabaseClient';
 
 interface MessageBubbleProps {
   role: 'user' | 'assistant';
@@ -11,10 +13,77 @@ interface MessageBubbleProps {
   sources?: Source[];
   onActionClick?: (actionType: string) => void;
   onSuggestionClick?: (prompt: string) => void;
+  dbMessageId?: string;
+  sessionId?: string;
 }
 
-export function MessageBubble({ role, content, agentType, sources, onActionClick, onSuggestionClick }: MessageBubbleProps) {
+export function MessageBubble({ role, content, agentType, sources, onActionClick, onSuggestionClick, dbMessageId, sessionId }: MessageBubbleProps) {
   const isUser = role === 'user';
+  
+  const [rating, setRating] = useState<number>(5);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [comment, setComment] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [hasFeedback, setHasFeedback] = useState(false);
+
+  useEffect(() => {
+    if (dbMessageId) {
+      const loadFeedback = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('conversation_feedback')
+            .select('*')
+            .eq('message_id', dbMessageId)
+            .single();
+          if (!error && data) {
+            setRating(data.rating || 5);
+            setSelectedTags(data.tags || []);
+            setComment(data.comment || '');
+            setHasFeedback(true);
+          }
+        } catch (e) {
+          console.error('Failed to load feedback:', e);
+        }
+      };
+      loadFeedback();
+    }
+  }, [dbMessageId]);
+
+  const tagsList = [
+    { id: 'good', label: '👍 Good' },
+    { id: 'excellent', label: '🌟 Excellent' },
+    { id: 'hallucination', label: '⚠️ 환각' },
+    { id: 'incorrect', label: '❌ 오답' },
+    { id: 'unsafe', label: '🚨 위험' },
+    { id: 'irrelevant', label: '🧭 무관' },
+    { id: 'incomplete', label: '📊 미흡' },
+  ];
+
+  const handleSaveFeedback = async () => {
+    if (!dbMessageId || !sessionId) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('conversation_feedback')
+        .upsert({
+          session_id: sessionId,
+          message_id: dbMessageId,
+          rating,
+          tags: selectedTags,
+          comment,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'message_id' });
+
+      if (error) throw error;
+      setHasFeedback(true);
+      alert('평가가 안전하게 저장되었습니다!');
+    } catch (e) {
+      console.error(e);
+      alert('평가 저장 중 오류가 발생했습니다.');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   // Extract suggestions from content
   let cleanContent = content;
@@ -176,12 +245,7 @@ export function MessageBubble({ role, content, agentType, sources, onActionClick
           {formatContent(cleanContent)}
         </div>
 
-        {/* 병원 정보 검색 위젯 임베딩 */}
-        {!isUser && agentType === 'hospital' && (
-          <div className="mt-4 pt-4 border-t border-slate-100">
-            <HospitalSearchTab />
-          </div>
-        )}
+
 
         {/* 제안/후속 질문 버튼 표시 */}
         {!isUser && parsedSuggestions.length > 0 && (
@@ -207,6 +271,84 @@ export function MessageBubble({ role, content, agentType, sources, onActionClick
         {!isUser && sources && sources.length > 0 && (
           <div className="mt-4 pt-3 border-t border-slate-50">
             <SourcePanel sources={sources} />
+          </div>
+        )}
+
+        {/* 모델 평가 피드백 영역 */}
+        {!isUser && dbMessageId && sessionId && (
+          <div className="mt-4 pt-3 border-t border-slate-100 space-y-3 text-xs text-slate-700">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-slate-500 uppercase tracking-wider text-[10px]">🤖 답변 피드백 및 평가</span>
+              {hasFeedback && <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">✓ 평가 완료</span>}
+            </div>
+
+            {/* 별점 */}
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-semibold text-slate-500">평점 (1-5):</span>
+              <div className="flex items-center">
+                {[1, 2, 3, 4, 5].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => setRating(val)}
+                    className="p-0.5 text-slate-200 hover:text-amber-500 transition-colors"
+                  >
+                    <Star
+                      size={16}
+                      className={rating >= val ? 'text-amber-500 fill-amber-500' : 'text-slate-200'}
+                    />
+                  </button>
+                ))}
+              </div>
+              <span className="text-[11px] font-bold text-slate-600">{rating}점</span>
+            </div>
+
+            {/* 태그 */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-semibold text-slate-500 block">평가 태그:</span>
+              <div className="flex flex-wrap gap-1">
+                {tagsList.map(tag => {
+                  const isSelected = selectedTags.includes(tag.id);
+                  return (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedTags(prev =>
+                          prev.includes(tag.id) ? prev.filter(t => t !== tag.id) : [...prev, tag.id]
+                        );
+                      }}
+                      className={`text-[9px] px-2 py-0.5 rounded-lg border font-bold transition-all cursor-pointer ${
+                        isSelected 
+                          ? 'border-purple-600 bg-purple-50 text-purple-700' 
+                          : 'border-slate-100 bg-slate-50 text-slate-500 hover:bg-slate-100'
+                      }`}
+                    >
+                      {tag.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 코멘트 입력 및 저장 버튼 */}
+            <div className="flex gap-2 items-end">
+              <input
+                type="text"
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                placeholder="피드백 코멘트를 입력하세요 (선택)..."
+                className="flex-1 px-3 py-1.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-xl text-[11px] focus:outline-none focus:ring-1 focus:ring-purple-600 focus:bg-white transition-all text-slate-700"
+              />
+              <button
+                onClick={handleSaveFeedback}
+                disabled={saving}
+                className="px-3 py-1.5 bg-purple-700 hover:bg-purple-800 text-white rounded-xl text-[10px] font-bold shadow-xs active:scale-[0.98] transition-all flex items-center gap-1 shrink-0"
+              >
+                <Save size={10} />
+                <span>저장</span>
+              </button>
+            </div>
           </div>
         )}
       </div>

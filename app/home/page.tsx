@@ -10,11 +10,11 @@ export default function HomeLandingPage() {
     <div className="w-full max-w-4xl mx-auto py-12 px-6 space-y-16 animate-fade-in text-slate-800">
       {/* 1. Hero Section */}
       <div className="text-center space-y-6 pt-4">
-        <div className="p-4 rounded-3xl bg-gradient-to-tr from-[#6D3FA0] to-[#C0392B] text-white shadow-xl inline-flex animate-bounce">
+        <div className="p-4 rounded-3xl bg-gradient-to-tr from-[#6D3FA0] to-[#4338CA] text-white shadow-xl inline-flex animate-bounce">
           <CuteLogoIcon size={40} />
         </div>
         <div className="space-y-3">
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight bg-gradient-to-r from-[#6D3FA0] via-purple-700 to-[#C0392B] bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight bg-gradient-to-r from-[#6D3FA0] via-purple-700 to-[#4338CA] bg-clip-text text-transparent">
             콩당콩당
           </h1>
           <p className="text-base sm:text-lg font-bold text-slate-650 max-w-xl mx-auto leading-relaxed">
@@ -38,7 +38,7 @@ export default function HomeLandingPage() {
             href="/dashboard"
             className="w-full sm:w-auto px-8 py-4 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-sm flex items-center justify-center space-x-2 shadow-sm hover:bg-slate-50 active:scale-[0.98] transition-all"
           >
-            <LayoutDashboard size={16} className="text-[#C0392B]" />
+            <LayoutDashboard size={16} className="text-[#6D3FA0]" />
             <span>건강 대시보드로 이동</span>
           </Link>
         </div>
@@ -81,10 +81,10 @@ export default function HomeLandingPage() {
       </div>
 
       {/* 3. Medical Warning Disclaimer */}
-      <div className="p-5 bg-red-50/50 border border-red-100 rounded-3xl flex items-start space-x-3.5 shadow-2xs">
-        <ShieldAlert size={20} className="text-[#C0392B] shrink-0 mt-0.5" />
+      <div className="p-5 bg-purple-50/40 border border-purple-100 rounded-3xl flex items-start space-x-3.5 shadow-2xs">
+        <ShieldAlert size={20} className="text-[#6D3FA0] shrink-0 mt-0.5" />
         <div className="space-y-1 text-left">
-          <h5 className="text-xs font-black text-[#C0392B]">의료적 주의 고지</h5>
+          <h5 className="text-xs font-black text-[#6D3FA0]">의료적 주의 고지</h5>
           <p className="text-[10px] text-slate-500 leading-relaxed font-semibold">
             콩당콩당 서비스는 건강 관리 및 의학 정보 탐색 보조 목적으로만 사용되며, 의사의 전문적인 진료나 진단을 대신할 수 없습니다. 증상이 심각하거나 응급 상황인 경우 반드시 119에 연락하거나 상급 종합병원의 응급실을 내원하시기 바랍니다.
           </p>

@@ -23,6 +23,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { supabase } from '../../../lib/rag/supabaseClient';
+import { CuteLogoIcon } from '../../../components/layout/GNB';
+
 
 type Step = 
   | 'account' 
@@ -53,6 +55,12 @@ export default function SignupPage() {
   const [height, setHeight] = useState(170);
   const [targetWeight, setTargetWeight] = useState(65);
 
+  // Custom nutrient states for review step modification
+  const [customSugar, setCustomSugar] = useState<number | null>(null);
+  const [customSodium, setCustomSodium] = useState<number | null>(null);
+  const [customPotassium, setCustomPotassium] = useState<number | null>(null);
+  const [customPhosphorus, setCustomPhosphorus] = useState<number | null>(null);
+
   // Condition Selections
   const [hasCKD, setHasCKD] = useState(true);
   const [hasDiabetes, setHasDiabetes] = useState(true);
@@ -72,7 +80,7 @@ export default function SignupPage() {
 
   // Confetti generation for celebration step
   const [confetti] = useState(() => {
-    const colors = ['#6D3FA0', '#C0392B', '#E67E22', '#2ECC71', '#3498DB', '#F1C40F'];
+    const colors = ['#6D3FA0', '#4338CA', '#9F7AEA', '#8B5CF6', '#A78BFA', '#D6BCFA', '#FBB6CE'];
     return Array.from({ length: 45 }).map((_, i) => ({
       id: i,
       color: colors[Math.floor(Math.random() * colors.length)],
@@ -164,6 +172,11 @@ export default function SignupPage() {
     }
   }
 
+  const sugarVal = customSugar !== null ? customSugar : calculatedSugar;
+  const sodiumVal = customSodium !== null ? customSodium : calculatedSodium;
+  const potassiumVal = customPotassium !== null ? customPotassium : calculatedPotassium;
+  const phosphorusVal = customPhosphorus !== null ? customPhosphorus : calculatedPhosphorus;
+
   // Sync other conditions array
   const otherConditions: string[] = [];
   if (hasHypertension) otherConditions.push('고혈압');
@@ -186,10 +199,10 @@ export default function SignupPage() {
       diabetes_type: hasDiabetes ? diabetesType : '없음',
       medication: hasDiabetes ? medication : '식이조절만',
       other_conditions: otherConditions,
-      limit_sugar: calculatedSugar,
-      limit_sodium: calculatedSodium,
-      limit_potassium: calculatedPotassium,
-      limit_phosphorus: calculatedPhosphorus,
+      limit_sugar: sugarVal,
+      limit_sodium: sodiumVal,
+      limit_potassium: potassiumVal,
+      limit_phosphorus: phosphorusVal,
       name,
       email
     };
@@ -302,14 +315,11 @@ export default function SignupPage() {
         <div className="w-full max-w-lg mx-auto py-6 animate-fade-in">
           <div className="bg-white border border-slate-100 rounded-3xl shadow-xl p-8 space-y-6 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-24 h-24 bg-purple-100 rounded-full blur-3xl opacity-60"></div>
-            <div className="absolute bottom-0 right-0 w-24 h-24 bg-red-100 rounded-full blur-3xl opacity-60"></div>
+            <div className="absolute bottom-0 right-0 w-24 h-24 bg-indigo-100 rounded-full blur-3xl opacity-60"></div>
 
             {/* TOP HEADER */}
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 relative">
               <div className="flex items-center space-x-2">
-                <div className="p-2 rounded-2xl bg-gradient-to-tr from-[#6D3FA0] to-[#C0392B] text-white shadow-md">
-                  <HeartPulse size={20} className="animate-pulse" />
-                </div>
                 <div>
                   <h1 className="text-sm font-black tracking-tight text-slate-800">콩당콩당 가입</h1>
                   <p className="text-[10px] text-slate-400 font-semibold">스마트 만성질환 통합 AI 케어</p>
@@ -415,14 +425,14 @@ export default function SignupPage() {
               </div>
 
               {errorMsg && (
-                <div className="p-3 bg-red-50 border border-red-100 text-[#C0392B] rounded-xl text-[11px] font-semibold flex items-start gap-1.5">
-                  <ShieldAlert size={14} className="shrink-0 mt-0.5" />
+                <div className="p-3 bg-purple-50 border border-purple-100 text-purple-700 rounded-xl text-[11px] font-semibold flex items-start gap-1.5">
+                  <ShieldAlert size={14} className="shrink-0 mt-0.5 text-purple-650" />
                   <span>{errorMsg}</span>
                 </div>
               )}
 
               <div className="flex items-start space-x-2 text-[10px] text-slate-400 pt-1 leading-relaxed">
-                <ShieldAlert size={14} className="text-[#C0392B] shrink-0 mt-0.5" />
+                <ShieldAlert size={14} className="text-purple-600 shrink-0 mt-0.5" />
                 <span>가입 즉시 콩당콩당 서비스 이용약관 및 의학적 책임 한계 고지 사항에 동의하게 됩니다.</span>
               </div>
 
@@ -467,10 +477,6 @@ export default function SignupPage() {
           ))}
 
           <div className="bg-white border border-slate-100 rounded-3xl shadow-xl p-8 space-y-6 text-center relative z-10">
-            <div className="p-5 bg-purple-550/10 text-[#6D3FA0] rounded-full inline-flex animate-bounce">
-              <Sparkles size={40} className="text-[#6D3FA0]" />
-            </div>
-
             <div className="space-y-2">
               <h2 className="text-xl font-black text-slate-850">🎉 회원가입을 축하합니다!</h2>
               <p className="text-xs text-slate-500 font-bold leading-relaxed">
@@ -572,7 +578,7 @@ export default function SignupPage() {
 
                     <button
                       onClick={() => setStep('demographics')}
-                      className="w-full mt-4 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer"
+                      className="w-full mt-4 py-3.5 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer"
                     >
                       <span>시작하기 (이해했습니다)</span>
                       <ArrowRight size={14} />
@@ -921,23 +927,43 @@ export default function SignupPage() {
 
                       {/* Nutrition limits suggestions */}
                       <div className="space-y-1.5">
-                        <span className="text-[10px] text-slate-450 block font-bold uppercase">설정된 일일 영양소 섭취 제한량</span>
+                        <span className="text-[10px] text-slate-450 block font-bold uppercase">일일 영양소 섭취 제한량 (※ 혈액검사 수치에 맞추어 개별 목표치를 다르게 입력 가능)</span>
                         <div className="grid grid-cols-4 gap-2 text-center text-[10px]">
-                          <div className="p-2 bg-slate-50 border border-slate-100 rounded-xl">
-                            <span className="text-[8px] text-slate-400 block font-bold">당류</span>
-                            <span className="font-extrabold text-slate-800">{calculatedSugar}g</span>
+                          <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl flex flex-col items-center">
+                            <span className="text-[8px] text-slate-450 block font-bold mb-1">당류 (g)</span>
+                            <input
+                              type="number"
+                              value={sugarVal}
+                              onChange={e => setCustomSugar(Math.max(0, parseInt(e.target.value) || 0))}
+                              className="w-full bg-white border border-slate-200 rounded-lg text-center font-black text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#6D3FA0] text-xs py-1"
+                            />
                           </div>
-                          <div className="p-2 bg-slate-50 border border-slate-100 rounded-xl">
-                            <span className="text-[8px] text-slate-400 block font-bold">나트륨</span>
-                            <span className="font-extrabold text-[#C0392B]">{calculatedSodium}mg</span>
+                          <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl flex flex-col items-center">
+                            <span className="text-[8px] text-slate-450 block font-bold mb-1">나트륨 (mg)</span>
+                            <input
+                              type="number"
+                              value={sodiumVal}
+                              onChange={e => setCustomSodium(Math.max(0, parseInt(e.target.value) || 0))}
+                              className="w-full bg-white border border-slate-200 rounded-lg text-center font-black text-slate-850 focus:outline-none focus:ring-1 focus:ring-[#6D3FA0] text-xs py-1"
+                            />
                           </div>
-                          <div className="p-2 bg-slate-50 border border-slate-100 rounded-xl">
-                            <span className="text-[8px] text-slate-400 block font-bold">칼륨</span>
-                            <span className="font-extrabold text-purple-700">{calculatedPotassium}mg</span>
+                          <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl flex flex-col items-center">
+                            <span className="text-[8px] text-slate-450 block font-bold mb-1">칼륨 (mg)</span>
+                            <input
+                              type="number"
+                              value={potassiumVal}
+                              onChange={e => setCustomPotassium(Math.max(0, parseInt(e.target.value) || 0))}
+                              className="w-full bg-white border border-slate-200 rounded-lg text-center font-black text-purple-750 focus:outline-none focus:ring-1 focus:ring-[#6D3FA0] text-xs py-1"
+                            />
                           </div>
-                          <div className="p-2 bg-slate-50 border border-slate-100 rounded-xl">
-                            <span className="text-[8px] text-slate-400 block font-bold">인</span>
-                            <span className="font-extrabold text-indigo-700">{calculatedPhosphorus}mg</span>
+                          <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl flex flex-col items-center">
+                            <span className="text-[8px] text-slate-450 block font-bold mb-1">인 (mg)</span>
+                            <input
+                              type="number"
+                              value={phosphorusVal}
+                              onChange={e => setCustomPhosphorus(Math.max(0, parseInt(e.target.value) || 0))}
+                              className="w-full bg-white border border-slate-200 rounded-lg text-center font-black text-indigo-750 focus:outline-none focus:ring-1 focus:ring-[#6D3FA0] text-xs py-1"
+                            />
                           </div>
                         </div>
                       </div>
@@ -1051,10 +1077,10 @@ export default function SignupPage() {
                   <div className="bg-white/10 backdrop-blur-md border border-white/10 p-5 rounded-2xl space-y-3.5 shadow-xl animate-fade-in">
                     <span className="text-[10px] text-purple-200 block font-bold">활성화된 케어 플러그인</span>
                     <div className="flex flex-wrap gap-1.5">
-                      {hasCKD && <span className="px-2 py-1 rounded bg-purple-600/70 border border-purple-400/30 text-[9px] font-bold">만성 콩팥병 케어</span>}
-                      {hasDiabetes && <span className="px-2 py-1 rounded bg-red-600/70 border border-red-400/30 text-[9px] font-bold">당뇨병 당량 조절</span>}
-                      {hasHypertension && <span className="px-2 py-1 rounded bg-orange-600/70 border border-orange-400/30 text-[9px] font-bold">고혈압 저염 관리</span>}
-                      {hasHyperlipidemia && <span className="px-2 py-1 rounded bg-blue-600/70 border border-blue-400/30 text-[9px] font-bold">고지혈증 지방 통제</span>}
+                      {hasCKD && <span className="px-2 py-1 rounded bg-purple-650/80 border border-purple-400/30 text-[9px] font-bold">만성 콩팥병 케어</span>}
+                      {hasDiabetes && <span className="px-2 py-1 rounded bg-indigo-600/80 border border-indigo-400/30 text-[9px] font-bold">당뇨병 당량 조절</span>}
+                      {hasHypertension && <span className="px-2 py-1 rounded bg-purple-550/80 border border-purple-350/30 text-[9px] font-bold">고혈압 저염 관리</span>}
+                      {hasHyperlipidemia && <span className="px-2 py-1 rounded bg-indigo-500/80 border border-indigo-300/30 text-[9px] font-bold">고지혈증 지방 통제</span>}
                       {!hasCKD && !hasDiabetes && !hasHypertension && !hasHyperlipidemia && (
                         <span className="text-[10px] text-purple-300 font-semibold">선택된 관리 조건이 없습니다.</span>
                       )}
@@ -1133,19 +1159,19 @@ export default function SignupPage() {
                     <div className="grid grid-cols-2 gap-2 text-[10px] pt-1">
                       <div className="bg-white/5 p-2 rounded-xl text-center">
                         <span className="text-[8px] text-purple-200 block">일일 당분</span>
-                        <span className="text-white font-extrabold text-xs">{calculatedSugar}g</span>
+                        <span className="text-white font-extrabold text-xs">{sugarVal}g</span>
                       </div>
                       <div className="bg-white/5 p-2 rounded-xl text-center">
                         <span className="text-[8px] text-purple-200 block">일일 소금</span>
-                        <span className="text-white font-extrabold text-xs">{calculatedSodium}mg</span>
+                        <span className="text-white font-extrabold text-xs">{sodiumVal}mg</span>
                       </div>
                       <div className="bg-white/5 p-2 rounded-xl text-center">
                         <span className="text-[8px] text-purple-200 block">일일 칼륨</span>
-                        <span className="text-white font-extrabold text-xs">{calculatedPotassium}mg</span>
+                        <span className="text-white font-extrabold text-xs">{potassiumVal}mg</span>
                       </div>
                       <div className="bg-white/5 p-2 rounded-xl text-center">
                         <span className="text-[8px] text-purple-200 block">일일 인</span>
-                        <span className="text-white font-extrabold text-xs">{calculatedPhosphorus}mg</span>
+                        <span className="text-white font-extrabold text-xs">{phosphorusVal}mg</span>
                       </div>
                     </div>
                   </div>

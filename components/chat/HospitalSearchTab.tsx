@@ -245,7 +245,7 @@ export function HospitalSearchTab() {
           />
           <button
             type="submit"
-            className="px-5 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all shadow-2xs"
+            className="px-5 py-3 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all shadow-2xs"
           >
             지역 검색
           </button>
@@ -355,7 +355,7 @@ export function HospitalSearchTab() {
           onClick={() => setStepComplications(!hasComplication)}
           className={`shrink-0 px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
             hasComplication
-              ? 'bg-[#C0392B] text-white shadow-2xs'
+              ? 'bg-[#6D3FA0] text-white shadow-2xs'
               : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
           }`}
         >
@@ -378,9 +378,9 @@ export function HospitalSearchTab() {
 
         {/* 추가 주의사항 (합병증 확인 시 노출) */}
         {hasComplication && (
-          <div className="p-4 bg-red-50/50 border border-red-200 rounded-xl space-y-1.5 text-left animate-shake">
-            <h6 className="text-xs font-bold text-[#C0392B] flex items-center gap-1">
-              <ShieldAlert size={14} className="text-[#C0392B]" />
+          <div className="p-4 bg-purple-50/50 border border-purple-200 rounded-xl space-y-1.5 text-left animate-shake">
+            <h6 className="text-xs font-bold text-[#6D3FA0] flex items-center gap-1">
+              <ShieldAlert size={14} className="text-[#6D3FA0]" />
               <span>🚨 합병증 발생 환자 필수 추가 주의사항</span>
             </h6>
             <p className="text-[10px] text-slate-550 leading-relaxed font-semibold">

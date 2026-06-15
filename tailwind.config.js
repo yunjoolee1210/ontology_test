@@ -9,9 +9,10 @@ module.exports = {
       colors: {
         kongdang: {
           purple: '#6D3FA0',
-          red: '#C0392B',
+          indigo: '#4338CA',
+          lavender: '#9F7AEA',
           purpleLight: '#F3E8FF',
-          redLight: '#FDEDEC',
+          indigoLight: '#E0E7FF',
         }
       }
     },

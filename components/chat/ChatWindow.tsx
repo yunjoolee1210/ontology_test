@@ -5,7 +5,7 @@ import { useChat } from 'ai/react';
 import { MessageBubble } from './MessageBubble';
 import { InputBar } from './InputBar';
 import { Intent, UserProfile } from '../../lib/types/chat';
-import { Loader2, Bot, Heart, ShieldAlert, BookOpen, Compass, Search, Plus, Trash2, MessageSquare, Settings } from 'lucide-react';
+import { Loader2, Bot, Heart, ShieldAlert, BookOpen, Compass, Search, Plus, Trash2, MessageSquare, Settings, Menu, X } from 'lucide-react';
 import { supabase } from '../../lib/rag/supabaseClient';
 
 interface ChatSession {
@@ -15,9 +15,21 @@ interface ChatSession {
 }
 
 export function ChatWindow() {
-  const [activeIntent, setActiveIntent] = useState<Intent>('general');
-  const [activeSources, setActiveSources] = useState<any[]>([]);
-  const [messageMeta, setMessageMeta] = useState<Record<string, { agentType: Intent; sources: any[]; riskLevel?: string }>>({});
+  const [activeIntentA, setActiveIntentA] = useState<Intent>('general');
+  const [activeSourcesA, setActiveSourcesA] = useState<any[]>([]);
+  const [activeMessageIdA, setActiveMessageIdA] = useState<string>('');
+  const [messageMetaA, setMessageMetaA] = useState<Record<string, { agentType: Intent; sources: any[]; dbMessageId?: string }>>({});
+
+  const [activeIntentB, setActiveIntentB] = useState<Intent>('general');
+  const [activeSourcesB, setActiveSourcesB] = useState<any[]>([]);
+  const [activeMessageIdB, setActiveMessageIdB] = useState<string>('');
+  const [messageMetaB, setMessageMetaB] = useState<Record<string, { agentType: Intent; sources: any[]; dbMessageId?: string }>>({});
+
+  const [activeIntentC, setActiveIntentC] = useState<Intent>('general');
+  const [activeSourcesC, setActiveSourcesC] = useState<any[]>([]);
+  const [activeMessageIdC, setActiveMessageIdC] = useState<string>('');
+  const [messageMetaC, setMessageMetaC] = useState<Record<string, { agentType: Intent; sources: any[]; dbMessageId?: string }>>({});
+
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
   const [sessionId, setSessionId] = useState<string>('');
@@ -26,9 +38,8 @@ export function ChatWindow() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
-  const [ragMode, setRagMode] = useState<'rag' | 'ontology' | 'lora'>('lora');
-  const [showComparison, setShowComparison] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activePanel, setActivePanel] = useState<'A' | 'B' | 'C'>('C');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +59,20 @@ export function ChatWindow() {
       console.error('Error loading sessions:', e);
     } finally {
       setLoadingSessions(false);
+    }
+  };
+
+  // 비로그인 사용자용 로컬 세션 목록 로드
+  const loadLocalSessions = () => {
+    const localSessions = localStorage.getItem('kongdang_local_sessions');
+    if (localSessions) {
+      try {
+        setSessions(JSON.parse(localSessions));
+      } catch (e) {
+        console.error('Error loading local sessions:', e);
+      }
+    } else {
+      setSessions([]);
     }
   };
 
@@ -96,33 +121,32 @@ export function ChatWindow() {
           setUserProfile(loadedProfile);
           localStorage.setItem('kongdang_profile', JSON.stringify(loadedProfile));
         }
+      } else {
+        loadLocalSessions();
       }
     };
     checkUser();
+
+    // 데스크톱 화면의 경우 사이드바 기본 열림 설정
+    if (window.innerWidth >= 768) {
+      setIsSidebarOpen(true);
+    }
   }, []);
 
-  const {
-    messages,
-    input,
-    setInput,
-    handleInputChange,
-    handleSubmit,
-    isLoading,
-    append,
-    setMessages
-  } = useChat({
+  // 3가지 모델용 useChat 훅 선언
+  const chatA = useChat({
     api: '/api/chat',
     streamProtocol: 'text',
     body: {
-      sessionId: sessionId,
+      sessionId: sessionId ? `${sessionId}_A` : '',
       userId: userId,
       user_profile: userProfile,
-      ragMode: ragMode,
+      ragMode: 'Rag',
     },
     onResponse(response) {
       const agentType = (response.headers.get('X-Agent-Type') || 'general') as Intent;
       const sourcesHeader = response.headers.get('X-Agent-Sources');
-      
+      const msgId = response.headers.get('X-Message-ID') || '';
       let parsedSources = [];
       if (sourcesHeader) {
         try {
@@ -131,27 +155,120 @@ export function ChatWindow() {
           console.error('Failed to parse sources header:', e);
         }
       }
-
-      setActiveIntent(agentType);
-      setActiveSources(parsedSources);
+      setActiveIntentA(agentType);
+      setActiveSourcesA(parsedSources);
+      setActiveMessageIdA(msgId);
     },
   });
 
-  // 메시지 리스트에 변화가 생겼을 때 메타데이터 바인딩
+  const chatB = useChat({
+    api: '/api/chat',
+    streamProtocol: 'text',
+    body: {
+      sessionId: sessionId ? `${sessionId}_B` : '',
+      userId: userId,
+      user_profile: userProfile,
+      ragMode: 'Rag+Ontology',
+    },
+    onResponse(response) {
+      const agentType = (response.headers.get('X-Agent-Type') || 'general') as Intent;
+      const sourcesHeader = response.headers.get('X-Agent-Sources');
+      const msgId = response.headers.get('X-Message-ID') || '';
+      let parsedSources = [];
+      if (sourcesHeader) {
+        try {
+          parsedSources = JSON.parse(decodeURIComponent(sourcesHeader));
+        } catch (e) {
+          console.error('Failed to parse sources header:', e);
+        }
+      }
+      setActiveIntentB(agentType);
+      setActiveSourcesB(parsedSources);
+      setActiveMessageIdB(msgId);
+    },
+  });
+
+  const chatC = useChat({
+    api: '/api/chat',
+    streamProtocol: 'text',
+    body: {
+      sessionId: sessionId ? `${sessionId}_C` : '',
+      userId: userId,
+      user_profile: userProfile,
+      ragMode: 'Rag+Ontology+Lora',
+    },
+    onResponse(response) {
+      const agentType = (response.headers.get('X-Agent-Type') || 'general') as Intent;
+      const sourcesHeader = response.headers.get('X-Agent-Sources');
+      const msgId = response.headers.get('X-Message-ID') || '';
+      let parsedSources = [];
+      if (sourcesHeader) {
+        try {
+          parsedSources = JSON.parse(decodeURIComponent(sourcesHeader));
+        } catch (e) {
+          console.error('Failed to parse sources header:', e);
+        }
+      }
+      setActiveIntentC(agentType);
+      setActiveSourcesC(parsedSources);
+      setActiveMessageIdC(msgId);
+    },
+  });
+
+  // 메시지 리스트 변화 시 메타데이터 바인딩 - A
   useEffect(() => {
-    if (messages.length > 0) {
-      const lastMessage = messages[messages.length - 1];
-      if (lastMessage.role === 'assistant' && !messageMeta[lastMessage.id]) {
-        setMessageMeta(prev => ({
+    if (chatA.messages.length > 0) {
+      const lastMessage = chatA.messages[chatA.messages.length - 1];
+      if (lastMessage.role === 'assistant' && !messageMetaA[lastMessage.id]) {
+        setMessageMetaA(prev => ({
           ...prev,
           [lastMessage.id]: {
-            agentType: activeIntent,
-            sources: activeSources,
+            agentType: activeIntentA,
+            sources: activeSourcesA,
+            dbMessageId: activeMessageIdA,
           }
         }));
       }
+    }
+  }, [chatA.messages, activeIntentA, activeSourcesA, activeMessageIdA]);
 
-      // 비로그인 상태일 때 로컬 세션 & 메시지 이력 갱신
+  // 메시지 리스트 변화 시 메타데이터 바인딩 - B
+  useEffect(() => {
+    if (chatB.messages.length > 0) {
+      const lastMessage = chatB.messages[chatB.messages.length - 1];
+      if (lastMessage.role === 'assistant' && !messageMetaB[lastMessage.id]) {
+        setMessageMetaB(prev => ({
+          ...prev,
+          [lastMessage.id]: {
+            agentType: activeIntentB,
+            sources: activeSourcesB,
+            dbMessageId: activeMessageIdB,
+          }
+        }));
+      }
+    }
+  }, [chatB.messages, activeIntentB, activeSourcesB, activeMessageIdB]);
+
+  // 메시지 리스트 변화 시 메타데이터 바인딩 - C
+  useEffect(() => {
+    if (chatC.messages.length > 0) {
+      const lastMessage = chatC.messages[chatC.messages.length - 1];
+      if (lastMessage.role === 'assistant' && !messageMetaC[lastMessage.id]) {
+        setMessageMetaC(prev => ({
+          ...prev,
+          [lastMessage.id]: {
+            agentType: activeIntentC,
+            sources: activeSourcesC,
+            dbMessageId: activeMessageIdC,
+          }
+        }));
+      }
+    }
+  }, [chatC.messages, activeIntentC, activeSourcesC, activeMessageIdC]);
+
+  // 로컬 세션 및 메시지 이력 저장 (A 기준)
+  useEffect(() => {
+    if (chatA.messages.length > 0) {
       const saveLocalHistory = async () => {
         const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } }));
         if (!user && sessionId) {
@@ -160,19 +277,28 @@ export function ChatWindow() {
           if (!sessionList.some((s: any) => s.id === sessionId)) {
             sessionList = [{
               id: sessionId,
-              title: messages[0]?.content.substring(0, 30) || '새로운 대화',
+              title: chatA.messages[0]?.content.substring(0, 30) || '새로운 대화',
               created_at: new Date().toISOString()
             }, ...sessionList];
             localStorage.setItem('kongdang_local_sessions', JSON.stringify(sessionList));
+            setSessions(sessionList);
           }
           const localMsgKey = `kongdang_local_msg_${sessionId}`;
-          localStorage.setItem(localMsgKey, JSON.stringify(messages));
+          localStorage.setItem(localMsgKey, JSON.stringify(chatA.messages));
+
+          // 메타데이터 저장
+          const localMetaKey = `kongdang_local_meta_${sessionId}`;
+          localStorage.setItem(localMetaKey, JSON.stringify({
+            metaA: messageMetaA,
+            metaB: messageMetaB,
+            metaC: messageMetaC
+          }));
         }
       };
       saveLocalHistory();
     }
     scrollToBottom();
-  }, [messages, activeIntent, activeSources, sessionId]);
+  }, [chatA.messages, sessionId, messageMetaA, messageMetaB, messageMetaC]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -183,13 +309,60 @@ export function ChatWindow() {
     const newSId = `session_${Date.now()}`;
     setSessionId(newSId);
     localStorage.setItem('kongdang_active_session_id', newSId);
-    setMessages([]);
-    setMessageMeta({});
-    setInput('');
+    
+    chatA.setMessages([]);
+    chatB.setMessages([]);
+    chatC.setMessages([]);
+    
+    setMessageMetaA({});
+    setMessageMetaB({});
+    setMessageMetaC({});
+    
+    chatA.setInput('');
+
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
   };
 
   // 특정 세션 대화 불러오기
   const handleSelectSession = async (sId: string) => {
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+    
+    if (!userId) {
+      // 비로그인 (게스트): 로컬스토리지에서 복원
+      const localMsgKey = `kongdang_local_msg_${sId}`;
+      const savedMsgs = localStorage.getItem(localMsgKey);
+      if (savedMsgs) {
+        try {
+          const formattedMessages = JSON.parse(savedMsgs);
+          chatA.setMessages(formattedMessages);
+          chatB.setMessages(formattedMessages);
+          chatC.setMessages(formattedMessages);
+
+          const localMetaKey = `kongdang_local_meta_${sId}`;
+          const savedMeta = localStorage.getItem(localMetaKey);
+          if (savedMeta) {
+            const parsedMeta = JSON.parse(savedMeta);
+            setMessageMetaA(parsedMeta.metaA || {});
+            setMessageMetaB(parsedMeta.metaB || {});
+            setMessageMetaC(parsedMeta.metaC || {});
+          } else {
+            setMessageMetaA({});
+            setMessageMetaB({});
+            setMessageMetaC({});
+          }
+        } catch (e) {
+          console.error('Failed to parse local messages:', e);
+        }
+      }
+      setSessionId(sId);
+      localStorage.setItem('kongdang_active_session_id', sId);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('chat_messages')
@@ -198,22 +371,30 @@ export function ChatWindow() {
         .order('created_at', { ascending: true });
 
       if (!error && data) {
-        setMessages(data.map(m => ({
+        const formattedMessages = data.map(m => ({
           id: m.id,
           role: m.role as any,
           content: m.content
-        })));
+        }));
         
-        const newMeta: Record<string, { agentType: Intent; sources: any[] }> = {};
+        chatA.setMessages(formattedMessages);
+        chatB.setMessages(formattedMessages);
+        chatC.setMessages(formattedMessages);
+        
+        const newMeta: Record<string, { agentType: Intent; sources: any[]; dbMessageId?: string }> = {};
         data.forEach(m => {
           if (m.role === 'assistant') {
             newMeta[m.id] = {
               agentType: (m.agent_type || 'general') as Intent,
-              sources: m.sources || []
+              sources: m.sources || [],
+              dbMessageId: m.id
             };
           }
         });
-        setMessageMeta(newMeta);
+        
+        setMessageMetaA(newMeta);
+        setMessageMetaB(newMeta);
+        setMessageMetaC(newMeta);
       }
       setSessionId(sId);
       localStorage.setItem('kongdang_active_session_id', sId);
@@ -226,6 +407,30 @@ export function ChatWindow() {
   const handleDeleteSession = async (sId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!confirm('대화 기록을 정말 삭제하시겠습니까?')) return;
+    
+    if (!userId) {
+      // 비로그인 (게스트): 로컬스토리지에서 삭제
+      const localSessions = localStorage.getItem('kongdang_local_sessions');
+      if (localSessions) {
+        try {
+          let sessionList = JSON.parse(localSessions);
+          sessionList = sessionList.filter((s: any) => s.id !== sId);
+          localStorage.setItem('kongdang_local_sessions', JSON.stringify(sessionList));
+          setSessions(sessionList);
+          
+          localStorage.removeItem(`kongdang_local_msg_${sId}`);
+          localStorage.removeItem(`kongdang_local_meta_${sId}`);
+        } catch (err) {
+          console.error('Failed to delete local session:', err);
+        }
+      }
+      if (sessionId === sId) {
+        handleNewChat();
+      }
+      alert('삭제되었습니다.');
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('chat_sessions')
@@ -244,18 +449,37 @@ export function ChatWindow() {
     }
   };
 
-  // 첫 발화 시 세션 목록 자동 새로고침
+  // 첫 발화 시 세션 목록 자동 새로고침 (A 기준)
   useEffect(() => {
-    if (messages.length === 1 && userId) {
-      const timer = setTimeout(() => {
-        loadSessions(userId);
-      }, 800);
-      return () => clearTimeout(timer);
+    if (chatA.messages.length === 1) {
+      if (userId) {
+        const timer = setTimeout(() => {
+          loadSessions(userId);
+        }, 800);
+        return () => clearTimeout(timer);
+      } else {
+        loadLocalSessions();
+      }
     }
-  }, [messages.length, userId]);
+  }, [chatA.messages.length, userId]);
+
+  const handleCustomSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const userPrompt = chatA.input.trim();
+    if (!userPrompt) return;
+
+    const userMsg = { role: 'user' as const, content: userPrompt };
+    chatA.append(userMsg);
+    chatB.append(userMsg);
+    chatC.append(userMsg);
+    chatA.setInput('');
+  };
 
   const handleExampleClick = (text: string) => {
-    setInput(text);
+    const userMsg = { role: 'user' as const, content: text };
+    chatA.append(userMsg);
+    chatB.append(userMsg);
+    chatC.append(userMsg);
   };
 
   // 5대 워크플로우 명세 (Perplexity Health 스타일)
@@ -311,289 +535,362 @@ export function ChatWindow() {
       targetPrompt = '이 증상과 관련해서 추가 관리법을 자세하게 알려주세요.';
     }
 
-    // Trigger chat request automatically
-    append({
-      role: 'user',
-      content: targetPrompt
-    });
+    const userMsg = { role: 'user' as const, content: targetPrompt };
+    chatA.append(userMsg);
+    chatB.append(userMsg);
+    chatC.append(userMsg);
   };
 
   const handleSuggestionClick = (prompt: string) => {
-    append({
-      role: 'user',
-      content: prompt
-    });
+    const userMsg = { role: 'user' as const, content: prompt };
+    chatA.append(userMsg);
+    chatB.append(userMsg);
+    chatC.append(userMsg);
   };
 
   return (
-    <div className={`flex w-full h-[calc(100vh-120px)] bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-lg mx-auto ${userId ? 'max-w-6xl' : 'max-w-4xl'}`}>
-      {/* LNB Sidebar - Only show when logged in */}
-      {userId && (
-        <div className="w-64 bg-slate-50 border-r border-slate-100 flex flex-col h-full shrink-0">
-          {/* New Chat Button */}
-          <div className="p-4 border-b border-slate-100">
-            <button
-              onClick={handleNewChat}
-              className="w-full flex items-center justify-center space-x-2 py-3 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-2xl text-xs font-bold transition-all shadow-sm active:scale-[0.98]"
-            >
-              <Plus size={14} className="stroke-[2.5]" />
-              <span>새 대화 시작</span>
-            </button>
-          </div>
+    <div className="flex w-full h-full bg-white overflow-hidden relative">
+      {/* LNB Sidebar Backdrop for Mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
-          {/* Search bar inside sidebar */}
-          <div className="px-4 py-2 border-b border-slate-100/50">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="대화 검색..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 bg-slate-100 focus:bg-white border border-transparent focus:border-purple-300 rounded-xl text-[11px] focus:outline-none transition-all text-slate-700"
-              />
-              <Search size={12} className="text-slate-400 absolute left-2.5 top-2" />
-            </div>
-          </div>
+      {/* LNB Sidebar */}
+      <div
+        className={`bg-slate-50 border-r border-slate-100 flex flex-col h-full shrink-0 transition-all duration-300 z-50
+          ${isSidebarOpen 
+            ? 'fixed inset-y-0 left-0 w-60 translate-x-0 md:relative md:translate-x-0' 
+            : 'fixed inset-y-0 left-0 w-60 -translate-x-full md:relative md:w-0 md:translate-x-0 md:overflow-hidden'
+          }
+        `}
+      >
+        {/* New Chat Button */}
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between gap-2">
+          <button
+            onClick={handleNewChat}
+            className="flex-1 flex items-center justify-center space-x-2 py-3 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-2xl text-xs font-bold transition-all shadow-sm active:scale-[0.98]"
+          >
+            <Plus size={14} className="stroke-[2.5]" />
+            <span>새 대화 시작</span>
+          </button>
+          
+          {/* Close Sidebar Button for Mobile Drawer */}
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="md:hidden p-2.5 rounded-xl hover:bg-slate-200 text-slate-550 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
 
-          {/* Chat Sessions list */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-1">
-            {loadingSessions ? (
-              <div className="text-center py-8 text-xs text-slate-400">목록 불러오는 중...</div>
-            ) : sessions.filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 ? (
-              <div className="text-center py-8 text-xs text-slate-400">대화가 없습니다.</div>
-            ) : (
-              sessions
-                .filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase()))
-                .map(s => {
-                  const isActive = sessionId === s.id;
-                  return (
-                    <div
-                      key={s.id}
-                      onClick={() => handleSelectSession(s.id)}
-                      className={`group p-2.5 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between ${
-                        isActive
-                          ? 'border-purple-200 bg-purple-50/60 text-purple-700 font-bold'
-                          : 'border-transparent hover:bg-slate-100 text-slate-600'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-2 overflow-hidden flex-1 mr-2">
-                        <MessageSquare size={14} className={isActive ? 'text-purple-600' : 'text-slate-400'} />
-                        <div className="overflow-hidden flex-1">
-                          <p className="text-[11px] truncate">{s.title || '새로운 대화'}</p>
-                          <span className="text-[8px] text-slate-400 block mt-0.5">
-                            {new Date(s.created_at).toLocaleDateString([], { month: '2-digit', day: '2-digit' })}
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={(e) => handleDeleteSession(s.id, e)}
-                        className="p-1 rounded-md text-slate-350 hover:text-rose-600 hover:bg-rose-50 transition-colors opacity-0 group-hover:opacity-100 shrink-0"
-                      >
-                        <Trash2 size={12} />
-                      </button>
-                    </div>
-                  );
-                })
-            )}
+        {/* Search bar inside sidebar */}
+        <div className="px-4 py-2 border-b border-slate-100/50">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="대화 검색..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 bg-slate-100 focus:bg-white border border-transparent focus:border-purple-300 rounded-xl text-[11px] focus:outline-none transition-all text-slate-700"
+            />
+            <Search size={12} className="text-slate-400 absolute left-2.5 top-2" />
           </div>
         </div>
-      )}
+
+        {/* Chat Sessions list */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-1">
+          {loadingSessions ? (
+            <div className="text-center py-8 text-xs text-slate-400">목록 불러오는 중...</div>
+          ) : sessions.filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 ? (
+            <div className="text-center py-8 text-xs text-slate-400">대화가 없습니다.</div>
+          ) : (
+            sessions
+              .filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase()))
+              .map(s => {
+                const isActive = sessionId === s.id;
+                return (
+                  <div
+                    key={s.id}
+                    onClick={() => handleSelectSession(s.id)}
+                    className={`group p-2.5 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between ${
+                      isActive
+                        ? 'border-purple-200 bg-purple-50/60 text-purple-700 font-bold'
+                        : 'border-transparent hover:bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2 overflow-hidden flex-1 mr-2">
+                      <MessageSquare size={14} className={isActive ? 'text-purple-600' : 'text-slate-400'} />
+                      <div className="overflow-hidden flex-1">
+                        <p className="text-[11px] truncate">{s.title || '새로운 대화'}</p>
+                        <span className="text-[8px] text-slate-400 block mt-0.5">
+                          {new Date(s.created_at).toLocaleDateString([], { month: '2-digit', day: '2-digit' })}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => handleDeleteSession(s.id, e)}
+                      className="p-1 rounded-md text-slate-355 hover:text-rose-600 hover:bg-rose-50 transition-colors opacity-0 group-hover:opacity-100 shrink-0"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                );
+              })
+          )}
+        </div>
+      </div>
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col h-full bg-slate-50 overflow-hidden">
         {/* 챗봇 헤더 */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 py-4 bg-white border-b border-slate-100 shadow-xs gap-4 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-100 shadow-xs gap-4 shrink-0">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-purple-50 text-[#6D3FA0] rounded-2xl">
+            {/* Sidebar toggle menu button */}
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-all active:scale-95"
+              aria-label="Toggle LNB Sidebar"
+            >
+              <Menu size={20} />
+            </button>
+            <div className="p-2 bg-purple-50 text-[#6D3FA0] rounded-2xl hidden xs:block">
               <Bot size={22} className="stroke-[2.5]" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-800 tracking-tight">콩당콩당 AI 케어 파트너</h2>
-              <p className="text-[10px] text-slate-400 font-semibold">만성 콩팥병(CKD) & 당뇨(DM) 복합 만성질환 통합 RAG 챗봇</p>
+              <h2 className="text-xs sm:text-sm font-bold text-slate-800 tracking-tight">콩당콩당 AI 케어 파트너 - 모델 3중 비교 뷰</h2>
+              <p className="text-[9px] sm:text-[10px] text-slate-400 font-semibold hidden sm:block">동일 질문에 대해 RAG, Ontology, LoRA 미세조정 답변을 실시간 비교합니다.</p>
             </div>
           </div>
+        </div>
+
+        {/* Mobile active panel tabs */}
+        <div className="flex md:hidden bg-slate-100 p-1 border-b border-slate-200 shrink-0">
+          <button
+            onClick={() => setActivePanel('A')}
+            className={`flex-1 py-2 text-xs font-bold text-center rounded-xl transition-all ${
+              activePanel === 'A' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-550'
+            }`}
+          >
+            RAG
+          </button>
+          <button
+            onClick={() => setActivePanel('B')}
+            className={`flex-1 py-2 text-xs font-bold text-center rounded-xl transition-all ${
+              activePanel === 'B' ? 'bg-white text-purple-700 shadow-sm' : 'text-slate-550'
+            }`}
+          >
+            온톨로지
+          </button>
+          <button
+            onClick={() => setActivePanel('C')}
+            className={`flex-1 py-2 text-xs font-bold text-center rounded-xl transition-all ${
+              activePanel === 'C' ? 'bg-[#6D3FA0] text-white shadow-sm' : 'text-slate-555'
+            }`}
+          >
+            LoRA (추천)
+          </button>
+        </div>
+
+        {/* 3-Panel Horizontal/Mobile Switchable View */}
+        <div className="flex-1 flex overflow-hidden divide-x divide-slate-100 bg-white">
           
-          {/* RAG Mode Selector (Only when logged in) */}
-          {userId && (
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="bg-slate-50 p-1 rounded-xl flex items-center space-x-1 border border-slate-200 shadow-2xs">
-                <button
-                  onClick={() => setRagMode('rag')}
-                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all cursor-pointer ${
-                    ragMode === 'rag' 
-                      ? 'bg-white text-slate-800 shadow-2xs border border-slate-100' 
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  일반 RAG
-                </button>
-                <button
-                  onClick={() => setRagMode('ontology')}
-                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all cursor-pointer ${
-                    ragMode === 'ontology' 
-                      ? 'bg-white text-slate-800 shadow-2xs border border-slate-100' 
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  RAG + Ontology
-                </button>
-                <button
-                  onClick={() => setRagMode('lora')}
-                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all cursor-pointer ${
-                    ragMode === 'lora' 
-                      ? 'bg-gradient-to-r from-[#6D3FA0] to-purple-700 text-white shadow-2xs border border-purple-200' 
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  RAG + Ontology + LoRA
-                </button>
-              </div>
-              <button
-                onClick={() => setShowComparison(!showComparison)}
-                className="px-3.5 py-2 bg-purple-50 text-[#6D3FA0] border border-purple-100 hover:bg-purple-100 rounded-xl text-[10px] font-black tracking-tight transition-all cursor-pointer"
-              >
-                {showComparison ? '비교표 닫기' : '📊 모델 비교표'}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* RAG Mode Comparison Stats Board (Collapsible) */}
-        {showComparison && userId && (
-          <div className="bg-gradient-to-r from-slate-50 to-purple-50/20 border-b border-slate-100 p-6 space-y-4 animate-fade-in text-xs text-slate-700 shrink-0">
-            <div className="flex justify-between items-center">
-              <h3 className="font-extrabold text-slate-800 text-sm flex items-center gap-1.5">
-                <Settings size={14} className="text-[#6D3FA0]" />
-                <span>RAG 파이프라인 단계별 핵심 검증 지표 비교</span>
-              </h3>
-              <span className="text-[10px] font-bold text-slate-400">자체 벤치마크 검증 통계 (N=100)</span>
+          {/* Panel A: 일반 RAG 챗봇 (40% width on desktop) */}
+          <div
+            className={`w-full md:w-[40%] flex flex-col h-full overflow-hidden bg-white relative
+              ${activePanel === 'A' ? 'flex' : 'hidden md:flex'}
+            `}
+          >
+            <div className="bg-slate-50 border-b border-slate-100 px-4 py-2 flex items-center justify-between shrink-0">
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Group A: RAG</span>
+              <span className="text-[9px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-bold">Standard RAG</span>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-[11px] border-collapse bg-white rounded-2xl shadow-2xs border border-slate-100">
-                <thead>
-                  <tr className="bg-slate-50/80 text-slate-500 font-bold border-b border-slate-100">
-                    <th className="py-2.5 px-4 text-left">평가 지표 (Validation Metrics)</th>
-                    <th className="py-2.5 px-4 text-center">A. 일반 RAG</th>
-                    <th className="py-2.5 px-4 text-center text-purple-700">B. RAG + Ontology</th>
-                    <th className="py-2.5 px-4 text-center text-emerald-700 bg-emerald-50/30">C. RAG + Ontology + LoRA (추천)</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 font-semibold text-slate-650">
-                  <tr>
-                    <td className="py-2.5 px-4 font-bold text-slate-800">의도 분류 정확도 (Intent Accuracy)</td>
-                    <td className="py-2.5 px-4 text-center text-slate-500">85.0%</td>
-                    <td className="py-2.5 px-4 text-center text-purple-600">89.0%</td>
-                    <td className="py-2.5 px-4 text-center text-emerald-600 font-extrabold bg-emerald-50/10">95.5%</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-4 font-bold text-slate-800">의학 용어 표준 매핑 (Ontology Mapping)</td>
-                    <td className="py-2.5 px-4 text-center text-slate-400">-</td>
-                    <td className="py-2.5 px-4 text-center text-purple-600">93.5%</td>
-                    <td className="py-2.5 px-4 text-center text-emerald-600 font-extrabold bg-emerald-50/10">97.0%</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-4 font-bold text-slate-800">관계 슬롯 추출 (Slot Filling Accuracy)*</td>
-                    <td className="py-2.5 px-4 text-center text-slate-500">78.0%</td>
-                    <td className="py-2.5 px-4 text-center text-purple-600">88.0%</td>
-                    <td className="py-2.5 px-4 text-center text-emerald-600 font-extrabold bg-emerald-50/10">96.0%</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-4 font-bold text-slate-800">전문 병원 추천 정확도 (Recommendation)</td>
-                    <td className="py-2.5 px-4 text-center text-slate-500">74.0%</td>
-                    <td className="py-2.5 px-4 text-center text-purple-600">87.5%</td>
-                    <td className="py-2.5 px-4 text-center text-emerald-600 font-extrabold bg-emerald-50/10">95.0%</td>
-                  </tr>
-                  <tr className="bg-slate-50/30">
-                    <td className="py-2.5 px-4 font-bold text-slate-800">의학 정보 환각 비율 (Hallucination Rate)</td>
-                    <td className="py-2.5 px-4 text-center text-rose-600">8.5%</td>
-                    <td className="py-2.5 px-4 text-center text-amber-600">3.8%</td>
-                    <td className="py-2.5 px-4 text-center text-emerald-650 font-extrabold bg-emerald-50/20">1.2%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {/* 메시지 영역 */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+              {chatA.messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center min-h-full py-8 space-y-4 text-center">
+                  <div className="p-4 bg-purple-50/60 border border-purple-100/30 rounded-3xl space-y-2 max-w-sm">
+                    <span className="text-[9px] font-black text-[#6D3FA0] bg-purple-100/80 px-2.5 py-0.5 rounded-md inline-block">
+                      Group A: RAG
+                    </span>
+                    <h3 className="text-xs font-black text-slate-800">기준 정보 대화</h3>
+                    <p className="text-[10px] text-slate-500 leading-relaxed font-semibold">
+                      질문을 하단 입력창에 적어주세요. 3개 에이전트 모델 패널로 자동 연동되어 동시에 답변이 생성됩니다.
+                    </p>
+                  </div>
 
-            <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
-              * **관계 슬롯 추출(Slot Filling Accuracy)**: 대화 과정에서 환자의 의도를 정확히 파악하여, 병원 추천에 핵심적이나 프로필에 누락된 필수 슬롯(예: 현재 위치 정보, 야간/일반 투석 방식, 합병증 동반 상태 등)을 대화 흐름 중에서 정확히 채워 넣는 능력을 측정합니다.
-            </p>
-          </div>
-        )}
+                  {/* 2 Quick Start Buttons */}
+                  <div className="flex flex-col gap-2 w-full max-w-xs pt-2">
+                    <button
+                      onClick={() => handleExampleClick("최근 소변에 거품이 나고 몸이 붓는데 분석해줘.")}
+                      className="p-3 bg-white border border-slate-100 rounded-2xl hover:border-purple-250 hover:shadow-xs transition-all text-left space-y-1 shadow-3xs cursor-pointer text-[10px]"
+                    >
+                      <span className="text-sm">🩺</span>
+                      <h4 className="font-bold text-slate-800">증상 문진 시작하기</h4>
+                      <p className="text-slate-400 font-semibold leading-relaxed">거품뇨, 부종 등 증상의 위험도/긴급도 진단</p>
+                    </button>
 
-        {/* 메시지 영역 */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gradient-to-b from-white to-slate-50/50">
-          {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center min-h-full py-8 space-y-6 animate-fade-in">
-              {/* Simplified consolidated intro welcome message */}
-              <div className="text-center space-y-4 max-w-lg">
-                <div className="p-6 bg-purple-550/10 border border-purple-100/40 rounded-3xl text-center space-y-2.5 shadow-2xs">
-                  <span className="text-[10px] font-black text-[#6D3FA0] bg-purple-100/60 px-3 py-1 rounded-md inline-block">
-                    💡 콩당콩당 AI 케어 파트너
-                  </span>
-                  <h3 className="text-sm font-extrabold text-slate-800 tracking-tight">무엇이든 물어보세요</h3>
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    신장병·당뇨 복합 환자를 위해 1차 진료 지침, 복지 혜택, 식단 지침, 그리고 전문 병원 정보를 개인 맞춤형으로 정확하게 안내해 드립니다.
-                  </p>
+                    <button
+                      onClick={() => handleExampleClick("투석 전문 병원 정보를 알려주세요.")}
+                      className="p-3 bg-white border border-slate-100 rounded-2xl hover:border-purple-250 hover:shadow-xs transition-all text-left space-y-1 shadow-3xs cursor-pointer text-[10px]"
+                    >
+                      <span className="text-sm">🏥</span>
+                      <h4 className="font-bold text-slate-800">주변 병원 정보 찾기</h4>
+                      <p className="text-slate-400 font-semibold leading-relaxed">혈액/복막/야간 투석 병원 검색 및 매칭</p>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                chatA.messages.map(m => {
+                  const meta = messageMetaA[m.id] || { agentType: 'general' as Intent, sources: [], dbMessageId: '' };
+                  return (
+                    <MessageBubble
+                      key={m.id}
+                      role={m.role === 'user' ? 'user' : 'assistant'}
+                      content={m.content}
+                      agentType={m.role === 'assistant' ? meta.agentType : undefined}
+                      sources={m.role === 'assistant' ? meta.sources : undefined}
+                      onActionClick={handleActionClick}
+                      onSuggestionClick={handleSuggestionClick}
+                      dbMessageId={m.role === 'assistant' ? (meta.dbMessageId || m.id) : undefined}
+                      sessionId={m.role === 'assistant' ? `${sessionId}_A` : undefined}
+                    />
+                  );
+                })
+              )}
 
-              {/* 2 Quick Start Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-xl">
-                <button
-                  onClick={() => handleExampleClick("최근 소변에 거품이 나고 몸이 붓는데 분석해줘.")}
-                  className="p-5 bg-white border border-slate-100 rounded-3xl hover:border-purple-200 hover:shadow-md hover:scale-[1.01] transition-all text-left space-y-2 group shadow-xs cursor-pointer"
-                >
-                  <span className="text-2xl">🩺</span>
-                  <h4 className="text-xs font-black text-slate-800">증상 문진 시작하기</h4>
-                  <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">거품뇨, 부종 등 콩팥병/당뇨 증상의 중증도와 긴급도를 진단합니다.</p>
-                </button>
-
-                <button
-                  onClick={() => handleExampleClick("투석 전문 병원 정보를 알려주세요.")}
-                  className="p-5 bg-white border border-slate-100 rounded-3xl hover:border-purple-200 hover:shadow-md hover:scale-[1.01] transition-all text-left space-y-2 group shadow-xs cursor-pointer"
-                >
-                  <span className="text-2xl">🏥</span>
-                  <h4 className="text-xs font-black text-slate-800">주변 병원 정보 찾기</h4>
-                  <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">위치 기반 혈액/복막/야간 투석 병원 정보를 검색하고 매칭합니다.</p>
-                </button>
-              </div>
+              {/* 로딩 표시 */}
+              {chatA.isLoading && chatA.messages.length > 0 && chatA.messages[chatA.messages.length - 1].role === 'user' && (
+                <div className="flex justify-start items-center space-x-2.5 p-3 bg-white border border-slate-100 rounded-3xl rounded-tl-none max-w-xs shadow-xs animate-pulse">
+                  <Loader2 size={14} className="text-purple-600 animate-spin" />
+                  <span className="text-[10px] text-slate-400 font-semibold">RAG 검색 및 생성 중...</span>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
-          ) : (
-            messages.map(m => {
-              const meta = messageMeta[m.id] || { agentType: 'general' as Intent, sources: [] };
-              return (
-                <MessageBubble
-                  key={m.id}
-                  role={m.role === 'user' ? 'user' : 'assistant'}
-                  content={m.content}
-                  agentType={m.role === 'assistant' ? meta.agentType : undefined}
-                  sources={m.role === 'assistant' ? meta.sources : undefined}
-                  onActionClick={handleActionClick}
-                  onSuggestionClick={handleSuggestionClick}
-                />
-              );
-            })
-          )}
+          </div>
 
-          {/* 로딩 표시 */}
-          {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
-            <div className="flex justify-start items-center space-x-2.5 p-4 bg-white border border-slate-100 rounded-3xl rounded-tl-none max-w-xs shadow-md animate-pulse">
-              <Loader2 size={16} className="text-purple-600 animate-spin" />
-              <span className="text-xs text-slate-400 font-semibold">전문 에이전트 분석 중...</span>
+          {/* Panel B: RAG + Ontology 챗봇 (30% width on desktop) */}
+          <div
+            className={`w-full md:w-[30%] flex flex-col h-full overflow-hidden bg-slate-50/20
+              ${activePanel === 'B' ? 'flex' : 'hidden md:flex'}
+            `}
+          >
+            <div className="bg-purple-50/20 border-b border-slate-100 px-4 py-2 flex items-center justify-between shrink-0">
+              <span className="text-[10px] font-black text-purple-700 uppercase tracking-wider">Group B: RAG + Ontology</span>
+              <span className="text-[9px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded-md font-bold">Standard Mapped</span>
             </div>
-          )}
 
-          <div ref={messagesEndRef} />
+            {/* 메시지 영역 */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+              {chatB.messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center min-h-full py-8 text-center">
+                  <div className="p-4 bg-purple-50/40 border border-purple-100/30 rounded-3xl space-y-2 max-w-xs">
+                    <span className="text-[9px] font-black text-purple-700 bg-purple-100/60 px-2.5 py-0.5 rounded-md inline-block">
+                      Group B: RAG + Ontology
+                    </span>
+                    <h3 className="text-xs font-black text-slate-800">의학 표준 지식 매핑</h3>
+                    <p className="text-[10px] text-slate-455 leading-relaxed font-semibold">
+                      임상 의학 표준 온톨로지를 결합하여 표준화된 건강 지식 기반 답변을 확인합니다.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                chatB.messages.map(m => {
+                  const meta = messageMetaB[m.id] || { agentType: 'general' as Intent, sources: [], dbMessageId: '' };
+                  return (
+                    <MessageBubble
+                      key={m.id}
+                      role={m.role === 'user' ? 'user' : 'assistant'}
+                      content={m.content}
+                      agentType={m.role === 'assistant' ? meta.agentType : undefined}
+                      sources={m.role === 'assistant' ? meta.sources : undefined}
+                      onActionClick={handleActionClick}
+                      onSuggestionClick={handleSuggestionClick}
+                      dbMessageId={m.role === 'assistant' ? (meta.dbMessageId || m.id) : undefined}
+                      sessionId={m.role === 'assistant' ? `${sessionId}_B` : undefined}
+                    />
+                  );
+                })
+              )}
+
+              {/* 로딩 표시 */}
+              {chatB.isLoading && chatB.messages.length > 0 && chatB.messages[chatB.messages.length - 1].role === 'user' && (
+                <div className="flex justify-start items-center space-x-2.5 p-3 bg-white border border-slate-100 rounded-3xl rounded-tl-none max-w-xs shadow-xs animate-pulse">
+                  <Loader2 size={14} className="text-purple-600 animate-spin" />
+                  <span className="text-[10px] text-slate-400 font-semibold">의학 용어 표준 매핑 중...</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Panel C: RAG + Ontology + LoRA 파인튜닝 (30% width on desktop) */}
+          <div
+            className={`w-full md:w-[30%] flex flex-col h-full overflow-hidden bg-purple-50/5
+              ${activePanel === 'C' ? 'flex' : 'hidden md:flex'}
+            `}
+          >
+            <div className="bg-purple-100/10 border-b border-slate-100 px-4 py-2 flex items-center justify-between shrink-0">
+              <span className="text-[10px] font-black text-purple-900 uppercase tracking-wider">Group C: LoRA Fine-tuning</span>
+              <span className="text-[9px] bg-gradient-to-r from-[#6D3FA0] to-purple-600 text-white px-2 py-0.5 rounded-md font-bold">Fine-tuned (추천)</span>
+            </div>
+
+            {/* 메시지 영역 */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+              {chatC.messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center min-h-full py-8 text-center">
+                  <div className="p-4 bg-purple-100/20 border border-purple-200/20 rounded-3xl space-y-2 max-w-xs">
+                    <span className="text-[9px] font-black text-white bg-gradient-to-r from-[#6D3FA0] to-purple-600 px-2.5 py-0.5 rounded-md inline-block">
+                      Group C: LoRA Fine-tuning
+                    </span>
+                    <h3 className="text-xs font-black text-slate-800">환우 대화 미세조정</h3>
+                    <p className="text-[10px] text-slate-500 leading-relaxed font-semibold">
+                      환우들의 실제 대화 데이터를 학습해 고도로 친절한 말투와 정밀한 복합 만성질환 섭취 제한 가이드를 제시합니다.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                chatC.messages.map(m => {
+                  const meta = messageMetaC[m.id] || { agentType: 'general' as Intent, sources: [], dbMessageId: '' };
+                  return (
+                    <MessageBubble
+                      key={m.id}
+                      role={m.role === 'user' ? 'user' : 'assistant'}
+                      content={m.content}
+                      agentType={m.role === 'assistant' ? meta.agentType : undefined}
+                      sources={m.role === 'assistant' ? meta.sources : undefined}
+                      onActionClick={handleActionClick}
+                      onSuggestionClick={handleSuggestionClick}
+                      dbMessageId={m.role === 'assistant' ? (meta.dbMessageId || m.id) : undefined}
+                      sessionId={m.role === 'assistant' ? `${sessionId}_C` : undefined}
+                    />
+                  );
+                })
+              )}
+
+              {/* 로딩 표시 */}
+              {chatC.isLoading && chatC.messages.length > 0 && chatC.messages[chatC.messages.length - 1].role === 'user' && (
+                <div className="flex justify-start items-center space-x-2.5 p-3 bg-white border border-slate-100 rounded-3xl rounded-tl-none max-w-xs shadow-xs animate-pulse">
+                  <Loader2 size={14} className="text-[#6D3FA0] animate-spin" />
+                  <span className="text-[10px] text-slate-400 font-semibold">LoRA 케어 파트너 답변 중...</span>
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
 
-        {/* 입력바 */}
-        <div className="bg-white border-t border-slate-100 p-4">
+        {/* Global Input Bar at the bottom */}
+        <div className="bg-white border-t border-slate-100 py-3 px-4 shrink-0">
           <InputBar
-            input={input}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
+            input={chatA.input}
+            handleInputChange={chatA.handleInputChange}
+            handleSubmit={handleCustomSubmit}
             onExampleClick={handleExampleClick}
-            isLoading={isLoading}
+            isLoading={chatA.isLoading || chatB.isLoading || chatC.isLoading}
           />
         </div>
       </div>

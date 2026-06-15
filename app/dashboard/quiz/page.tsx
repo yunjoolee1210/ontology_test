@@ -149,7 +149,7 @@ export default function QuizPage() {
               <button
                 type="button"
                 onClick={handleNextQuestion}
-                className="w-full py-3.5 bg-slate-800 text-white rounded-xl text-sm font-bold shadow-md hover:bg-slate-900 active:scale-[0.98] transition-all"
+                className="w-full py-3.5 bg-[#6D3FA0] text-white rounded-xl text-sm font-bold shadow-md hover:bg-purple-800 active:scale-[0.98] transition-all"
               >
                 {currentIdx < QUIZ_QUESTIONS.length - 1 ? '다음 문제 풀기' : '퀴즈 완료'}
               </button>
@@ -158,7 +158,7 @@ export default function QuizPage() {
         </div>
       ) : (
         <div className="bg-white border border-slate-100 rounded-3xl shadow-md p-8 text-center space-y-6 animate-fade-in">
-          <div className="p-4 bg-gradient-to-tr from-purple-700 to-[#C0392B] rounded-full text-white inline-flex shadow-lg">
+          <div className="p-4 bg-gradient-to-tr from-purple-700 to-[#4338CA] rounded-full text-white inline-flex shadow-lg">
             <Award size={48} className="animate-pulse" />
           </div>
           <div>

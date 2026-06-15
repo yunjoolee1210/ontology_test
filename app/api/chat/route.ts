@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, message: directMessage, sessionId, userId, user_profile } = await req.json().catch(() => ({}));
+    const { messages, message: directMessage, sessionId, userId, user_profile, ragMode } = await req.json().catch(() => ({}));
     
     let userMessage = '';
     if (directMessage && typeof directMessage === 'string') {
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ④ 오케스트레이터 호출 (의도 분류 → 병렬 실행 → 답변 합성)
-    const orchestratorResult = await orchestrator(userMessage, userProfile);
+    const orchestratorResult = await orchestrator(userMessage, userProfile, ragMode);
 
     // 출처 요약을 답변 밑에 정갈하게 배치
     let finalAnswer = orchestratorResult.answer;
@@ -116,9 +116,10 @@ export async function POST(req: NextRequest) {
     }
 
     // ⑤ Supabase DB 기록 (AI 답변) - Optional
+    let dbMessageId = '';
     if (sessionId) {
       try {
-        await supabase
+        const { data, error } = await supabase
           .from('chat_messages')
           .insert({
             session_id: sessionId,
@@ -126,7 +127,12 @@ export async function POST(req: NextRequest) {
             content: finalAnswer,
             agent_type: orchestratorResult.agentType,
             sources: orchestratorResult.sources
-          });
+          })
+          .select('id')
+          .single();
+        if (!error && data) {
+          dbMessageId = data.id;
+        }
       } catch (e) {
         console.error('Supabase assistant save error:', e);
       }
@@ -145,7 +151,8 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'text/plain; charset=utf-8',
         'X-Agent-Type': orchestratorResult.agentType,
         'X-Agent-Sources': encodeURIComponent(JSON.stringify(orchestratorResult.sources || [])),
-        'Access-Control-Expose-Headers': 'X-Agent-Type, X-Agent-Sources',
+        'X-Message-ID': dbMessageId || '',
+        'Access-Control-Expose-Headers': 'X-Agent-Type, X-Agent-Sources, X-Message-ID',
       }
     });
   } catch (error) {

@@ -26,7 +26,7 @@ export function InputBar({
           type="text"
           value={input}
           onChange={handleInputChange}
-          placeholder="신장이나 당뇨 최신 논문 또는 국가 의료 복지 혜택을 물어보세요..."
+          placeholder="신장·당뇨 논문, 의료 복지 혜택을 질문해 보세요..."
           disabled={isLoading}
           maxLength={500}
           className="w-full pr-12 pl-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600 focus:bg-white transition-all disabled:opacity-50"

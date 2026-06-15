@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { HeartPulse, Key, Mail, ArrowRight } from 'lucide-react';
+import { Key, Mail, ArrowRight } from 'lucide-react';
 import { supabase } from '../../../lib/rag/supabaseClient';
+import { CuteLogoIcon } from '../../../components/layout/GNB';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,14 +13,74 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleDemoLogin = () => {
+    // 세션 초기화 및 데모 데이터 주입
+    localStorage.setItem('kongdang_profile', JSON.stringify({
+      role: 'patient',
+      conditions: ['kidney', 'diabetes'],
+      name: '데모 환우',
+      email: 'demo@kongdang.com',
+      gender: '남성',
+      age: 65,
+      height: 172,
+      target_weight: 68,
+      creatinine: 1.4,
+      egfr: 51,
+      ckd_stage: '3기',
+      dialysis_type: '해당없음',
+      diabetes_type: '2형 당뇨',
+      medication: '경구 혈당강하제',
+      other_conditions: ['고혈압'],
+      limit_sugar: 30,
+      limit_sodium: 2000,
+      limit_potassium: 2000,
+      limit_phosphorus: 800
+    }));
+
+    alert('데모 계정으로 로그인에 성공했습니다 (로컬 모드)!');
+    router.push('/chat');
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    const normalizedEmail = email.toLowerCase().trim();
+    // 데모/테스트용 계정 우회 처리
+    const isDemoEmail = normalizedEmail.includes('demo') || normalizedEmail.endsWith('@test.com') || normalizedEmail.endsWith('@example.com');
+
     try {
+      if (isDemoEmail) {
+        localStorage.setItem('kongdang_profile', JSON.stringify({
+          role: 'patient',
+          conditions: ['kidney', 'diabetes'],
+          name: normalizedEmail.split('@')[0] || '데모 환우',
+          email: normalizedEmail,
+          gender: '남성',
+          age: 65,
+          height: 172,
+          target_weight: 68,
+          creatinine: 1.4,
+          egfr: 51,
+          ckd_stage: '3기',
+          dialysis_type: '해당없음',
+          diabetes_type: '2형 당뇨',
+          medication: '경구 혈당강하제',
+          other_conditions: ['고혈압'],
+          limit_sugar: 30,
+          limit_sodium: 2000,
+          limit_potassium: 2000,
+          limit_phosphorus: 800
+        }));
+
+        alert(`테스트 계정(${normalizedEmail})으로 로그인에 성공했습니다 (로컬 모드)!`);
+        router.push('/chat');
+        return;
+      }
+
       // 1. Supabase Auth 로그인 진행
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: normalizedEmail,
         password,
       });
 
@@ -57,6 +118,35 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       console.error(err);
+
+      // 예외 발생 시의 2차 방어막 (오류가 났더라도 데모 계정이면 로그인 통과)
+      if (isDemoEmail) {
+        localStorage.setItem('kongdang_profile', JSON.stringify({
+          role: 'patient',
+          conditions: ['kidney', 'diabetes'],
+          name: normalizedEmail.split('@')[0] || '데모 환우',
+          email: normalizedEmail,
+          gender: '남성',
+          age: 65,
+          height: 172,
+          target_weight: 68,
+          creatinine: 1.4,
+          egfr: 51,
+          ckd_stage: '3기',
+          dialysis_type: '해당없음',
+          diabetes_type: '2형 당뇨',
+          medication: '경구 혈당강하제',
+          other_conditions: ['고혈압'],
+          limit_sugar: 30,
+          limit_sodium: 2000,
+          limit_potassium: 2000,
+          limit_phosphorus: 800
+        }));
+        alert(`데모 모드로 로그인에 성공했습니다 (${normalizedEmail}).`);
+        router.push('/chat');
+        return;
+      }
+
       alert(err.message || '로그인 실패. 이메일 또는 비밀번호를 확인해 주세요.');
     } finally {
       setLoading(false);
@@ -68,15 +158,16 @@ export default function LoginPage() {
       <div className="bg-white border border-slate-100 rounded-3xl shadow-xl p-8 space-y-6 relative overflow-hidden">
         {/* 장식용 그라디언트 구 */}
         <div className="absolute top-0 right-0 w-24 h-24 bg-purple-100 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-red-100 rounded-full blur-3xl opacity-60"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-100 rounded-full blur-3xl opacity-60"></div>
 
         <div className="text-center space-y-2 relative">
-          <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-[#6D3FA0] to-[#C0392B] text-white shadow-md inline-flex">
-            <HeartPulse size={24} className="animate-pulse" />
+          <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-[#6D3FA0] to-[#4338CA] text-white shadow-md inline-flex">
+            <CuteLogoIcon size={24} />
           </div>
           <h1 className="text-xl font-black text-slate-800">콩당콩당 서비스 로그인</h1>
           <p className="text-xs text-slate-400">콩팥병·당뇨 관리를 위한 스마트 에이전트 서비스</p>
         </div>
+
 
         <form onSubmit={handleLogin} className="space-y-4 relative">
           <div className="space-y-1">
@@ -119,6 +210,14 @@ export default function LoginPage() {
           >
             <span>{loading ? '로그인 중...' : '로그인'}</span>
             <ArrowRight size={16} />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            className="w-full py-3.5 bg-slate-50 border border-slate-200 text-[#6D3FA0] hover:bg-slate-100 rounded-xl text-sm font-bold shadow-sm active:scale-[0.98] transition-all flex items-center justify-center space-x-1.5"
+          >
+            <span>데모 계정으로 로그인 (게스트용)</span>
           </button>
         </form>
 

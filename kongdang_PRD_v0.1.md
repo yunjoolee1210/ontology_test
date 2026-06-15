@@ -18,7 +18,7 @@
 | **서비스명** | 콩당콩당 (KongDang) |
 | **핵심 도메인** | 당뇨병(DM) + 만성 콩팥병(CKD) + 고혈압 및 복합 합병증 |
 | **주요 사용자** | 복합 만성질환 및 합병증 환자, 보호자 (한국인) |
-| **핵심 배경 및 목표** | '로그인' 기반 대화방에서 세 가지 RAG 파이프라인 단계(**일반 RAG**, **RAG + Ontology**, **RAG + Ontology + LoRA**)를 유기적으로 비교하고 평가할 수 있는 대화형 검증 대시보드 구축 |
+| **핵심 배경 및 목표** | '로그인' 기반 대화방에서 세 가지 RAG 파이프라인 단계(**Group A: RAG**, **Group B: RAG + Ontology**, **Group C: RAG + Ontology + LoRA Fine-tuning**)를 유기적으로 비교하고 평가할 수 있는 대화형 검증 대시보드 구축 |
 | **레포지토리** | https://github.com/yunjoolee1210/kongdang |
 | **기술 스택** | Next.js 14, Supabase, Pinecone, OpenAI GPT-4o-mini |
 
@@ -32,19 +32,19 @@
 
 ```
 ┌──────────────────────────────────────┐
-│  A. 일반 RAG (Simple RAG)             │
+│  Group A: RAG                         │
 │  - 단순 텍스트 유사도 기반 정보 추출 및 답변 생성
 └──────────────────┬───────────────────┘
                    │
                    ▼ (조건 추출 및 매칭 개선)
 ┌──────────────────────────────────────┐
-│  B. RAG + Ontology                   │
+│  Group B: RAG + Ontology              │
 │  - 표준 의학 지식 온톨로지 매핑 및 다차원 조건부 필터링 연동
 └──────────────────┬───────────────────┘
                    │
                    ▼ (의료 표현 및 구어체 매핑 이해 개선)
 ┌──────────────────────────────────────┐
-│  C. RAG + Ontology + LoRA (추천)     │
+│  Group C: RAG + Ontology + LoRA Fine-tuning │
 │  - 구어체 의학용어 NER 파인튜닝 및 정밀 슬롯필링 관계 매핑 적용
 └──────────────────────────────────────┘
 ```
@@ -909,4 +909,30 @@ CREATE TABLE documents (
 
 ---
 
-*문서 끝 | 콩당콩당 PRD v1.1 | AIve 팀*
+## 15. UI 디자인 시스템 및 컬러 가이드 (Design System & Color Guide)
+
+만성질환 통합 AI 케어 서비스인 콩당콩당의 UI 일관성과 프리미엄 스타일 유지를 위해 다음 디자인 시스템 규칙을 적용합니다:
+
+### 15.1 3대 핵심 색상 가이드
+1. **Primary Purple (메인 보라색)**: `#6D3FA0` (또는 Tailwind `bg-[#6D3FA0]` / `hover:bg-purple-800` 등)
+   - 서비스 브랜드 아이덴티티를 나타내는 가장 핵심적인 색상입니다.
+   - 메인 CTA 버튼, 활성화 상태 체크박스, 로고 그라디언트 시작점 등에 필수적으로 사용됩니다.
+2. **Secondary Indigo (서브 남색/인디고)**: `#4338CA` (또는 Tailwind `bg-indigo-700` 등)
+   - 보라색과 조화롭게 어울리는 심해 남색 계열로 기존 레드 컬러 BI를 완전히 대체합니다.
+   - 로고 그라디언트 종단점, 보조 차트선, 퀴즈의 최종 뱃지 배경 등에 사용됩니다.
+3. **Slate/Neutrals (일관된 무채색 계열)**: Slate/Zinc 그ays (`#1F2937` 등)
+   - 배경, 경계선, 모달 오버레이 및 텍스트 표현에 한정적으로 사용하여 시각적 노이즈를 제어합니다.
+   - **금지**: 기존 임의로 적용된 `bg-slate-900` 형태의 어두운 버튼은 메인 퍼플로 통일합니다.
+
+### 15.2 주요 UI 요소별 표준 클래스
+- **Primary Buttons (주요 액션 버튼)**: `bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer`
+- **Secondary Buttons (보조 액션 버튼)**: `bg-purple-50 hover:bg-purple-100 text-[#6D3FA0] border border-purple-200 rounded-xl text-xs font-bold transition-all`
+- **Active State Badges/Cards (활성 카드 상태)**: `bg-[#6D3FA0]/10 border-purple-200 text-purple-900 font-bold`
+- **Semantic Indicators (의학적 예외/상태 표시)**:
+  - 경고/위험: 부드러운 호박색/오렌지색 계열 또는 붉은색 계열을 연하게 사용 (`bg-red-50 text-red-600 border-red-100`)
+  - 정상/성공: 연한 에메랄드색 계열 사용 (`bg-emerald-50 text-emerald-600 border-emerald-100`)
+
+---
+
+*문서 끝 | 콩당콩당 PRD v1.1 (디자인 가이드 개정) | AIve 팀*
+

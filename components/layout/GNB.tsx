@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MessageSquare, LayoutDashboard, LogIn } from 'lucide-react';
+import { MessageSquare, LayoutDashboard, LogIn, Menu, X } from 'lucide-react';
 
 export function CuteLogoIcon({ size = 20 }: { size?: number }) {
   return (
@@ -35,6 +35,7 @@ export function CuteLogoIcon({ size = 20 }: { size?: number }) {
 
 export function GNB() {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [menuItems, setMenuItems] = React.useState([
     { name: 'AI 챗봇', path: '/chat', icon: MessageSquare },
     { name: '건강 대시보드', path: '/dashboard', icon: LayoutDashboard },
@@ -64,16 +65,16 @@ export function GNB() {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* 로고 */}
         <Link href="/" className="flex items-center space-x-2 group">
-          <div className="p-1.5 rounded-xl bg-gradient-to-tr from-[#6D3FA0] to-[#C0392B] text-white shadow-md group-hover:scale-105 transition-all">
+          <div className="p-1.5 rounded-xl bg-gradient-to-tr from-[#6D3FA0] to-[#4338CA] text-white shadow-md group-hover:scale-105 transition-all">
             <CuteLogoIcon size={20} />
           </div>
-          <span className="text-lg font-black tracking-tight bg-gradient-to-r from-[#6D3FA0] to-[#C0392B] bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
+          <span className="text-lg font-black tracking-tight bg-gradient-to-r from-[#6D3FA0] to-[#4338CA] bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
             콩당콩당
           </span>
         </Link>
 
-        {/* GNB 메뉴 */}
-        <nav className="flex space-x-1 sm:space-x-2">
+        {/* GNB 메뉴 - Desktop */}
+        <nav className="desktop-nav space-x-1 md:space-x-2">
           {menuItems.map((item) => {
             const isActive = pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path));
             const Icon = item.icon;
@@ -82,7 +83,7 @@ export function GNB() {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                className={`flex items-center space-x-1.5 px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 ${
                   isActive
                     ? 'bg-purple-50 text-[#6D3FA0]'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
@@ -94,7 +95,42 @@ export function GNB() {
             );
           })}
         </nav>
+
+        {/* Hamburger Button - Mobile */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="mobile-hamburger p-2 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+          aria-label="Toggle Menu"
+        >
+          {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
+
+      {/* Mobile Dropdown Menu */}
+      {isMobileMenuOpen && (
+        <div className="mobile-dropdown-custom absolute top-16 left-0 w-full bg-white border-b border-slate-100 shadow-md py-2 px-6 flex flex-col space-y-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+          {menuItems.map((item) => {
+            const isActive = pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path));
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.path}
+                href={item.path}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl text-xs md:text-sm font-semibold transition-all duration-205 ${
+                  isActive
+                    ? 'bg-purple-50 text-[#6D3FA0]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <Icon size={16} />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </header>
   );
 }

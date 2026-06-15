@@ -187,6 +187,8 @@ export default function MyPage() {
   const medications = ['경구약', '인슐린', '경구약+인슐린', '식이조절만'];
   const otherConditionsList = ['고혈압', '고지혈증'];
 
+  const isDemoUser = !isLoggedIn || profile.name === '테스트 환우' || profile.email.includes('test.com') || profile.email.includes('demo');
+
   return (
     <div className="w-full max-w-2xl mx-auto py-6 space-y-6 animate-fade-in px-4">
       {/* 프로필 요약 카드 */}
@@ -389,6 +391,14 @@ export default function MyPage() {
 
       {/* 설정 및 계정 로그아웃 */}
       <div className="flex flex-col gap-3">
+        {isDemoUser && (
+          <button
+            onClick={() => router.push('/admin/dashboard')}
+            className="w-full py-3 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 text-white hover:opacity-90 rounded-2xl text-xs font-black transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            🛡️ Ragas 대화평가 대시보드 (관리자)
+          </button>
+        )}
         {isLoggedIn ? (
           <button
             onClick={handleLogout}
@@ -399,7 +409,7 @@ export default function MyPage() {
         ) : (
           <button
             onClick={() => router.push('/auth/login')}
-            className="w-full py-3 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-2xl text-xs font-bold transition-all border border-purple-100"
+            className="w-full py-3 bg-purple-50 text-[#6D3FA0] hover:bg-purple-100 rounded-2xl text-xs font-bold transition-all border border-purple-100"
           >
             회원가입/로그인하고 Supabase 동기화하기
           </button>

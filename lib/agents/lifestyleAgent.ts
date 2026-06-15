@@ -1,11 +1,11 @@
 import OpenAI from 'openai';
-import { AgentResponse } from '../types/chat';
+import { AgentResponse, UserProfile } from '../types/chat';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'dummy_key',
 });
 
-export async function lifestyleAgent(message: string): Promise<AgentResponse> {
+export async function lifestyleAgent(message: string, userProfile?: UserProfile): Promise<AgentResponse> {
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',

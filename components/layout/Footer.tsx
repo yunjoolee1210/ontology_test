@@ -24,7 +24,7 @@ export function Footer() {
     <footer className="w-full bg-slate-50 border-t border-slate-100 py-6 mt-auto">
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 space-y-3 md:space-y-0">
         <div className="flex items-center space-x-2">
-          <span className="font-bold text-slate-700 bg-gradient-to-r from-[#6D3FA0] to-[#C0392B] bg-clip-text text-transparent">콩당콩당</span>
+          <span className="font-bold text-slate-700 bg-gradient-to-r from-[#6D3FA0] to-[#4338CA] bg-clip-text text-transparent">콩당콩당</span>
           <span>| 만성 콩팥병 및 당뇨 연계 의도 탐지 기반 멀티에이전트 케어</span>
         </div>
         <div className="flex space-x-4 items-center">

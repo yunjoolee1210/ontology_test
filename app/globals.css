@@ -4,10 +4,35 @@
 
 :root {
   --primary-purple: #6D3FA0;
-  --primary-red: #C0392B;
+  --primary-indigo: #4338CA;
+  --primary-lavender: #9F7AEA;
 }
 
 body {
   background-color: #f8fafc;
   color: #0f172a;
+}
+
+/* GNB Responsive Custom Classes */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .mobile-hamburger {
+    display: flex !important;
+  }
+  .mobile-dropdown-custom {
+    display: flex !important;
+  }
+}
+@media (min-width: 769px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+  .mobile-hamburger {
+    display: none !important;
+  }
+  .mobile-dropdown-custom {
+    display: none !important;
+  }
 }
