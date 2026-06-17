@@ -126,11 +126,26 @@ export function GNB() {
                 </Link>
               );
             })}
+
+            {/* 비로그인 시 일반 메뉴 탭에 동일하게 플랫 스타일로 로그인 추가 (사람 아이콘 적용) */}
+            {!user && (
+              <Link
+                href="/auth/login"
+                className={`flex items-center space-x-1.5 px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 ${
+                  pathname.startsWith('/auth/login')
+                    ? 'bg-purple-50 text-[#6D3FA0]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <User size={16} />
+                <span>로그인</span>
+              </Link>
+            )}
           </nav>
 
-          {/* 로그인/마이페이지/로그아웃 우측 영역 */}
-          <div className="flex items-center space-x-2 border-l border-slate-100 pl-4">
-            {user ? (
+          {/* 로그인 시 마이페이지/로그아웃 우측 영역 */}
+          {user && (
+            <div className="flex items-center space-x-2 border-l border-slate-100 pl-4">
               <div className="flex items-center space-x-2.5">
                 <Link
                   href="/mypage"
@@ -151,16 +166,8 @@ export function GNB() {
                   <span>로그아웃</span>
                 </button>
               </div>
-            ) : (
-              <Link
-                href="/auth/login"
-                className="flex items-center space-x-1.5 px-4 py-2 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 hover:opacity-90 text-white rounded-xl text-xs font-bold shadow-sm transition-all duration-200 active:scale-95"
-              >
-                <LogIn size={14} />
-                <span>로그인</span>
-              </Link>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Hamburger Button - Mobile */}
@@ -197,40 +204,45 @@ export function GNB() {
             );
           })}
           
-          {/* 모바일 하단 로그인 분기 영역 */}
-          <div className="border-t border-slate-100 pt-2.5 px-2">
-            {user ? (
-              <div className="flex flex-col space-y-2">
-                <Link
-                  href="/mypage"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-xs font-bold text-[#6D3FA0] bg-purple-50/50"
-                >
-                  <User size={15} />
-                  <span>{profileName} 님 (마이페이지)</span>
-                </Link>
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    handleLogoutClick();
-                  }}
-                  className="flex items-center justify-center space-x-1.5 w-full py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition-all cursor-pointer"
-                >
-                  <LogOut size={13} />
-                  <span>로그아웃</span>
-                </button>
-              </div>
-            ) : (
+          {/* 비로그인 시 모바일 드롭다운에서도 동일한 플랫 메뉴 항목으로 로그인 추가 */}
+          {!user && (
+            <Link
+              href="/auth/login"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl text-xs md:text-sm font-semibold transition-all duration-205 ${
+                pathname.startsWith('/auth/login')
+                  ? 'bg-purple-50 text-[#6D3FA0]'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              <User size={16} />
+              <span>로그인</span>
+            </Link>
+          )}
+          
+          {/* 로그인 시 모바일 하단 유저 프로필 및 로그아웃 */}
+          {user && (
+            <div className="border-t border-slate-100 pt-2.5 px-2 flex flex-col space-y-2">
               <Link
-                href="/auth/login"
+                href="/mypage"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-center space-x-2 w-full py-3 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 text-white rounded-xl text-xs font-bold shadow-sm active:scale-[0.98] transition-all"
+                className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-xs font-bold text-[#6D3FA0] bg-purple-50/50"
               >
-                <LogIn size={15} />
-                <span>로그인</span>
+                <User size={15} />
+                <span>{profileName} 님 (마이페이지)</span>
               </Link>
-            )}
-          </div>
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  handleLogoutClick();
+                }}
+                className="flex items-center justify-center space-x-1.5 w-full py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition-all cursor-pointer"
+              >
+                <LogOut size={13} />
+                <span>로그아웃</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
     </header>
