@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 import { orchestrator } from '../../../lib/agents/orchestrator';
 import { checkSafety } from '../../../lib/rag/safetyChecker';
 import { supabase } from '../../../lib/rag/supabaseClient';
@@ -7,7 +8,7 @@ export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, message: directMessage, sessionId, userId, user_profile, ragMode } = await req.json().catch(() => ({}));
+    const { messages, message: directMessage, sessionId, userId, user_profile, ragMode, accessToken } = await req.json().catch(() => ({}));
     
     let userMessage = '';
     if (directMessage && typeof directMessage === 'string') {
@@ -45,18 +46,36 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Supabase URL & Anon Key 로드
+    let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co';
+    if (supabaseUrl.endsWith('/rest/v1/')) {
+      supabaseUrl = supabaseUrl.replace(/\/rest\/v1\/$/, '');
+    }
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dummy_key';
+
+    // Access Token이 있으면 해당 유저 권한으로 동작하는 클라이언트 생성
+    const supabaseClient = accessToken
+      ? createClient(supabaseUrl, supabaseAnonKey, {
+          global: {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        })
+      : supabase;
+
     // ③ Supabase DB 기록 (사용자 질문) - Optional
     if (sessionId) {
       try {
         // 세션 확인 및 없으면 생성
-        const { data: sessionExists } = await supabase
+        const { data: sessionExists } = await supabaseClient
           .from('chat_sessions')
           .select('id')
           .eq('id', sessionId)
           .single();
 
         if (!sessionExists) {
-          await supabase
+          await supabaseClient
             .from('chat_sessions')
             .insert({
               id: sessionId,
@@ -66,7 +85,7 @@ export async function POST(req: NextRequest) {
         }
 
         // 사용자 메시지 기록
-        await supabase
+        await supabaseClient
           .from('chat_messages')
           .insert({
             session_id: sessionId,
@@ -82,7 +101,7 @@ export async function POST(req: NextRequest) {
     let userProfile = user_profile;
     if (!userProfile && userId) {
       try {
-        const { data } = await supabase
+        const { data } = await supabaseClient
           .from('user_profiles')
           .select('*')
           .eq('id', userId)
@@ -119,7 +138,7 @@ export async function POST(req: NextRequest) {
     let dbMessageId = '';
     if (sessionId) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
           .from('chat_messages')
           .insert({
             session_id: sessionId,

@@ -54,10 +54,15 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- 5. 사용자 프로필 테이블 (Role & Conditions)
 CREATE TABLE IF NOT EXISTS user_profiles (
-  id            UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  id            UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   name          TEXT,
   role          TEXT NOT NULL DEFAULT 'patient', -- 'patient' | 'caregiver' | 'researcher'
   conditions    TEXT[] NOT NULL DEFAULT '{}',    -- 'kidney' | 'diabetes' 복수 선택
+  ckd_stage     TEXT,
+  dialysis_type TEXT,
+  diabetes_type TEXT,
+  medication    TEXT,
+  other_conditions TEXT[] DEFAULT '{}',
   points        INT DEFAULT 0,
   created_at    TIMESTAMPTZ DEFAULT NOW(),
   updated_at    TIMESTAMPTZ DEFAULT NOW()
@@ -66,7 +71,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 -- 6. 채팅 세션 테이블
 CREATE TABLE IF NOT EXISTS chat_sessions (
   id            TEXT PRIMARY KEY, -- sessionId (Client-generated or timestamp-based string)
-  user_id       UUID REFERENCES users(id) ON DELETE CASCADE, -- 비로그인 시 NULL 가능
+  user_id       UUID REFERENCES auth.users(id) ON DELETE CASCADE, -- 비로그인 시 NULL 가능
   title         TEXT DEFAULT '새로운 대화',
   created_at    TIMESTAMPTZ DEFAULT NOW(),
   updated_at    TIMESTAMPTZ DEFAULT NOW()
@@ -98,9 +103,58 @@ CREATE TABLE IF NOT EXISTS conversation_feedback (
 -- 9. 관리자 감사 로그 테이블
 CREATE TABLE IF NOT EXISTS admin_logs (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  admin_id      UUID REFERENCES users(id),
+  admin_id      UUID REFERENCES auth.users(id),
   action        TEXT NOT NULL, -- 'ROLE_CHANGE' | 'USER_DISABLE' | 'FEEDBACK_SAVE' | 'MESSAGE_DELETE' 등
   target_id     TEXT,
   details       TEXT,
   created_at    TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- =================================================================
+-- Row-Level Security (RLS) 정책 정의 (보안 강화)
+-- =================================================================
+
+-- 1) user_profiles 테이블 RLS 설정
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public insert for signup" ON user_profiles
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow individual read" ON user_profiles
+  FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Allow individual update" ON user_profiles
+  FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+
+-- 2) chat_sessions 테이블 RLS 설정
+ALTER TABLE chat_sessions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow individual session insert" ON chat_sessions
+  FOR INSERT WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
+
+CREATE POLICY "Allow individual session select" ON chat_sessions
+  FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL);
+
+CREATE POLICY "Allow individual session delete" ON chat_sessions
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- 3) chat_messages 테이블 RLS 설정
+ALTER TABLE chat_messages ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow session message insert" ON chat_messages
+  FOR INSERT WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM chat_sessions
+      WHERE chat_sessions.id = chat_messages.session_id
+      AND (chat_sessions.user_id = auth.uid() OR chat_sessions.user_id IS NULL)
+    )
+  );
+
+CREATE POLICY "Allow session message select" ON chat_messages
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM chat_sessions
+      WHERE chat_sessions.id = chat_messages.session_id
+      AND (chat_sessions.user_id = auth.uid() OR chat_sessions.user_id IS NULL)
+    )
+  );

@@ -34,6 +34,7 @@ export function ChatWindow() {
   
   const [sessionId, setSessionId] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
+  const [accessToken, setAccessToken] = useState<string>('');
 
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
@@ -102,6 +103,12 @@ export function ChatWindow() {
       if (user) {
         setUserId(user.id);
         loadSessions(user.id);
+
+        // JWT Access Token 조회 추가
+        const { data: { session } } = await supabase.auth.getSession().catch(() => ({ data: { session: null } }));
+        if (session) {
+          setAccessToken(session.access_token);
+        }
         
         // DB에서 프로필 최신정보 동기화
         const { data: dbProfile } = await supabase
@@ -142,6 +149,7 @@ export function ChatWindow() {
       userId: userId,
       user_profile: userProfile,
       ragMode: 'Rag',
+      accessToken: accessToken,
     },
     onResponse(response) {
       const agentType = (response.headers.get('X-Agent-Type') || 'general') as Intent;
@@ -169,6 +177,7 @@ export function ChatWindow() {
       userId: userId,
       user_profile: userProfile,
       ragMode: 'Rag+Ontology',
+      accessToken: accessToken,
     },
     onResponse(response) {
       const agentType = (response.headers.get('X-Agent-Type') || 'general') as Intent;
@@ -196,6 +205,7 @@ export function ChatWindow() {
       userId: userId,
       user_profile: userProfile,
       ragMode: 'Rag+Ontology+Lora',
+      accessToken: accessToken,
     },
     onResponse(response) {
       const agentType = (response.headers.get('X-Agent-Type') || 'general') as Intent;

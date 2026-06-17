@@ -43,6 +43,7 @@ export default function SignupPage() {
   const [signupMode, setSignupMode] = useState<'real' | 'demo'>('real');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showRateLimitModal, setShowRateLimitModal] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   // 1. Account Info (Step 'account')
   const [name, setName] = useState('');
@@ -187,6 +188,10 @@ export default function SignupPage() {
     setLoading(true);
     const userIdToSave = createdUserId || (await supabase.auth.getUser()).data.user?.id || `demo_user_${Date.now()}`;
 
+    const conditions: string[] = [];
+    if (hasCKD) conditions.push('kidney');
+    if (hasDiabetes) conditions.push('diabetes');
+
     const completedProfile = {
       gender,
       age,
@@ -204,7 +209,8 @@ export default function SignupPage() {
       limit_potassium: potassiumVal,
       limit_phosphorus: phosphorusVal,
       name,
-      email
+      email,
+      conditions // Local profile data format sync
     };
 
     try {
@@ -216,6 +222,7 @@ export default function SignupPage() {
             id: userIdToSave,
             name,
             role: 'patient',
+            conditions,
             ckd_stage: calculatedStage,
             dialysis_type: hasCKD ? dialysisType : '해당없음',
             diabetes_type: hasDiabetes ? diabetesType : '없음',
@@ -576,11 +583,30 @@ export default function SignupPage() {
                       </div>
                     </div>
 
+                    {/* 약관 동의 체크박스 추가 */}
+                    <div className="flex items-center space-x-2 pt-4 pb-2 border-t border-slate-100">
+                      <input
+                        type="checkbox"
+                        id="terms-agree"
+                        checked={agreed}
+                        onChange={(e) => setAgreed(e.target.checked)}
+                        className="w-4 h-4 text-[#6D3FA0] border-slate-300 rounded focus:ring-[#6D3FA0] cursor-pointer"
+                      />
+                      <label htmlFor="terms-agree" className="font-semibold text-slate-500 text-[11px] cursor-pointer select-none leading-tight">
+                        서비스 이용약관 및 의학적 책임 한계 고지에 동의합니다.
+                      </label>
+                    </div>
+
                     <button
-                      onClick={() => setStep('demographics')}
-                      className="w-full mt-4 py-3.5 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer"
+                      onClick={() => agreed && setStep('demographics')}
+                      disabled={!agreed}
+                      className={`w-full mt-2 py-3.5 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer ${
+                        agreed
+                          ? 'bg-[#6D3FA0] hover:bg-purple-800'
+                          : 'bg-slate-350 cursor-not-allowed shadow-none opacity-60'
+                      }`}
                     >
-                      <span>시작하기 (이해했습니다)</span>
+                      <span>시작하기</span>
                       <ArrowRight size={14} />
                     </button>
                   </div>
@@ -655,7 +681,7 @@ export default function SignupPage() {
                         onClick={() => setStep('conditions')}
                         className="flex-2 py-3.5 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 shadow-md"
                       >
-                        <span>다음 단계</span>
+                        <span>다음</span>
                         <ArrowRight size={14} />
                       </button>
                     </div>
@@ -766,7 +792,7 @@ export default function SignupPage() {
                         onClick={goToNextFromConditions}
                         className="flex-2 py-3.5 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 shadow-md"
                       >
-                        <span>상세 지표 등록하기</span>
+                        <span>다음</span>
                         <ArrowRight size={14} />
                       </button>
                     </div>
@@ -825,7 +851,7 @@ export default function SignupPage() {
                         onClick={goToNextFromCKD}
                         className="flex-2 py-3.5 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 shadow-md"
                       >
-                        <span>다음 단계</span>
+                        <span>다음</span>
                         <ArrowRight size={14} />
                       </button>
                     </div>
@@ -886,7 +912,7 @@ export default function SignupPage() {
                         onClick={() => setStep('review')}
                         className="flex-2 py-3.5 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 shadow-md"
                       >
-                        <span>다음 단계</span>
+                        <span>다음</span>
                         <ArrowRight size={14} />
                       </button>
                     </div>
@@ -1007,7 +1033,7 @@ export default function SignupPage() {
                         disabled={loading}
                         className="flex-2 py-3.5 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 shadow-md"
                       >
-                        <span>{loading ? '저장 중...' : '온보딩 완료 및 대시보드로'}</span>
+                        <span>{loading ? '저장 중...' : '완료'}</span>
                         <CheckCircle2 size={14} />
                       </button>
                     </div>

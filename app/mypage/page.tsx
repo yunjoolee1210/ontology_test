@@ -389,30 +389,67 @@ export default function MyPage() {
         )}
       </div>
 
-      {/* 설정 및 계정 로그아웃 */}
-      <div className="flex flex-col gap-3">
-        {isDemoUser && (
+      {/* 관리자 도구 섹션 */}
+      <div className="bg-slate-50 border border-slate-200/60 rounded-3xl p-6 shadow-sm space-y-4">
+        <h3 className="text-xs font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-wider">
+          🛡️ Ragas 평가 (관리자)
+        </h3>
+        <div className="grid grid-cols-2 gap-3 text-xs">
           <button
             onClick={() => router.push('/admin/dashboard')}
-            className="w-full py-3 bg-gradient-to-tr from-[#6D3FA0] to-purple-700 text-white hover:opacity-90 rounded-2xl text-xs font-black transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+            className="py-3 px-4 bg-white border border-slate-200 hover:border-purple-300 hover:bg-purple-50/25 rounded-2xl font-bold text-slate-700 transition-all shadow-3xs flex flex-col items-center justify-center text-center space-y-1 cursor-pointer"
           >
-            🛡️ Ragas 대화평가 대시보드 (관리자)
+            <span className="text-base">📊</span>
+            <span>Ragas 대시보드</span>
           </button>
-        )}
+          <button
+            onClick={() => router.push('/admin/chathistory')}
+            className="py-3 px-4 bg-white border border-slate-200 hover:border-purple-300 hover:bg-purple-50/25 rounded-2xl font-bold text-slate-700 transition-all shadow-3xs flex flex-col items-center justify-center text-center space-y-1 cursor-pointer"
+          >
+            <span className="text-base">💬</span>
+            <span>대화 기록 감사</span>
+          </button>
+          <button
+            onClick={() => router.push('/admin/feedback')}
+            className="py-3 px-4 bg-white border border-slate-200 hover:border-purple-300 hover:bg-purple-50/25 rounded-2xl font-bold text-slate-700 transition-all shadow-3xs flex flex-col items-center justify-center text-center space-y-1 cursor-pointer"
+          >
+            <span className="text-base">📝</span>
+            <span>사용자 피드백</span>
+          </button>
+          <button
+            onClick={() => router.push('/admin/users')}
+            className="py-3 px-4 bg-white border border-slate-200 hover:border-purple-300 hover:bg-purple-50/25 rounded-2xl font-bold text-slate-700 transition-all shadow-3xs flex flex-col items-center justify-center text-center space-y-1 cursor-pointer"
+          >
+            <span className="text-base">👥</span>
+            <span>사용자 계정 관리</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 설정 및 계정 로그아웃 */}
+      <div className="flex flex-col gap-3">
         {isLoggedIn ? (
           <button
             onClick={handleLogout}
-            className="w-full py-3 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-2xl text-xs font-bold transition-all border border-rose-100"
+            className="w-full py-3.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-2xl text-xs font-bold transition-all border border-rose-100 cursor-pointer"
           >
             로그아웃
           </button>
         ) : (
-          <button
-            onClick={() => router.push('/auth/login')}
-            className="w-full py-3 bg-purple-50 text-[#6D3FA0] hover:bg-purple-100 rounded-2xl text-xs font-bold transition-all border border-purple-100"
-          >
-            회원가입/로그인하고 Supabase 동기화하기
-          </button>
+          <div className="grid grid-cols-2 gap-3 w-full">
+            <button
+              onClick={() => router.push('/auth/signup')}
+              className="py-3.5 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-2xl text-xs font-bold transition-all shadow-sm cursor-pointer text-center"
+            >
+              회원가입
+            </button>
+            <button
+              onClick={() => router.push('/auth/login')}
+              className="py-3.5 bg-purple-50 text-[#6D3FA0] hover:bg-purple-100 rounded-2xl text-xs font-bold transition-all border border-purple-100 cursor-pointer text-center"
+            >
+              로그인
+            </button>
+          </div>
         )}
       </div>
     </div>
