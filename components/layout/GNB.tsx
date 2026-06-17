@@ -143,29 +143,20 @@ export function GNB() {
             )}
           </nav>
 
-          {/* 로그인 시 마이페이지/로그아웃 우측 영역 */}
+          {/* 로그인 시 마이페이지 우측 영역 */}
           {user && (
             <div className="flex items-center space-x-2 border-l border-slate-100 pl-4">
-              <div className="flex items-center space-x-2.5">
-                <Link
-                  href="/mypage"
-                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                    pathname.startsWith('/mypage')
-                      ? 'bg-purple-50 text-[#6D3FA0]'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  }`}
-                >
-                  <User size={15} className="text-[#6D3FA0]" />
-                  <span className="font-bold">{profileName} 님</span>
-                </Link>
-                <button
-                  onClick={handleLogoutClick}
-                  className="flex items-center space-x-1 px-3 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition-all cursor-pointer"
-                >
-                  <LogOut size={13} />
-                  <span>로그아웃</span>
-                </button>
-              </div>
+              <Link
+                href="/mypage"
+                className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                  pathname.startsWith('/mypage')
+                    ? 'bg-purple-50 text-[#6D3FA0]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <User size={15} className="text-[#6D3FA0]" />
+                <span className="font-bold">{profileName} 님</span>
+              </Link>
             </div>
           )}
         </div>
@@ -220,7 +211,7 @@ export function GNB() {
             </Link>
           )}
           
-          {/* 로그인 시 모바일 하단 유저 프로필 및 로그아웃 */}
+          {/* 로그인 시 모바일 하단 유저 프로필 */}
           {user && (
             <div className="border-t border-slate-100 pt-2.5 px-2 flex flex-col space-y-2">
               <Link
@@ -231,16 +222,6 @@ export function GNB() {
                 <User size={15} />
                 <span>{profileName} 님 (마이페이지)</span>
               </Link>
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  handleLogoutClick();
-                }}
-                className="flex items-center justify-center space-x-1.5 w-full py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition-all cursor-pointer"
-              >
-                <LogOut size={13} />
-                <span>로그아웃</span>
-              </button>
             </div>
           )}
         </div>
