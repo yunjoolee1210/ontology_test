@@ -1,0 +1,2371 @@
+{
+  "_meta": {
+    "purpose": "7개 온톨로지 소스(DOID,HP,CKDO,HTN,DMTO,CDPEO,HTO)와 옵시디언 노트그래프를 하나의 검색 공간으로 묶는 통합 인덱스",
+    "sources_covered": [
+      "DOID",
+      "HP",
+      "CKDO",
+      "HTN",
+      "DMTO",
+      "CDPEO",
+      "HTO",
+      "ObsidianNote"
+    ],
+    "total_registry_entries": 257
+  },
+  "concept_registry": [
+    {
+      "global_id": "DOID:1074",
+      "source": "DOID",
+      "label_en": "kidney failure",
+      "label_ko": "신부전",
+      "kind": "disease",
+      "category": "CKD"
+    },
+    {
+      "global_id": "DOID:3021",
+      "source": "DOID",
+      "label_en": "acute kidney failure",
+      "label_ko": "급성신손상",
+      "kind": "disease",
+      "category": "CKD"
+    },
+    {
+      "global_id": "DOID:783",
+      "source": "DOID",
+      "label_en": "end stage renal disease",
+      "label_ko": "말기콩팥병(ESKD)",
+      "kind": "disease",
+      "category": "CKD"
+    },
+    {
+      "global_id": "DOID:784",
+      "source": "DOID",
+      "label_en": "chronic kidney disease",
+      "label_ko": "만성콩팥병(CKD)",
+      "kind": "disease",
+      "category": "CKD"
+    },
+    {
+      "global_id": "DOID:13207",
+      "source": "DOID",
+      "label_en": "proliferative diabetic retinopathy",
+      "label_ko": "증식성 당뇨망막병증",
+      "kind": "disease",
+      "category": "DM"
+    },
+    {
+      "global_id": "DOID:13208",
+      "source": "DOID",
+      "label_en": "background diabetic retinopathy",
+      "label_ko": "비증식성 당뇨망막병증(배경형)",
+      "kind": "disease",
+      "category": "DM"
+    },
+    {
+      "global_id": "DOID:8946",
+      "source": "DOID",
+      "label_en": "severe nonproliferative diabetic retinopathy",
+      "label_ko": "중증 비증식성 당뇨망막병증",
+      "kind": "disease",
+      "category": "DM"
+    },
+    {
+      "global_id": "DOID:8947",
+      "source": "DOID",
+      "label_en": "diabetic retinopathy",
+      "label_ko": "당뇨망막병증",
+      "kind": "disease",
+      "category": "DM"
+    },
+    {
+      "global_id": "DOID:9352",
+      "source": "DOID",
+      "label_en": "type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병",
+      "kind": "disease",
+      "category": "DM"
+    },
+    {
+      "global_id": "DOID:9743",
+      "source": "DOID",
+      "label_en": "diabetic neuropathy",
+      "label_ko": "당뇨신경병증",
+      "kind": "disease",
+      "category": "DM"
+    },
+    {
+      "global_id": "DOID:10823",
+      "source": "DOID",
+      "label_en": "malignant essential hypertension",
+      "label_ko": "악성 본태성고혈압",
+      "kind": "disease",
+      "category": "HTN"
+    },
+    {
+      "global_id": "DOID:10825",
+      "source": "DOID",
+      "label_en": "essential hypertension",
+      "label_ko": "본태성고혈압",
+      "kind": "disease",
+      "category": "HTN"
+    },
+    {
+      "global_id": "DOID:10913",
+      "source": "DOID",
+      "label_en": "benign essential hypertension",
+      "label_ko": "양성 본태성고혈압",
+      "kind": "disease",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HP:0001953",
+      "source": "HP",
+      "label_en": "Diabetic ketoacidosis",
+      "label_ko": "당뇨병성 케톤산증",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0001959",
+      "source": "HP",
+      "label_en": "Polydipsia",
+      "label_ko": "다음(물 많이 마심)",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0003126",
+      "source": "HP",
+      "label_en": "Low-molecular-weight proteinuria",
+      "label_ko": "저분자단백뇨",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0011998",
+      "source": "HP",
+      "label_en": "Postprandial hyperglycemia",
+      "label_ko": "식후 고혈당",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0012213",
+      "source": "HP",
+      "label_en": "Decreased glomerular filtration rate",
+      "label_ko": "사구체여과율(GFR) 저하",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0012398",
+      "source": "HP",
+      "label_en": "Peripheral edema",
+      "label_ko": "말초부종",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0012593",
+      "source": "HP",
+      "label_en": "Nephrotic range proteinuria",
+      "label_ko": "신증후군 수준 단백뇨",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0012594",
+      "source": "HP",
+      "label_en": "Moderate albuminuria",
+      "label_ko": "중등도 알부민뇨",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0012595",
+      "source": "HP",
+      "label_en": "Mild proteinuria",
+      "label_ko": "경증 단백뇨",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0012596",
+      "source": "HP",
+      "label_en": "Moderate proteinuria",
+      "label_ko": "중등도 단백뇨",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0012597",
+      "source": "HP",
+      "label_en": "Heavy proteinuria",
+      "label_ko": "고도 단백뇨",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0033065",
+      "source": "HP",
+      "label_en": "Mild albuminuria",
+      "label_ko": "경증 알부민뇨",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:0033066",
+      "source": "HP",
+      "label_en": "Severe albuminuria",
+      "label_ko": "중증 알부민뇨",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:4000058",
+      "source": "HP",
+      "label_en": "Glomerular proteinuria",
+      "label_ko": "사구체성 단백뇨",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "HP:6000833",
+      "source": "HP",
+      "label_en": "Hyperkalemia while symptomatic",
+      "label_ko": "증상성 고칼륨혈증",
+      "kind": "symptom",
+      "category": null
+    },
+    {
+      "global_id": "CKDO:CKD-EPI_formula",
+      "source": "CKDO",
+      "label_en": "CKD-EPI formula",
+      "label_ko": "CKD-EPI 공식",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Dialysis_adequacy_test",
+      "source": "CKDO",
+      "label_en": "Dialysis adequacy test",
+      "label_ko": "투석 적정성 검사",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Dialysis_recirculation_syndrome",
+      "source": "CKDO",
+      "label_en": "Dialysis recirculation syndrome",
+      "label_ko": "투석 재순환 증후군",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Dialysis_related_amyloidosis",
+      "source": "CKDO",
+      "label_en": "Dialysis related amyloidosis",
+      "label_ko": "투석 관련 아밀로이드증",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:History_of_CKD",
+      "source": "CKDO",
+      "label_en": "History of CKD",
+      "label_ko": "CKD 과거력",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:History_of_renal_transplantation",
+      "source": "CKDO",
+      "label_en": "History of renal transplantation",
+      "label_ko": "신장이식 과거력",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Isotopic_eGFR",
+      "source": "CKDO",
+      "label_en": "Isotopic eGFR",
+      "label_ko": "동위원소법 eGFR",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Monitoring_of_CKD",
+      "source": "CKDO",
+      "label_en": "Monitoring of CKD",
+      "label_ko": "CKD 모니터링",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Peritoneal_leak_in_peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Peritoneal leak in peritoneal dialysis",
+      "label_ko": "복막투석 중 복막 누출",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Renal_transplant_procedure",
+      "source": "CKDO",
+      "label_en": "Renal transplant procedure",
+      "label_ko": "신장이식 시술",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Renal_transplantation",
+      "source": "CKDO",
+      "label_en": "Renal transplantation",
+      "label_ko": "신장이식",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:eGFR",
+      "source": "CKDO",
+      "label_en": "eGFR",
+      "label_ko": "사구체여과율 추정치(eGFR)",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Arteriovenous_fistula_for_haemodialysis",
+      "source": "CKDO",
+      "label_en": "Arteriovenous fistula for haemodialysis",
+      "label_ko": "혈액투석용 동정맥누공(AVF)",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Arteriovenous_graft_for_haemodialysis",
+      "source": "CKDO",
+      "label_en": "Arteriovenous graft for haemodialysis",
+      "label_ko": "혈액투석용 동정맥이식편(AVG)",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Assisted_peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Assisted peritoneal dialysis",
+      "label_ko": "보조복막투석",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Automatic_peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Automatic peritoneal dialysis",
+      "label_ko": "자동복막투석(APD)",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:CKD_KDIGO_stages_1-5",
+      "source": "CKDO",
+      "label_en": "CKD KDIGO stages 1-5",
+      "label_ko": "CKD KDIGO 병기(1~5단계)",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:CKD_defined_by_stage",
+      "source": "CKDO",
+      "label_en": "CKD defined by stage",
+      "label_ko": "병기로 정의된 CKD",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Complications_associated_with_haemodialysis",
+      "source": "CKDO",
+      "label_en": "Complications associated with haemodialysis",
+      "label_ko": "혈액투석 관련 합병증",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Complications_associated_with_peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Complications associated with peritoneal dialysis",
+      "label_ko": "복막투석 관련 합병증",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Declining_renal_graft_function",
+      "source": "CKDO",
+      "label_en": "Declining renal graft function",
+      "label_ko": "이식신 기능 저하",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Haemodialysis",
+      "source": "CKDO",
+      "label_en": "Haemodialysis",
+      "label_ko": "혈액투석",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Peritoneal dialysis",
+      "label_ko": "복막투석",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Tunnelled_venous_catheter_for_haemodialysis",
+      "source": "CKDO",
+      "label_en": "Tunnelled venous catheter for haemodialysis",
+      "label_ko": "혈액투석용 터널형 정맥카테터",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "CKDO:Peritoneal_dialysis_(Tenckhoff)_catheter",
+      "source": "CKDO",
+      "label_en": "Peritoneal dialysis (Tenckhoff) catheter",
+      "label_ko": "복막투석용 텐코프 카테터",
+      "kind": "clinical_concept",
+      "category": "CKD"
+    },
+    {
+      "global_id": "HTN:HTN_00000000",
+      "source": "HTN",
+      "label_en": "diastolic blood pressure measurement datum",
+      "label_ko": "확장기혈압 측정값",
+      "kind": "clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTN:HTN_00000001",
+      "source": "HTN",
+      "label_en": "systolic blood pressure measurement datum",
+      "label_ko": "수축기혈압 측정값",
+      "kind": "clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTN:HTN_00000014",
+      "source": "HTN",
+      "label_en": "elevated blood pressure phenotype",
+      "label_ko": "혈압상승 표현형",
+      "kind": "clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTN:HTN_00000015",
+      "source": "HTN",
+      "label_en": "documented hypertensive phenotype",
+      "label_ko": "진단된 고혈압 표현형",
+      "kind": "clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTN:HTN_00000003",
+      "source": "HTN",
+      "label_en": "stage 1 elevated adult systolic blood pressure meaurement datum per ACC 2017 guidelines",
+      "label_ko": "ACC 2017 기준 1단계 수축기혈압 상승",
+      "kind": "clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTN:HTN_00000044",
+      "source": "HTN",
+      "label_en": "stage 1 elevated adult diastolic blood pressure measurement datum per 2017 guidelines",
+      "label_ko": "2017 가이드라인 기준 1단계 확장기혈압 상승",
+      "kind": "clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTN:HTN_00000040",
+      "source": "HTN",
+      "label_en": "stage 1 adult blood pressure measurement datum per 2017 guidelines",
+      "label_ko": "2017 가이드라인 기준 1단계 혈압",
+      "kind": "clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTN:HTN_00000046",
+      "source": "HTN",
+      "label_en": "stage 2 adult blood pressure measurement datum per 2017 guidelines",
+      "label_ko": "2017 가이드라인 기준 2단계 혈압",
+      "kind": "clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "DMTO:DDO_0000004",
+      "source": "DMTO",
+      "label_en": "diabetes diagnosis",
+      "label_ko": "당뇨병 진단",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000112",
+      "source": "DMTO",
+      "label_en": "diabetes complication",
+      "label_ko": "당뇨병 합병증",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000222",
+      "source": "DMTO",
+      "label_en": "diabetic ketoacidosis",
+      "label_ko": "당뇨병성 케톤산증",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000227",
+      "source": "DMTO",
+      "label_en": "hypoglycemic coma",
+      "label_ko": "저혈당성 혼수",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000228",
+      "source": "DMTO",
+      "label_en": "hypoglycemia",
+      "label_ko": "저혈당",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000233",
+      "source": "DMTO",
+      "label_en": "history of prediabetes",
+      "label_ko": "전당뇨 과거력",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000235",
+      "source": "DMTO",
+      "label_en": "history of gestational diabetes",
+      "label_ko": "임신당뇨병 과거력",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000242",
+      "source": "DMTO",
+      "label_en": "blood glucose test",
+      "label_ko": "혈당 검사",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000252",
+      "source": "DMTO",
+      "label_en": "Glycated haemoglobin - Hbg",
+      "label_ko": "당화혈색소(HbA1c)",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000362",
+      "source": "DMTO",
+      "label_en": "family history of type 1 diabetes mellitus",
+      "label_ko": "제1형 당뇨병 가족력",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000391",
+      "source": "DMTO",
+      "label_en": "family history of type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병 가족력",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000392",
+      "source": "DMTO",
+      "label_en": "impaired glucose tolerance in pregnancy",
+      "label_ko": "임신 중 내당능장애",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000393",
+      "source": "DMTO",
+      "label_en": "impaired fasting glycaemia",
+      "label_ko": "공복혈당장애",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0000428",
+      "source": "DMTO",
+      "label_en": "impaired glucose tolerance",
+      "label_ko": "내당능장애",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0002292",
+      "source": "DMTO",
+      "label_en": "foot ulcer due to type 1 diabetes mellitus",
+      "label_ko": "제1형 당뇨병으로 인한 족부궤양",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0003905",
+      "source": "DMTO",
+      "label_en": "type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DD_0002293",
+      "source": "DMTO",
+      "label_en": "foot ulcer due to type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병으로 인한 족부궤양",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DDO_0010008",
+      "source": "DMTO",
+      "label_en": "gestational diabetes mellitus",
+      "label_ko": "임신당뇨병",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DMTO_0001817",
+      "source": "DMTO",
+      "label_en": "diabetic ketoacidosis without coma",
+      "label_ko": "혼수 없는 당뇨병성 케톤산증",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "DMTO:DMTO_0001818",
+      "source": "DMTO",
+      "label_en": "ketoacidosis in type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병의 케톤산증",
+      "kind": "clinical_concept",
+      "category": "DM"
+    },
+    {
+      "global_id": "CDPEO:Age",
+      "source": "CDPEO",
+      "label_en": "Age",
+      "label_ko": "연령",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:AntiHypetensiveDrug",
+      "source": "CDPEO",
+      "label_en": "AntiHypetensiveDrug",
+      "label_ko": "항고혈압제",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:BloodGlucose",
+      "source": "CDPEO",
+      "label_en": "BloodGlucose",
+      "label_ko": "혈당",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:BloodPressure",
+      "source": "CDPEO",
+      "label_en": "BloodPressure",
+      "label_ko": "혈압",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:BodyMassIndex",
+      "source": "CDPEO",
+      "label_en": "BodyMassIndex",
+      "label_ko": "체질량지수(BMI)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:ChronicDisease",
+      "source": "CDPEO",
+      "label_en": "ChronicDisease",
+      "label_ko": "만성질환",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:ChronicObstructivePulmonaryDisease",
+      "source": "CDPEO",
+      "label_en": "ChronicObstructivePulmonaryDisease",
+      "label_ko": "만성폐쇄성폐질환(COPD)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Complication",
+      "source": "CDPEO",
+      "label_en": "Complication",
+      "label_ko": "합병증",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:CoronaryHeartDisease",
+      "source": "CDPEO",
+      "label_en": "CoronaryHeartDisease",
+      "label_ko": "관상동맥질환",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Demographic",
+      "source": "CDPEO",
+      "label_en": "Demographic",
+      "label_ko": "인구통계학적 요인",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Diabetes",
+      "source": "CDPEO",
+      "label_en": "Diabetes",
+      "label_ko": "당뇨병",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Diet",
+      "source": "CDPEO",
+      "label_en": "Diet",
+      "label_ko": "식이",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Disease",
+      "source": "CDPEO",
+      "label_en": "Disease",
+      "label_ko": "질환",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Drinking",
+      "source": "CDPEO",
+      "label_en": "Drinking",
+      "label_ko": "음주",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Education",
+      "source": "CDPEO",
+      "label_en": "Education",
+      "label_ko": "교육수준",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Exercise",
+      "source": "CDPEO",
+      "label_en": "Exercise",
+      "label_ko": "운동",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:EyeDisease",
+      "source": "CDPEO",
+      "label_en": "EyeDisease",
+      "label_ko": "안과질환(합병증)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Gender",
+      "source": "CDPEO",
+      "label_en": "Gender",
+      "label_ko": "성별",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Hyperlipidemia",
+      "source": "CDPEO",
+      "label_en": "Hyperlipidemia",
+      "label_ko": "이상지질혈증",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Hypertension",
+      "source": "CDPEO",
+      "label_en": "Hypertension",
+      "label_ko": "고혈압",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:HypoglycemicDrug",
+      "source": "CDPEO",
+      "label_en": "HypoglycemicDrug",
+      "label_ko": "혈당강하제",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:HypolipidemicDrug",
+      "source": "CDPEO",
+      "label_en": "HypolipidemicDrug",
+      "label_ko": "지질강하제",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:KidneyDisease",
+      "source": "CDPEO",
+      "label_en": "KidneyDisease",
+      "label_ko": "신장질환(합병증)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Lifestyle",
+      "source": "CDPEO",
+      "label_en": "Lifestyle",
+      "label_ko": "생활습관",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Lipoprotein",
+      "source": "CDPEO",
+      "label_en": "Lipoprotein",
+      "label_ko": "지단백(HDL/LDL)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:LiverDisease",
+      "source": "CDPEO",
+      "label_en": "LiverDisease",
+      "label_ko": "간질환(합병증)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:LungDisease",
+      "source": "CDPEO",
+      "label_en": "LungDisease",
+      "label_ko": "폐질환(합병증)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Medication",
+      "source": "CDPEO",
+      "label_en": "Medication",
+      "label_ko": "복약",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Mentality",
+      "source": "CDPEO",
+      "label_en": "Mentality",
+      "label_ko": "정신건강(우울 등)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Occupation",
+      "source": "CDPEO",
+      "label_en": "Occupation",
+      "label_ko": "직업",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:PatientProfile",
+      "source": "CDPEO",
+      "label_en": "PatientProfile",
+      "label_ko": "환자 프로필",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:PhysiologicalIndex",
+      "source": "CDPEO",
+      "label_en": "PhysiologicalIndex",
+      "label_ko": "생리지표",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Pregnancy",
+      "source": "CDPEO",
+      "label_en": "Pregnancy",
+      "label_ko": "임신",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:SkinDisease",
+      "source": "CDPEO",
+      "label_en": "SkinDisease",
+      "label_ko": "피부질환(합병증)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Smoking",
+      "source": "CDPEO",
+      "label_en": "Smoking",
+      "label_ko": "흡연",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:StomachDisease",
+      "source": "CDPEO",
+      "label_en": "StomachDisease",
+      "label_ko": "위장질환(합병증)",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Stroke",
+      "source": "CDPEO",
+      "label_en": "Stroke",
+      "label_ko": "뇌졸중",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:TotalCholesterol",
+      "source": "CDPEO",
+      "label_en": "TotalCholesterol",
+      "label_ko": "총콜레스테롤",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:Triglyceride",
+      "source": "CDPEO",
+      "label_en": "Triglyceride",
+      "label_ko": "중성지방",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "CDPEO:UricAcid",
+      "source": "CDPEO",
+      "label_en": "UricAcid",
+      "label_ko": "요산",
+      "kind": "risk_factor_class",
+      "category": null
+    },
+    {
+      "global_id": "HTO:Anticonvulsant_Medications",
+      "source": "HTO",
+      "label_en": "Anticonvulsant Medications",
+      "label_ko": "항경련제",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Arterial_Complications",
+      "source": "HTO",
+      "label_en": "Arterial Complications",
+      "label_ko": "동맥 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Benign_Essential_Hypertension",
+      "source": "HTO",
+      "label_en": "Benign Essential Hypertension",
+      "label_ko": "양성 본태성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Benign_Hypertensive_Renal_Disease",
+      "source": "HTO",
+      "label_en": "Benign Hypertensive Renal Disease",
+      "label_ko": "양성 고혈압성 신장질환",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Benign_Renovascular_Hypertension",
+      "source": "HTO",
+      "label_en": "Benign Renovascular Hypertension",
+      "label_ko": "양성 신혈관성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Benign_Secondary_Hypertension",
+      "source": "HTO",
+      "label_en": "Benign Secondary Hypertension",
+      "label_ko": "양성 이차성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Blood_Pressure-related_Symptoms",
+      "source": "HTO",
+      "label_en": "Blood Pressure-related Symptoms",
+      "label_ko": "혈압 관련 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Blood_Vessel_Complications",
+      "source": "HTO",
+      "label_en": "Blood Vessel Complications",
+      "label_ko": "혈관 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Cardiovascular_Assesment",
+      "source": "HTO",
+      "label_en": "Cardiovascular Assesment",
+      "label_ko": "심혈관 평가",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Cardiovascular_Complications",
+      "source": "HTO",
+      "label_en": "Cardiovascular Complications",
+      "label_ko": "심혈관 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Cardiovascular_Conditions",
+      "source": "HTO",
+      "label_en": "Cardiovascular Conditions",
+      "label_ko": "심혈관 상태",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Cardiovascular_Symptoms",
+      "source": "HTO",
+      "label_en": "Cardiovascular Symptoms",
+      "label_ko": "심혈관 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Cardiovascular_support",
+      "source": "HTO",
+      "label_en": "Cardiovascular support",
+      "label_ko": "심혈관 지지요법",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Cerebrovascular_Complications",
+      "source": "HTO",
+      "label_en": "Cerebrovascular Complications",
+      "label_ko": "뇌혈관 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Chest-related_Symptoms",
+      "source": "HTO",
+      "label_en": "Chest-related Symptoms",
+      "label_ko": "가슴 관련 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Circulation-related_Symptoms",
+      "source": "HTO",
+      "label_en": "Circulation-related Symptoms",
+      "label_ko": "순환 관련 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Circulatory_Symptoms",
+      "source": "HTO",
+      "label_en": "Circulatory Symptoms",
+      "label_ko": "순환계 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Cognitive-and_Mental_Symptoms",
+      "source": "HTO",
+      "label_en": "Cognitive-and Mental Symptoms",
+      "label_ko": "인지·정신 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Coronary_Artery-related_Complications",
+      "source": "HTO",
+      "label_en": "Coronary Artery-related Complications",
+      "label_ko": "관상동맥 관련 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Corticosteriods_Medications",
+      "source": "HTO",
+      "label_en": "Corticosteriods Medications",
+      "label_ko": "코르티코스테로이드제",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Diabetes",
+      "source": "HTO",
+      "label_en": "Diabetes",
+      "label_ko": "당뇨병",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Diabetes_Screening_and_Monitoring",
+      "source": "HTO",
+      "label_en": "Diabetes Screening and Monitoring",
+      "label_ko": "당뇨병 선별·모니터링",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Diagnostic_Imaging",
+      "source": "HTO",
+      "label_en": "Diagnostic Imaging",
+      "label_ko": "영상진단",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Diagnostic_Procedure",
+      "source": "HTO",
+      "label_en": "Diagnostic Procedure",
+      "label_ko": "진단 시술",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Eclampsia",
+      "source": "HTO",
+      "label_en": "Eclampsia",
+      "label_ko": "자간증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Edema_and_Swelling",
+      "source": "HTO",
+      "label_en": "Edema and Swelling",
+      "label_ko": "부종",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Endocrine_Factors",
+      "source": "HTO",
+      "label_en": "Endocrine Factors",
+      "label_ko": "내분비 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Enviromental_Pollution_Factors",
+      "source": "HTO",
+      "label_en": "Enviromental Pollution Factors",
+      "label_ko": "환경오염 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Environmental_and_Occupational_Factors",
+      "source": "HTO",
+      "label_en": "Environmental and Occupational Factors",
+      "label_ko": "환경·직업 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Essential_Hypertension",
+      "source": "HTO",
+      "label_en": "Essential Hypertension",
+      "label_ko": "본태성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Exposure_to_Toxins",
+      "source": "HTO",
+      "label_en": "Exposure to Toxins",
+      "label_ko": "독성물질 노출",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Eye_Examinations",
+      "source": "HTO",
+      "label_en": "Eye Examinations",
+      "label_ko": "안과 검사",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Functional_Assesment",
+      "source": "HTO",
+      "label_en": "Functional Assesment",
+      "label_ko": "기능 평가",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Gastrointestinal_Symptoms",
+      "source": "HTO",
+      "label_en": "Gastrointestinal Symptoms",
+      "label_ko": "위장관 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:General_Medical_Care",
+      "source": "HTO",
+      "label_en": "General Medical Care",
+      "label_ko": "일반 의료처치",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:General_Symptoms",
+      "source": "HTO",
+      "label_en": "General Symptoms",
+      "label_ko": "전신 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Genetic_and_Family_History",
+      "source": "HTO",
+      "label_en": "Genetic and Family History",
+      "label_ko": "유전·가족력",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Heart-related_Symptoms",
+      "source": "HTO",
+      "label_en": "Heart-related Symptoms",
+      "label_ko": "심장 관련 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Hospital-based_Treatments",
+      "source": "HTO",
+      "label_en": "Hospital-based Treatments",
+      "label_ko": "병원 치료",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Hypertension_Causes",
+      "source": "HTO",
+      "label_en": "Hypertension Causes",
+      "label_ko": "고혈압 원인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Hypertension_Complcations",
+      "source": "HTO",
+      "label_en": "Hypertension Complcations",
+      "label_ko": "고혈압 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Hypertension_Detection",
+      "source": "HTO",
+      "label_en": "Hypertension Detection",
+      "label_ko": "고혈압 진단/검출",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Hypertension_Medications",
+      "source": "HTO",
+      "label_en": "Hypertension Medications",
+      "label_ko": "고혈압 약물",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Hypertension_Symptoms",
+      "source": "HTO",
+      "label_en": "Hypertension Symptoms",
+      "label_ko": "고혈압 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Hypertension_Treatment",
+      "source": "HTO",
+      "label_en": "Hypertension Treatment",
+      "label_ko": "고혈압 치료",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Hypertension_Types",
+      "source": "HTO",
+      "label_en": "Hypertension Types",
+      "label_ko": "고혈압 유형",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Imaging",
+      "source": "HTO",
+      "label_en": "Imaging",
+      "label_ko": "영상검사",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Infectious_Disease",
+      "source": "HTO",
+      "label_en": "Infectious Disease",
+      "label_ko": "감염질환",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Inflammatory_and_Autoimmune_Factors",
+      "source": "HTO",
+      "label_en": "Inflammatory and Autoimmune Factors",
+      "label_ko": "염증·자가면역 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Insulin_Therapy",
+      "source": "HTO",
+      "label_en": "Insulin Therapy",
+      "label_ko": "인슐린 치료",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Intravenous_Medications",
+      "source": "HTO",
+      "label_en": "Intravenous Medications",
+      "label_ko": "정맥주사 약물",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Kidney_Damage",
+      "source": "HTO",
+      "label_en": "Kidney Damage",
+      "label_ko": "신장 손상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Kidney_Function",
+      "source": "HTO",
+      "label_en": "Kidney Function",
+      "label_ko": "신장 기능",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Kidney_Related_Factors",
+      "source": "HTO",
+      "label_en": "Kidney Related Factors",
+      "label_ko": "신장 관련 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Laboratory_Test",
+      "source": "HTO",
+      "label_en": "Laboratory Test",
+      "label_ko": "검사실 검사",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Lifestyle_Factors",
+      "source": "HTO",
+      "label_en": "Lifestyle Factors",
+      "label_ko": "생활습관 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Lifestyle_Modifications",
+      "source": "HTO",
+      "label_en": "Lifestyle Modifications",
+      "label_ko": "생활습관 교정",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Liver_Related_Factors",
+      "source": "HTO",
+      "label_en": "Liver Related Factors",
+      "label_ko": "간 관련 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Malignant_Essential_Hypertension",
+      "source": "HTO",
+      "label_en": "Malignant Essential Hypertension",
+      "label_ko": "악성 본태성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Malignant_Hypertensive_Renal_Disease",
+      "source": "HTO",
+      "label_en": "Malignant Hypertensive Renal Disease",
+      "label_ko": "악성 고혈압성 신장질환",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Malignant_Renovascular_Hypertension",
+      "source": "HTO",
+      "label_en": "Malignant Renovascular Hypertension",
+      "label_ko": "악성 신혈관성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Malignant_Secondary_Hypertension",
+      "source": "HTO",
+      "label_en": "Malignant Secondary Hypertension",
+      "label_ko": "악성 이차성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Medical_Conditions",
+      "source": "HTO",
+      "label_en": "Medical Conditions",
+      "label_ko": "의학적 상태",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Medical_Treatments_Factors",
+      "source": "HTO",
+      "label_en": "Medical Treatments Factors",
+      "label_ko": "의료처치 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Medication",
+      "source": "HTO",
+      "label_en": "Medication",
+      "label_ko": "약물(상위)",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Medications",
+      "source": "HTO",
+      "label_en": "Medications",
+      "label_ko": "약물",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Metabolic_Changes",
+      "source": "HTO",
+      "label_en": "Metabolic Changes",
+      "label_ko": "대사 변화",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Metabolic_Factors",
+      "source": "HTO",
+      "label_en": "Metabolic Factors",
+      "label_ko": "대사 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Mild_Pre-Eclampsia",
+      "source": "HTO",
+      "label_en": "Mild Pre-Eclampsia",
+      "label_ko": "경증 전자간증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Monitoring_and_Follow-up",
+      "source": "HTO",
+      "label_en": "Monitoring and Follow-up",
+      "label_ko": "모니터링·추적관찰",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Mortality_and_Serious_Complications",
+      "source": "HTO",
+      "label_en": "Mortality and Serious Complications",
+      "label_ko": "사망·중증합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Motor_Symptoms",
+      "source": "HTO",
+      "label_en": "Motor Symptoms",
+      "label_ko": "운동 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Nephrosclerosis",
+      "source": "HTO",
+      "label_en": "Nephrosclerosis",
+      "label_ko": "신장경화증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Nephrotrophic_Syndrome",
+      "source": "HTO",
+      "label_en": "Nephrotrophic Syndrome",
+      "label_ko": "신증후군성 증후군",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Neurological_Factors",
+      "source": "HTO",
+      "label_en": "Neurological Factors",
+      "label_ko": "신경학적 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Neurological_Symptoms",
+      "source": "HTO",
+      "label_en": "Neurological Symptoms",
+      "label_ko": "신경학적 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Neuropathic_Complications",
+      "source": "HTO",
+      "label_en": "Neuropathic Complications",
+      "label_ko": "신경병증성 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Obstetric_Care",
+      "source": "HTO",
+      "label_en": "Obstetric Care",
+      "label_ko": "산과 케어",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Occupational_Factors",
+      "source": "HTO",
+      "label_en": "Occupational Factors",
+      "label_ko": "직업적 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Ophthalmic_Complications",
+      "source": "HTO",
+      "label_en": "Ophthalmic Complications",
+      "label_ko": "안과 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Organ-specific_Complications",
+      "source": "HTO",
+      "label_en": "Organ-specific Complications",
+      "label_ko": "장기특이적 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Other_Complication",
+      "source": "HTO",
+      "label_en": "Other Complication",
+      "label_ko": "기타 합병증(단수)",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Other_Complications",
+      "source": "HTO",
+      "label_en": "Other Complications",
+      "label_ko": "기타 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Other_Factors",
+      "source": "HTO",
+      "label_en": "Other Factors",
+      "label_ko": "기타 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Other_Symptoms",
+      "source": "HTO",
+      "label_en": "Other Symptoms",
+      "label_ko": "기타 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Pancreatic_Factors",
+      "source": "HTO",
+      "label_en": "Pancreatic Factors",
+      "label_ko": "췌장 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Perinatal_Factors",
+      "source": "HTO",
+      "label_en": "Perinatal Factors",
+      "label_ko": "주산기 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Persistent_Fetal_Circulation_Syndrome",
+      "source": "HTO",
+      "label_en": "Persistent Fetal Circulation Syndrome",
+      "label_ko": "지속성 태아순환증후군",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Pre-Eclampsia",
+      "source": "HTO",
+      "label_en": "Pre-Eclampsia",
+      "label_ko": "전자간증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Pregnancy_Related_Factors",
+      "source": "HTO",
+      "label_en": "Pregnancy Related Factors",
+      "label_ko": "임신 관련 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Pregnancy_and_Birth-related-complications",
+      "source": "HTO",
+      "label_en": "Pregnancy and Birth-related-complications",
+      "label_ko": "임신·출산 관련 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Proteinuria",
+      "source": "HTO",
+      "label_en": "Proteinuria",
+      "label_ko": "단백뇨",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Pulmonary_Complications",
+      "source": "HTO",
+      "label_en": "Pulmonary Complications",
+      "label_ko": "폐 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Pulmonary_Hypertension",
+      "source": "HTO",
+      "label_en": "Pulmonary Hypertension",
+      "label_ko": "폐고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Pulmonary_Venoocclusive_Disease",
+      "source": "HTO",
+      "label_en": "Pulmonary Venoocclusive Disease",
+      "label_ko": "폐정맥폐쇄병",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Reanl_Symptoms",
+      "source": "HTO",
+      "label_en": "Reanl Symptoms",
+      "label_ko": "신장 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Renal_Assesment",
+      "source": "HTO",
+      "label_en": "Renal Assesment",
+      "label_ko": "신장 평가",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Renal_Care",
+      "source": "HTO",
+      "label_en": "Renal Care",
+      "label_ko": "신장 관리",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Renal_Complicaion",
+      "source": "HTO",
+      "label_en": "Renal Complicaion",
+      "label_ko": "신장 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Renal_Failure",
+      "source": "HTO",
+      "label_en": "Renal Failure",
+      "label_ko": "신부전",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Renal_Hypertension",
+      "source": "HTO",
+      "label_en": "Renal Hypertension",
+      "label_ko": "신성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Renal_Related_Factors",
+      "source": "HTO",
+      "label_en": "Renal Related Factors",
+      "label_ko": "신장 관련 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Renovascular_Hypertension",
+      "source": "HTO",
+      "label_en": "Renovascular Hypertension",
+      "label_ko": "신혈관성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Respiratory_Factors",
+      "source": "HTO",
+      "label_en": "Respiratory Factors",
+      "label_ko": "호흡기 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Respiratory_Support",
+      "source": "HTO",
+      "label_en": "Respiratory Support",
+      "label_ko": "호흡 지지요법",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Respiratory_Symptoms",
+      "source": "HTO",
+      "label_en": "Respiratory Symptoms",
+      "label_ko": "호흡기 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Retinal_Complications",
+      "source": "HTO",
+      "label_en": "Retinal Complications",
+      "label_ko": "망막 합병증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Secondary_Hypertension",
+      "source": "HTO",
+      "label_en": "Secondary Hypertension",
+      "label_ko": "이차성고혈압",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Sensory_Symptoms",
+      "source": "HTO",
+      "label_en": "Sensory Symptoms",
+      "label_ko": "감각 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Severe_Pre-Eclampsia",
+      "source": "HTO",
+      "label_en": "Severe Pre-Eclampsia",
+      "label_ko": "중증 전자간증",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Surgical_Interventions",
+      "source": "HTO",
+      "label_en": "Surgical Interventions",
+      "label_ko": "수술적 치료",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Urinary_Changes",
+      "source": "HTO",
+      "label_en": "Urinary Changes",
+      "label_ko": "소변 변화",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Vascular_Factors",
+      "source": "HTO",
+      "label_en": "Vascular Factors",
+      "label_ko": "혈관 요인",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "HTO:Visual_Symptoms",
+      "source": "HTO",
+      "label_en": "Visual Symptoms",
+      "label_ko": "시각 증상",
+      "kind": "htn_clinical_concept",
+      "category": "HTN"
+    },
+    {
+      "global_id": "콩팥병::ckd",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "콩팥병(CKD)",
+      "kind": "note",
+      "category": "콩팥병"
+    },
+    {
+      "global_id": "콩팥병::rel1",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "당뇨병(DM)",
+      "kind": "note",
+      "category": "콩팥병"
+    },
+    {
+      "global_id": "콩팥병::rel2",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "고혈압(HTN)",
+      "kind": "note",
+      "category": "콩팥병"
+    },
+    {
+      "global_id": "콩팥병::hospital_capability",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "병원역량(HospitalCapability)",
+      "kind": "note",
+      "category": "콩팥병"
+    },
+    {
+      "global_id": "당뇨병::dm",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "당뇨병(DM)",
+      "kind": "note",
+      "category": "당뇨병"
+    },
+    {
+      "global_id": "당뇨병::rel1",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "고혈압(HTN)",
+      "kind": "note",
+      "category": "당뇨병"
+    },
+    {
+      "global_id": "당뇨병::dep1",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "콩팥병(CKD)",
+      "kind": "note",
+      "category": "당뇨병"
+    },
+    {
+      "global_id": "고혈압::htn",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "고혈압(HTN)",
+      "kind": "note",
+      "category": "고혈압"
+    },
+    {
+      "global_id": "고혈압::rel1",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "당뇨병(DM)",
+      "kind": "note",
+      "category": "고혈압"
+    },
+    {
+      "global_id": "고혈압::dep1",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "콩팥병(CKD)",
+      "kind": "note",
+      "category": "고혈압"
+    },
+    {
+      "global_id": "통합::dm",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "당뇨병(DM)",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::htn",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "고혈압(HTN)",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::ckd",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "콩팥병(CKD)",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::loop",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "관계_당뇨병_고혈압_콩팥병_악순환",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::rel_dm_ckd",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "관계_당뇨병_콩팥병",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::rel_htn_ckd",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "관계_고혈압_콩팥병",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::rel_dm_htn",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "관계_당뇨병_고혈압",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::egfr",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "eGFR 계산(CKD-EPI 2021)",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::labtest",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "임상지표(eGFR·ACR·HbA1c·혈압)",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::raas",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "RAAS억제제(ACEi·ARB)",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::sglt2",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "SGLT2억제제",
+      "kind": "note",
+      "category": "통합"
+    },
+    {
+      "global_id": "통합::welfare",
+      "source": "ObsidianNote",
+      "label_en": null,
+      "label_ko": "장애인등록 및 복지혜택",
+      "kind": "note",
+      "category": "통합"
+    }
+  ],
+  "same_as_links": [
+    {
+      "a": "DOID:1074",
+      "b": "HTO:Renal_Failure",
+      "matched_by": "exact_korean_label",
+      "label_ko": "신부전"
+    },
+    {
+      "a": "DOID:9352",
+      "b": "DMTO:DDO_0003905",
+      "matched_by": "exact_korean_label",
+      "label_ko": "제2형 당뇨병"
+    },
+    {
+      "a": "DOID:10823",
+      "b": "HTO:Malignant_Essential_Hypertension",
+      "matched_by": "exact_korean_label",
+      "label_ko": "악성 본태성고혈압"
+    },
+    {
+      "a": "DOID:10825",
+      "b": "HTO:Essential_Hypertension",
+      "matched_by": "exact_korean_label",
+      "label_ko": "본태성고혈압"
+    },
+    {
+      "a": "DOID:10913",
+      "b": "HTO:Benign_Essential_Hypertension",
+      "matched_by": "exact_korean_label",
+      "label_ko": "양성 본태성고혈압"
+    },
+    {
+      "a": "HP:0001953",
+      "b": "DMTO:DDO_0000222",
+      "matched_by": "exact_korean_label",
+      "label_ko": "당뇨병성 케톤산증"
+    },
+    {
+      "a": "CDPEO:Diabetes",
+      "b": "HTO:Diabetes",
+      "matched_by": "exact_korean_label",
+      "label_ko": "당뇨병"
+    },
+    {
+      "a": "HTO:Kidney_Related_Factors",
+      "b": "HTO:Renal_Related_Factors",
+      "matched_by": "exact_korean_label",
+      "label_ko": "신장 관련 요인"
+    },
+    {
+      "a": "콩팥병::ckd",
+      "b": "당뇨병::dep1",
+      "matched_by": "exact_korean_label",
+      "label_ko": "콩팥병(CKD)"
+    },
+    {
+      "a": "콩팥병::ckd",
+      "b": "고혈압::dep1",
+      "matched_by": "exact_korean_label",
+      "label_ko": "콩팥병(CKD)"
+    },
+    {
+      "a": "콩팥병::ckd",
+      "b": "통합::ckd",
+      "matched_by": "exact_korean_label",
+      "label_ko": "콩팥병(CKD)"
+    },
+    {
+      "a": "당뇨병::dep1",
+      "b": "고혈압::dep1",
+      "matched_by": "exact_korean_label",
+      "label_ko": "콩팥병(CKD)"
+    },
+    {
+      "a": "당뇨병::dep1",
+      "b": "통합::ckd",
+      "matched_by": "exact_korean_label",
+      "label_ko": "콩팥병(CKD)"
+    },
+    {
+      "a": "고혈압::dep1",
+      "b": "통합::ckd",
+      "matched_by": "exact_korean_label",
+      "label_ko": "콩팥병(CKD)"
+    },
+    {
+      "a": "콩팥병::rel1",
+      "b": "당뇨병::dm",
+      "matched_by": "exact_korean_label",
+      "label_ko": "당뇨병(DM)"
+    },
+    {
+      "a": "콩팥병::rel1",
+      "b": "고혈압::rel1",
+      "matched_by": "exact_korean_label",
+      "label_ko": "당뇨병(DM)"
+    },
+    {
+      "a": "콩팥병::rel1",
+      "b": "통합::dm",
+      "matched_by": "exact_korean_label",
+      "label_ko": "당뇨병(DM)"
+    },
+    {
+      "a": "당뇨병::dm",
+      "b": "고혈압::rel1",
+      "matched_by": "exact_korean_label",
+      "label_ko": "당뇨병(DM)"
+    },
+    {
+      "a": "당뇨병::dm",
+      "b": "통합::dm",
+      "matched_by": "exact_korean_label",
+      "label_ko": "당뇨병(DM)"
+    },
+    {
+      "a": "고혈압::rel1",
+      "b": "통합::dm",
+      "matched_by": "exact_korean_label",
+      "label_ko": "당뇨병(DM)"
+    },
+    {
+      "a": "콩팥병::rel2",
+      "b": "당뇨병::rel1",
+      "matched_by": "exact_korean_label",
+      "label_ko": "고혈압(HTN)"
+    },
+    {
+      "a": "콩팥병::rel2",
+      "b": "고혈압::htn",
+      "matched_by": "exact_korean_label",
+      "label_ko": "고혈압(HTN)"
+    },
+    {
+      "a": "콩팥병::rel2",
+      "b": "통합::htn",
+      "matched_by": "exact_korean_label",
+      "label_ko": "고혈압(HTN)"
+    },
+    {
+      "a": "당뇨병::rel1",
+      "b": "고혈압::htn",
+      "matched_by": "exact_korean_label",
+      "label_ko": "고혈압(HTN)"
+    },
+    {
+      "a": "당뇨병::rel1",
+      "b": "통합::htn",
+      "matched_by": "exact_korean_label",
+      "label_ko": "고혈압(HTN)"
+    },
+    {
+      "a": "고혈압::htn",
+      "b": "통합::htn",
+      "matched_by": "exact_korean_label",
+      "label_ko": "고혈압(HTN)"
+    },
+    {
+      "a": "콩팥병::ckd",
+      "b": "DOID:784",
+      "matched_by": "manual_curation",
+      "label_ko": "콩팥병(CKD) = 만성콩팥병"
+    },
+    {
+      "a": "당뇨병::dm",
+      "b": "DOID:9352",
+      "matched_by": "manual_curation",
+      "label_ko": "당뇨병(DM) 노트 = 제2형 당뇨병 대표코드"
+    },
+    {
+      "a": "고혈압::htn",
+      "b": "DOID:10825",
+      "matched_by": "manual_curation",
+      "label_ko": "고혈압(HTN) 노트 = 본태성고혈압 대표코드"
+    },
+    {
+      "a": "콩팥병::ckd",
+      "b": "HTO:Renal_Failure",
+      "matched_by": "manual_curation",
+      "label_ko": "콩팥병 진행 시 신부전과 연관"
+    }
+  ],
+  "korean_colloquial_index": {
+    "콩팥병": [
+      "DOID:784",
+      "콩팥병::ckd",
+      "CKDO:CKD_KDIGO_stages_1-5"
+    ],
+    "콩팥 4기": [
+      "CKDO:CKD_KDIGO_stages_1-5",
+      "DOID:784"
+    ],
+    "신장병": [
+      "DOID:784",
+      "콩팥병::ckd"
+    ],
+    "투석": [
+      "CKDO:Haemodialysis",
+      "CKDO:Peritoneal_dialysis",
+      "HTO:Dialysis"
+    ],
+    "혈액투석": [
+      "CKDO:Haemodialysis"
+    ],
+    "복막투석": [
+      "CKDO:Peritoneal_dialysis"
+    ],
+    "야간투석": [
+      "CKDO:Haemodialysis"
+    ],
+    "소변에 거품": [
+      "HP:0033066",
+      "HP:0012593",
+      "HTO:Protine_in_the_Urine"
+    ],
+    "단백뇨": [
+      "HP:0033066",
+      "HP:0012593",
+      "HTO:Protine_in_the_Urine"
+    ],
+    "당뇨": [
+      "DOID:9352",
+      "DMTO:DDO_0003905",
+      "당뇨병::dm",
+      "CDPEO:Diabetes",
+      "HTO:Diabetes"
+    ],
+    "당뇨병": [
+      "DOID:9352",
+      "DMTO:DDO_0003905",
+      "당뇨병::dm",
+      "CDPEO:Diabetes",
+      "HTO:Diabetes"
+    ],
+    "혈당 높다": [
+      "HP:0011998",
+      "DDO_0000242",
+      "D08",
+      "D09",
+      "D10"
+    ],
+    "저혈당": [
+      "DMTO:DDO_0000228",
+      "DMTO:DDO_0000227"
+    ],
+    "당화혈색소": [
+      "DMTO:DDO_0000252",
+      "HTO:Hemoglobin_A1C"
+    ],
+    "고혈압": [
+      "DOID:10825",
+      "고혈압::htn",
+      "CDPEO:Hypertension",
+      "HTO:Essential_Hypertension"
+    ],
+    "혈압 높다": [
+      "HTN:HTN_00000014",
+      "HTO:High_Blood_Pressure",
+      "D01",
+      "D02",
+      "D03"
+    ],
+    "발 저림": [
+      "DOID:9743",
+      "HP:0012398"
+    ],
+    "발이 부어요": [
+      "HP:0012398",
+      "HTO:Edema_and_Swelling"
+    ],
+    "우울": [
+      "CDPEO:Mentality",
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05"
+    ],
+    "족부궤양": [
+      "DMTO:DDO_0002292",
+      "DD_0002293",
+      "HTO:Foot_Ulcers"
+    ],
+    "케톤산증": [
+      "DOID:1953",
+      "DMTO:DDO_0000222",
+      "DMTO:DMTO_0001817"
+    ],
+    "임신당뇨": [
+      "DDO_0010008",
+      "DDO_0000235"
+    ],
+    "신장이식": [
+      "CKDO:Renal_transplantation",
+      "HTO:Kidney_Transplant"
+    ]
+  }
+}

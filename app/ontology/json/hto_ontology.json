@@ -1,0 +1,2185 @@
+{
+  "_meta": {
+    "source": "Hypertension Ontology (HTO)",
+    "source_file": "data/raw/ontology/Hypertension_Ontology.rdf",
+    "note": "DOID/HP/CKDO/HTN/DMTO/CDPEO와 달리 실제 관계 트리플(canCause/createsTheRiskOf/detects/isSymptomOf/treats)을 가진 유일한 관계형 온톨로지. 고혈압 원인-증상-검사-치료-합병증을 그래프로 연결."
+  },
+  "concepts": [
+    {
+      "concept_id": "HTO:Anticonvulsant_Medications",
+      "label_en": "Anticonvulsant Medications",
+      "label_ko": "항경련제",
+      "parent_class": "HTO:Medication"
+    },
+    {
+      "concept_id": "HTO:Arterial_Complications",
+      "label_en": "Arterial Complications",
+      "label_ko": "동맥 합병증",
+      "parent_class": "HTO:Cardiovascular_Complications"
+    },
+    {
+      "concept_id": "HTO:Benign_Essential_Hypertension",
+      "label_en": "Benign Essential Hypertension",
+      "label_ko": "양성 본태성고혈압",
+      "parent_class": "HTO:Essential_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Benign_Hypertensive_Renal_Disease",
+      "label_en": "Benign Hypertensive Renal Disease",
+      "label_ko": "양성 고혈압성 신장질환",
+      "parent_class": "HTO:Renal_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Benign_Renovascular_Hypertension",
+      "label_en": "Benign Renovascular Hypertension",
+      "label_ko": "양성 신혈관성고혈압",
+      "parent_class": "HTO:Renal_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Benign_Secondary_Hypertension",
+      "label_en": "Benign Secondary Hypertension",
+      "label_ko": "양성 이차성고혈압",
+      "parent_class": "HTO:Secondary_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Blood_Pressure-related_Symptoms",
+      "label_en": "Blood Pressure-related Symptoms",
+      "label_ko": "혈압 관련 증상",
+      "parent_class": "HTO:Cardiovascular_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Blood_Vessel_Complications",
+      "label_en": "Blood Vessel Complications",
+      "label_ko": "혈관 합병증",
+      "parent_class": "HTO:Cardiovascular_Complications"
+    },
+    {
+      "concept_id": "HTO:Cardiovascular_Assesment",
+      "label_en": "Cardiovascular Assesment",
+      "label_ko": "심혈관 평가",
+      "parent_class": "HTO:Hypertension_Detection"
+    },
+    {
+      "concept_id": "HTO:Cardiovascular_Complications",
+      "label_en": "Cardiovascular Complications",
+      "label_ko": "심혈관 합병증",
+      "parent_class": "HTO:Hypertension_Complcations"
+    },
+    {
+      "concept_id": "HTO:Cardiovascular_Conditions",
+      "label_en": "Cardiovascular Conditions",
+      "label_ko": "심혈관 상태",
+      "parent_class": "HTO:Other_Factors"
+    },
+    {
+      "concept_id": "HTO:Cardiovascular_Symptoms",
+      "label_en": "Cardiovascular Symptoms",
+      "label_ko": "심혈관 증상",
+      "parent_class": "HTO:Hypertension_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Cardiovascular_support",
+      "label_en": "Cardiovascular support",
+      "label_ko": "심혈관 지지요법",
+      "parent_class": "HTO:Hospital-based_Treatments"
+    },
+    {
+      "concept_id": "HTO:Cerebrovascular_Complications",
+      "label_en": "Cerebrovascular Complications",
+      "label_ko": "뇌혈관 합병증",
+      "parent_class": "HTO:Hypertension_Complcations"
+    },
+    {
+      "concept_id": "HTO:Chest-related_Symptoms",
+      "label_en": "Chest-related Symptoms",
+      "label_ko": "가슴 관련 증상",
+      "parent_class": "HTO:Cardiovascular_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Circulation-related_Symptoms",
+      "label_en": "Circulation-related Symptoms",
+      "label_ko": "순환 관련 증상",
+      "parent_class": "HTO:Cardiovascular_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Circulatory_Symptoms",
+      "label_en": "Circulatory Symptoms",
+      "label_ko": "순환계 증상",
+      "parent_class": "HTO:Other_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Cognitive-and_Mental_Symptoms",
+      "label_en": "Cognitive-and Mental Symptoms",
+      "label_ko": "인지·정신 증상",
+      "parent_class": "HTO:Neurological_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Coronary_Artery-related_Complications",
+      "label_en": "Coronary Artery-related Complications",
+      "label_ko": "관상동맥 관련 합병증",
+      "parent_class": "HTO:Cardiovascular_Complications"
+    },
+    {
+      "concept_id": "HTO:Corticosteriods_Medications",
+      "label_en": "Corticosteriods Medications",
+      "label_ko": "코르티코스테로이드제",
+      "parent_class": "HTO:Medication"
+    },
+    {
+      "concept_id": "HTO:Diabetes",
+      "label_en": "Diabetes",
+      "label_ko": "당뇨병",
+      "parent_class": "HTO:Secondary_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Diabetes_Screening_and_Monitoring",
+      "label_en": "Diabetes Screening and Monitoring",
+      "label_ko": "당뇨병 선별·모니터링",
+      "parent_class": "HTO:Hypertension_Detection"
+    },
+    {
+      "concept_id": "HTO:Diagnostic_Imaging",
+      "label_en": "Diagnostic Imaging",
+      "label_ko": "영상진단",
+      "parent_class": "HTO:Hypertension_Detection"
+    },
+    {
+      "concept_id": "HTO:Diagnostic_Procedure",
+      "label_en": "Diagnostic Procedure",
+      "label_ko": "진단 시술",
+      "parent_class": "HTO:Renal_Assesment"
+    },
+    {
+      "concept_id": "HTO:Eclampsia",
+      "label_en": "Eclampsia",
+      "label_ko": "자간증",
+      "parent_class": "HTO:Pre-Eclampsia"
+    },
+    {
+      "concept_id": "HTO:Edema_and_Swelling",
+      "label_en": "Edema and Swelling",
+      "label_ko": "부종",
+      "parent_class": "HTO:Reanl_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Endocrine_Factors",
+      "label_en": "Endocrine Factors",
+      "label_ko": "내분비 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Enviromental_Pollution_Factors",
+      "label_en": "Enviromental Pollution Factors",
+      "label_ko": "환경오염 요인",
+      "parent_class": "HTO:Environmental_and_Occupational_Factors"
+    },
+    {
+      "concept_id": "HTO:Environmental_and_Occupational_Factors",
+      "label_en": "Environmental and Occupational Factors",
+      "label_ko": "환경·직업 요인",
+      "parent_class": "HTO:Hypertension_Causes"
+    },
+    {
+      "concept_id": "HTO:Essential_Hypertension",
+      "label_en": "Essential Hypertension",
+      "label_ko": "본태성고혈압",
+      "parent_class": "HTO:Hypertension_Types"
+    },
+    {
+      "concept_id": "HTO:Exposure_to_Toxins",
+      "label_en": "Exposure to Toxins",
+      "label_ko": "독성물질 노출",
+      "parent_class": "HTO:Environmental_and_Occupational_Factors"
+    },
+    {
+      "concept_id": "HTO:Eye_Examinations",
+      "label_en": "Eye Examinations",
+      "label_ko": "안과 검사",
+      "parent_class": "HTO:Hypertension_Detection"
+    },
+    {
+      "concept_id": "HTO:Functional_Assesment",
+      "label_en": "Functional Assesment",
+      "label_ko": "기능 평가",
+      "parent_class": "HTO:Renal_Assesment"
+    },
+    {
+      "concept_id": "HTO:Gastrointestinal_Symptoms",
+      "label_en": "Gastrointestinal Symptoms",
+      "label_ko": "위장관 증상",
+      "parent_class": "HTO:Other_Symptoms"
+    },
+    {
+      "concept_id": "HTO:General_Medical_Care",
+      "label_en": "General Medical Care",
+      "label_ko": "일반 의료처치",
+      "parent_class": "HTO:Hospital-based_Treatments"
+    },
+    {
+      "concept_id": "HTO:General_Symptoms",
+      "label_en": "General Symptoms",
+      "label_ko": "전신 증상",
+      "parent_class": "HTO:Neurological_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Genetic_and_Family_History",
+      "label_en": "Genetic and Family History",
+      "label_ko": "유전·가족력",
+      "parent_class": "HTO:Hypertension_Causes"
+    },
+    {
+      "concept_id": "HTO:Heart-related_Symptoms",
+      "label_en": "Heart-related Symptoms",
+      "label_ko": "심장 관련 증상",
+      "parent_class": "HTO:Cardiovascular_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Hospital-based_Treatments",
+      "label_en": "Hospital-based Treatments",
+      "label_ko": "병원 치료",
+      "parent_class": "HTO:Hypertension_Treatment"
+    },
+    {
+      "concept_id": "HTO:Hypertension_Causes",
+      "label_en": "Hypertension Causes",
+      "label_ko": "고혈압 원인",
+      "parent_class": null
+    },
+    {
+      "concept_id": "HTO:Hypertension_Complcations",
+      "label_en": "Hypertension Complcations",
+      "label_ko": "고혈압 합병증",
+      "parent_class": null
+    },
+    {
+      "concept_id": "HTO:Hypertension_Detection",
+      "label_en": "Hypertension Detection",
+      "label_ko": "고혈압 진단/검출",
+      "parent_class": null
+    },
+    {
+      "concept_id": "HTO:Hypertension_Medications",
+      "label_en": "Hypertension Medications",
+      "label_ko": "고혈압 약물",
+      "parent_class": "HTO:Medication"
+    },
+    {
+      "concept_id": "HTO:Hypertension_Symptoms",
+      "label_en": "Hypertension Symptoms",
+      "label_ko": "고혈압 증상",
+      "parent_class": null
+    },
+    {
+      "concept_id": "HTO:Hypertension_Treatment",
+      "label_en": "Hypertension Treatment",
+      "label_ko": "고혈압 치료",
+      "parent_class": null
+    },
+    {
+      "concept_id": "HTO:Hypertension_Types",
+      "label_en": "Hypertension Types",
+      "label_ko": "고혈압 유형",
+      "parent_class": null
+    },
+    {
+      "concept_id": "HTO:Imaging",
+      "label_en": "Imaging",
+      "label_ko": "영상검사",
+      "parent_class": "HTO:Renal_Assesment"
+    },
+    {
+      "concept_id": "HTO:Infectious_Disease",
+      "label_en": "Infectious Disease",
+      "label_ko": "감염질환",
+      "parent_class": "HTO:Environmental_and_Occupational_Factors"
+    },
+    {
+      "concept_id": "HTO:Inflammatory_and_Autoimmune_Factors",
+      "label_en": "Inflammatory and Autoimmune Factors",
+      "label_ko": "염증·자가면역 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Insulin_Therapy",
+      "label_en": "Insulin Therapy",
+      "label_ko": "인슐린 치료",
+      "parent_class": "HTO:Medication"
+    },
+    {
+      "concept_id": "HTO:Intravenous_Medications",
+      "label_en": "Intravenous Medications",
+      "label_ko": "정맥주사 약물",
+      "parent_class": "HTO:Medication"
+    },
+    {
+      "concept_id": "HTO:Kidney_Damage",
+      "label_en": "Kidney Damage",
+      "label_ko": "신장 손상",
+      "parent_class": "HTO:Renal_Complicaion"
+    },
+    {
+      "concept_id": "HTO:Kidney_Function",
+      "label_en": "Kidney Function",
+      "label_ko": "신장 기능",
+      "parent_class": "HTO:Reanl_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Kidney_Related_Factors",
+      "label_en": "Kidney Related Factors",
+      "label_ko": "신장 관련 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Laboratory_Test",
+      "label_en": "Laboratory Test",
+      "label_ko": "검사실 검사",
+      "parent_class": "HTO:Renal_Assesment"
+    },
+    {
+      "concept_id": "HTO:Lifestyle_Factors",
+      "label_en": "Lifestyle Factors",
+      "label_ko": "생활습관 요인",
+      "parent_class": "HTO:Hypertension_Causes"
+    },
+    {
+      "concept_id": "HTO:Lifestyle_Modifications",
+      "label_en": "Lifestyle Modifications",
+      "label_ko": "생활습관 교정",
+      "parent_class": "HTO:Hypertension_Treatment"
+    },
+    {
+      "concept_id": "HTO:Liver_Related_Factors",
+      "label_en": "Liver Related Factors",
+      "label_ko": "간 관련 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Malignant_Essential_Hypertension",
+      "label_en": "Malignant Essential Hypertension",
+      "label_ko": "악성 본태성고혈압",
+      "parent_class": "HTO:Essential_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Malignant_Hypertensive_Renal_Disease",
+      "label_en": "Malignant Hypertensive Renal Disease",
+      "label_ko": "악성 고혈압성 신장질환",
+      "parent_class": "HTO:Renal_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Malignant_Renovascular_Hypertension",
+      "label_en": "Malignant Renovascular Hypertension",
+      "label_ko": "악성 신혈관성고혈압",
+      "parent_class": "HTO:Renal_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Malignant_Secondary_Hypertension",
+      "label_en": "Malignant Secondary Hypertension",
+      "label_ko": "악성 이차성고혈압",
+      "parent_class": "HTO:Secondary_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Medical_Conditions",
+      "label_en": "Medical Conditions",
+      "label_ko": "의학적 상태",
+      "parent_class": "HTO:Hypertension_Causes"
+    },
+    {
+      "concept_id": "HTO:Medical_Treatments_Factors",
+      "label_en": "Medical Treatments Factors",
+      "label_ko": "의료처치 요인",
+      "parent_class": "HTO:Environmental_and_Occupational_Factors"
+    },
+    {
+      "concept_id": "HTO:Medication",
+      "label_en": "Medication",
+      "label_ko": "약물(상위)",
+      "parent_class": "HTO:Hypertension_Treatment"
+    },
+    {
+      "concept_id": "HTO:Medications",
+      "label_en": "Medications",
+      "label_ko": "약물",
+      "parent_class": "HTO:Other_Factors"
+    },
+    {
+      "concept_id": "HTO:Metabolic_Changes",
+      "label_en": "Metabolic Changes",
+      "label_ko": "대사 변화",
+      "parent_class": "HTO:Reanl_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Metabolic_Factors",
+      "label_en": "Metabolic Factors",
+      "label_ko": "대사 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Mild_Pre-Eclampsia",
+      "label_en": "Mild Pre-Eclampsia",
+      "label_ko": "경증 전자간증",
+      "parent_class": "HTO:Pre-Eclampsia"
+    },
+    {
+      "concept_id": "HTO:Monitoring_and_Follow-up",
+      "label_en": "Monitoring and Follow-up",
+      "label_ko": "모니터링·추적관찰",
+      "parent_class": "HTO:Hypertension_Treatment"
+    },
+    {
+      "concept_id": "HTO:Mortality_and_Serious_Complications",
+      "label_en": "Mortality and Serious Complications",
+      "label_ko": "사망·중증합병증",
+      "parent_class": "HTO:Other_Complication"
+    },
+    {
+      "concept_id": "HTO:Motor_Symptoms",
+      "label_en": "Motor Symptoms",
+      "label_ko": "운동 증상",
+      "parent_class": "HTO:Neurological_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Nephrosclerosis",
+      "label_en": "Nephrosclerosis",
+      "label_ko": "신장경화증",
+      "parent_class": "HTO:Renal_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Nephrotrophic_Syndrome",
+      "label_en": "Nephrotrophic Syndrome",
+      "label_ko": "신증후군성 증후군",
+      "parent_class": "HTO:Renal_Complicaion"
+    },
+    {
+      "concept_id": "HTO:Neurological_Factors",
+      "label_en": "Neurological Factors",
+      "label_ko": "신경학적 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Neurological_Symptoms",
+      "label_en": "Neurological Symptoms",
+      "label_ko": "신경학적 증상",
+      "parent_class": "HTO:Hypertension_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Neuropathic_Complications",
+      "label_en": "Neuropathic Complications",
+      "label_ko": "신경병증성 합병증",
+      "parent_class": "HTO:Ophthalmic_Complications"
+    },
+    {
+      "concept_id": "HTO:Obstetric_Care",
+      "label_en": "Obstetric Care",
+      "label_ko": "산과 케어",
+      "parent_class": "HTO:Hospital-based_Treatments"
+    },
+    {
+      "concept_id": "HTO:Occupational_Factors",
+      "label_en": "Occupational Factors",
+      "label_ko": "직업적 요인",
+      "parent_class": "HTO:Environmental_and_Occupational_Factors"
+    },
+    {
+      "concept_id": "HTO:Ophthalmic_Complications",
+      "label_en": "Ophthalmic Complications",
+      "label_ko": "안과 합병증",
+      "parent_class": "HTO:Hypertension_Complcations"
+    },
+    {
+      "concept_id": "HTO:Organ-specific_Complications",
+      "label_en": "Organ-specific Complications",
+      "label_ko": "장기특이적 합병증",
+      "parent_class": "HTO:Cardiovascular_Complications"
+    },
+    {
+      "concept_id": "HTO:Other_Complication",
+      "label_en": "Other Complication",
+      "label_ko": "기타 합병증(단수)",
+      "parent_class": "HTO:Hypertension_Complcations"
+    },
+    {
+      "concept_id": "HTO:Other_Complications",
+      "label_en": "Other Complications",
+      "label_ko": "기타 합병증",
+      "parent_class": "HTO:Cardiovascular_Complications"
+    },
+    {
+      "concept_id": "HTO:Other_Factors",
+      "label_en": "Other Factors",
+      "label_ko": "기타 요인",
+      "parent_class": "HTO:Hypertension_Causes"
+    },
+    {
+      "concept_id": "HTO:Other_Symptoms",
+      "label_en": "Other Symptoms",
+      "label_ko": "기타 증상",
+      "parent_class": "HTO:Hypertension_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Pancreatic_Factors",
+      "label_en": "Pancreatic Factors",
+      "label_ko": "췌장 요인",
+      "parent_class": "HTO:Other_Factors"
+    },
+    {
+      "concept_id": "HTO:Perinatal_Factors",
+      "label_en": "Perinatal Factors",
+      "label_ko": "주산기 요인",
+      "parent_class": "HTO:Environmental_and_Occupational_Factors"
+    },
+    {
+      "concept_id": "HTO:Persistent_Fetal_Circulation_Syndrome",
+      "label_en": "Persistent Fetal Circulation Syndrome",
+      "label_ko": "지속성 태아순환증후군",
+      "parent_class": "HTO:Pulmonary_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Pre-Eclampsia",
+      "label_en": "Pre-Eclampsia",
+      "label_ko": "전자간증",
+      "parent_class": "HTO:Hypertension_Types"
+    },
+    {
+      "concept_id": "HTO:Pregnancy_Related_Factors",
+      "label_en": "Pregnancy Related Factors",
+      "label_ko": "임신 관련 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Pregnancy_and_Birth-related-complications",
+      "label_en": "Pregnancy and Birth-related-complications",
+      "label_ko": "임신·출산 관련 합병증",
+      "parent_class": "HTO:Other_Complication"
+    },
+    {
+      "concept_id": "HTO:Proteinuria",
+      "label_en": "Proteinuria",
+      "label_ko": "단백뇨",
+      "parent_class": "HTO:Renal_Complicaion"
+    },
+    {
+      "concept_id": "HTO:Pulmonary_Complications",
+      "label_en": "Pulmonary Complications",
+      "label_ko": "폐 합병증",
+      "parent_class": "HTO:Renal_Complicaion"
+    },
+    {
+      "concept_id": "HTO:Pulmonary_Hypertension",
+      "label_en": "Pulmonary Hypertension",
+      "label_ko": "폐고혈압",
+      "parent_class": "HTO:Hypertension_Types"
+    },
+    {
+      "concept_id": "HTO:Pulmonary_Venoocclusive_Disease",
+      "label_en": "Pulmonary Venoocclusive Disease",
+      "label_ko": "폐정맥폐쇄병",
+      "parent_class": "HTO:Pulmonary_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Reanl_Symptoms",
+      "label_en": "Reanl Symptoms",
+      "label_ko": "신장 증상",
+      "parent_class": "HTO:Hypertension_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Renal_Assesment",
+      "label_en": "Renal Assesment",
+      "label_ko": "신장 평가",
+      "parent_class": "HTO:Hypertension_Detection"
+    },
+    {
+      "concept_id": "HTO:Renal_Care",
+      "label_en": "Renal Care",
+      "label_ko": "신장 관리",
+      "parent_class": "HTO:Hospital-based_Treatments"
+    },
+    {
+      "concept_id": "HTO:Renal_Complicaion",
+      "label_en": "Renal Complicaion",
+      "label_ko": "신장 합병증",
+      "parent_class": "HTO:Hypertension_Complcations"
+    },
+    {
+      "concept_id": "HTO:Renal_Failure",
+      "label_en": "Renal Failure",
+      "label_ko": "신부전",
+      "parent_class": "HTO:Renal_Complicaion"
+    },
+    {
+      "concept_id": "HTO:Renal_Hypertension",
+      "label_en": "Renal Hypertension",
+      "label_ko": "신성고혈압",
+      "parent_class": "HTO:Secondary_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Renal_Related_Factors",
+      "label_en": "Renal Related Factors",
+      "label_ko": "신장 관련 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Renovascular_Hypertension",
+      "label_en": "Renovascular Hypertension",
+      "label_ko": "신혈관성고혈압",
+      "parent_class": "HTO:Renal_Hypertension"
+    },
+    {
+      "concept_id": "HTO:Respiratory_Factors",
+      "label_en": "Respiratory Factors",
+      "label_ko": "호흡기 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Respiratory_Support",
+      "label_en": "Respiratory Support",
+      "label_ko": "호흡 지지요법",
+      "parent_class": "HTO:Hospital-based_Treatments"
+    },
+    {
+      "concept_id": "HTO:Respiratory_Symptoms",
+      "label_en": "Respiratory Symptoms",
+      "label_ko": "호흡기 증상",
+      "parent_class": "HTO:Cardiovascular_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Retinal_Complications",
+      "label_en": "Retinal Complications",
+      "label_ko": "망막 합병증",
+      "parent_class": "HTO:Ophthalmic_Complications"
+    },
+    {
+      "concept_id": "HTO:Secondary_Hypertension",
+      "label_en": "Secondary Hypertension",
+      "label_ko": "이차성고혈압",
+      "parent_class": "HTO:Hypertension_Types"
+    },
+    {
+      "concept_id": "HTO:Sensory_Symptoms",
+      "label_en": "Sensory Symptoms",
+      "label_ko": "감각 증상",
+      "parent_class": "HTO:Neurological_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Severe_Pre-Eclampsia",
+      "label_en": "Severe Pre-Eclampsia",
+      "label_ko": "중증 전자간증",
+      "parent_class": "HTO:Pre-Eclampsia"
+    },
+    {
+      "concept_id": "HTO:Surgical_Interventions",
+      "label_en": "Surgical Interventions",
+      "label_ko": "수술적 치료",
+      "parent_class": "HTO:Hospital-based_Treatments"
+    },
+    {
+      "concept_id": "HTO:Urinary_Changes",
+      "label_en": "Urinary Changes",
+      "label_ko": "소변 변화",
+      "parent_class": "HTO:Reanl_Symptoms"
+    },
+    {
+      "concept_id": "HTO:Vascular_Factors",
+      "label_en": "Vascular Factors",
+      "label_ko": "혈관 요인",
+      "parent_class": "HTO:Medical_Conditions"
+    },
+    {
+      "concept_id": "HTO:Visual_Symptoms",
+      "label_en": "Visual Symptoms",
+      "label_ko": "시각 증상",
+      "parent_class": "HTO:Neurological_Symptoms"
+    }
+  ],
+  "relations": [
+    {
+      "from_concept": "HTO:Anticonvulsant_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Arterial_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Arterial_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Blood_Pressure-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Blood_Pressure-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Blood_Pressure-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Blood_Pressure-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Blood_Pressure-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Blood_Pressure-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Blood_Pressure-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Blood_Pressure-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Blood_Pressure-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Blood_Vessel_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Conditions",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Conditions",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Conditions",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Conditions",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Conditions",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_Conditions",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_support",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_support",
+      "relation_type": "treats",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Cardiovascular_support",
+      "relation_type": "treats",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cerebrovascular_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Chest-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Chest-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Chest-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Chest-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Chest-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Chest-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Circulation-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Circulation-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Circulatory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Circulatory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Circulatory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Circulatory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Cognitive-and_Mental_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Coronary_Artery-related_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Corticosteriods_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Corticosteriods_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Diabetes_Screening_and_Monitoring",
+      "relation_type": "detects",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Diagnostic_Procedure",
+      "relation_type": "detects",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Edema_and_Swelling",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Edema_and_Swelling",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Edema_and_Swelling",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Edema_and_Swelling",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Edema_and_Swelling",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Edema_and_Swelling",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Edema_and_Swelling",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Edema_and_Swelling",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Endocrine_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Environmental_and_Occupational_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Exposure_to_Toxins",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Eye_Examinations",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Functional_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Functional_Assesment",
+      "relation_type": "detects",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Gastrointestinal_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Gastrointestinal_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Gastrointestinal_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Gastrointestinal_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Gastrointestinal_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Gastrointestinal_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Gastrointestinal_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Gastrointestinal_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:General_Medical_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:General_Medical_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:General_Medical_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:General_Medical_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:General_Medical_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:General_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Genetic_and_Family_History",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Genetic_and_Family_History",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Genetic_and_Family_History",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Genetic_and_Family_History",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Genetic_and_Family_History",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Genetic_and_Family_History",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Genetic_and_Family_History",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Heart-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Heart-related_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Hypertension_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Imaging",
+      "relation_type": "detects",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Infectious_Disease",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Inflammatory_and_Autoimmune_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Inflammatory_and_Autoimmune_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Inflammatory_and_Autoimmune_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Insulin_Therapy",
+      "relation_type": "treats",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Intravenous_Medications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Kidney_Damage",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Kidney_Damage",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Kidney_Damage",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Kidney_Damage",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Kidney_Damage",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Kidney_Damage",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Kidney_Damage",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Kidney_Damage",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Kidney_Damage",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Kidney_Function",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Kidney_Function",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Kidney_Function",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Kidney_Related_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Kidney_Related_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Laboratory_Test",
+      "relation_type": "detects",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Laboratory_Test",
+      "relation_type": "detects",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Laboratory_Test",
+      "relation_type": "detects",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Lifestyle_Modifications",
+      "relation_type": "treats",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Liver_Related_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Medical_Treatments_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Medications",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Medications",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Metabolic_Changes",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Metabolic_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Metabolic_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Metabolic_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Metabolic_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Metabolic_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Monitoring_and_Follow-up",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Monitoring_and_Follow-up",
+      "relation_type": "treats",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Monitoring_and_Follow-up",
+      "relation_type": "treats",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Monitoring_and_Follow-up",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Monitoring_and_Follow-up",
+      "relation_type": "treats",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Mortality_and_Serious_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Mortality_and_Serious_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Mortality_and_Serious_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Mortality_and_Serious_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Mortality_and_Serious_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Motor_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Motor_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Nephrotrophic_Syndrome",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Neurological_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Neuropathic_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Obstetric_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Obstetric_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Obstetric_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Occupational_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Organ-specific_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Organ-specific_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Organ-specific_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Pancreatic_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Perinatal_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Pregnancy_Related_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Pregnancy_Related_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Pregnancy_Related_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Pregnancy_and_Birth-related-complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Pregnancy_and_Birth-related-complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Pregnancy_and_Birth-related-complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Proteinuria",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Pulmonary_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Pulmonary_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Renal_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Renal_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Renal_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Renal_Care",
+      "relation_type": "treats",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Renal_Failure",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Renal_Failure",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Renal_Failure",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Renal_Failure",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Renal_Failure",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Renal_Related_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Support",
+      "relation_type": "treats",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Persistent_Fetal_Circulation_Syndrome"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Respiratory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Retinal_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Retinal_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Retinal_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Retinal_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Retinal_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Retinal_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Retinal_Complications",
+      "relation_type": "createsTheRiskOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Sensory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Sensory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Sensory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Sensory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Sensory_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Surgical_Interventions",
+      "relation_type": "treats",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Surgical_Interventions",
+      "relation_type": "treats",
+      "to_concept": "HTO:Pulmonary_Venoocclusive_Disease"
+    },
+    {
+      "from_concept": "HTO:Surgical_Interventions",
+      "relation_type": "treats",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Urinary_Changes",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Urinary_Changes",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Hypertensive_Renal_Disease"
+    },
+    {
+      "from_concept": "HTO:Urinary_Changes",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Nephrosclerosis"
+    },
+    {
+      "from_concept": "HTO:Urinary_Changes",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Vascular_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Vascular_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Benign_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Vascular_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Vascular_Factors",
+      "relation_type": "canCause",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Benign_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Diabetes"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Essential_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Malignant_Secondary_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Mild_Pre-Eclampsia"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Renovascular_Hypertension"
+    },
+    {
+      "from_concept": "HTO:Visual_Symptoms",
+      "relation_type": "isSymptomOf",
+      "to_concept": "HTO:Severe_Pre-Eclampsia"
+    }
+  ]
+}
