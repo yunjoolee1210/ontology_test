@@ -1,0 +1,1064 @@
+{
+  "concepts": [
+    {
+      "concept_id": "콩팥병::ckd",
+      "label": "콩팥병(CKD)",
+      "domain": "콩팥병",
+      "node_kind": "file",
+      "file": "01_개념노트/콩팥병(CKD)/콩팥병(CKD).md"
+    },
+    {
+      "concept_id": "콩팥병::super1",
+      "label": "만성질환",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::super2",
+      "label": "콩팥(신장) 질환",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::sub1",
+      "label": "말기콩팥병(ESKD)",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::sub2",
+      "label": "당뇨병성콩팥병(DKD)",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::sub3",
+      "label": "고혈압성신장병",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::part1",
+      "label": "사구체(glomerulus)",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::part2",
+      "label": "세뇨관",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::part3",
+      "label": "eGFR(사구체여과율)",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::part4",
+      "label": "알부민-크레아티닌비(ACR)",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::rel1",
+      "label": "당뇨병(DM)",
+      "domain": "콩팥병",
+      "node_kind": "file",
+      "file": "01_개념노트/당뇨병(DM)/당뇨병(DM).md"
+    },
+    {
+      "concept_id": "콩팥병::rel2",
+      "label": "고혈압(HTN)",
+      "domain": "콩팥병",
+      "node_kind": "file",
+      "file": "01_개념노트/고혈압(HTN)/고혈압(HTN).md"
+    },
+    {
+      "concept_id": "콩팥병::rel3",
+      "label": "심혈관질환",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::contrast1",
+      "label": "급성신손상(AKI)",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::dep1",
+      "label": "사구체여과율(GFR) 측정",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::dep2",
+      "label": "알부민뇨(ACR) 측정",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::legend",
+      "label": "## 범례 (온톨로지 관계 유형)\n- 빨강: is-a (상위/하위개념)\n- 주황: part-of (부분-전체)\n- 초록: related-to (관련개념)\n- 청록: contrasts-with (대비개념)\n- 보라: depends-on (의존관계)",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::ann_staging",
+      "label": "📄 KDIGO 2024 / 「고혈압콩팥병 진료지침」(2025)\n- G1~G5 × A1~A3 2축 병기 분류\n- G3a/G3b/G4/G5 단계별 사망위험 단계적 증가\n- SNOMED: G1 431855005 ~ G5 433146000/46177005",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::ann_eskd",
+      "label": "📄 「말기콩팥병 팩트시트 2024」\n- ESKD 연간 신규진단 약 2만 명\n- 2021년 유병자 127,068명(지속 증가)\n- 원인질환: 당뇨병 48% + 고혈압 21% = 70%",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::ann_bp_drug",
+      "label": "📄 「고혈압콩팥병 진료지침」(2025) / 「당뇨병콩팥병 진료지침」\n- 혈압 목표 <130/80 (단백뇨 동반시 120~129)\n- 1차 권고약물: RAAS억제제(ACEi/ARB)\n- ACEi·ARB·직접레닌억제제 병용투여 금지",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::ann_welfare",
+      "label": "📄 「장애인등록 및 복지혜택」 / 요양비 / 장애정도 심사제도\n- 혈액·복막투석 3개월 이상 연속 → 장애정도 심한 장애인\n- 신장이식 → 장애정도 심하지 않은 장애인\n- 복막투석 소모성재료 요양비 1일 10,420원\n- 장애인연금·의료비지원·보장구급여 등",
+      "domain": "콩팥병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "콩팥병::hospital_capability",
+      "label": "병원역량(HospitalCapability)",
+      "domain": "콩팥병",
+      "node_kind": "file",
+      "file": "01_개념노트/공통요인/병원역량(HospitalCapability).md"
+    },
+    {
+      "concept_id": "당뇨병::dm",
+      "label": "당뇨병(DM)",
+      "domain": "당뇨병",
+      "node_kind": "file",
+      "file": "01_개념노트/당뇨병(DM)/당뇨병(DM).md"
+    },
+    {
+      "concept_id": "당뇨병::super1",
+      "label": "대사질환",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::super2",
+      "label": "만성질환",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::sub1",
+      "label": "1형당뇨병",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::sub2",
+      "label": "2형당뇨병",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::sub3",
+      "label": "기타 당뇨병",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::sub4",
+      "label": "임신당뇨병",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::part1",
+      "label": "췌장 베타세포",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::part2",
+      "label": "인슐린",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::part3",
+      "label": "혈당\n(공복혈당/식후혈당)",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::part4",
+      "label": "당화혈색소(HbA1c)",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::rel1",
+      "label": "고혈압(HTN)",
+      "domain": "당뇨병",
+      "node_kind": "file",
+      "file": "01_개념노트/고혈압(HTN)/고혈압(HTN).md"
+    },
+    {
+      "concept_id": "당뇨병::rel2",
+      "label": "비만",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::rel3",
+      "label": "이상지질혈증",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::contrast1",
+      "label": "정상혈당",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::contrast2",
+      "label": "전당뇨\n(공복혈당장애·내당능장애)",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::dep1",
+      "label": "콩팥병(CKD)",
+      "domain": "당뇨병",
+      "node_kind": "file",
+      "file": "01_개념노트/콩팥병(CKD)/콩팥병(CKD).md"
+    },
+    {
+      "concept_id": "당뇨병::dep2",
+      "label": "당뇨병성망막병증",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::dep3",
+      "label": "당뇨병성신경병증",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "당뇨병::legend",
+      "label": "## 범례 (온톨로지 관계 유형)\n- 빨강: is-a (상위/하위개념)\n- 주황: part-of (부분-전체)\n- 초록: related-to (관련개념)\n- 청록: contrasts-with (대비개념)\n- 보라: depends-on (의존관계)",
+      "domain": "당뇨병",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::htn",
+      "label": "고혈압(HTN)",
+      "domain": "고혈압",
+      "node_kind": "file",
+      "file": "01_개념노트/고혈압(HTN)/고혈압(HTN).md"
+    },
+    {
+      "concept_id": "고혈압::super1",
+      "label": "심혈관질환",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::super2",
+      "label": "만성질환",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::sub1",
+      "label": "1차성(본태성)고혈압",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::sub2",
+      "label": "2차성고혈압",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::sub3",
+      "label": "수축기단독고혈압(ISH)",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::sub4",
+      "label": "고혈압 위기\n(hypertensive emergency)",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::part1",
+      "label": "수축기혈압(SBP)",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::part2",
+      "label": "확장기혈압(DBP)",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::rel1",
+      "label": "당뇨병(DM)",
+      "domain": "고혈압",
+      "node_kind": "file",
+      "file": "01_개념노트/당뇨병(DM)/당뇨병(DM).md"
+    },
+    {
+      "concept_id": "고혈압::rel2",
+      "label": "심부전",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::rel3",
+      "label": "뇌졸중",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::rel4",
+      "label": "이상지질혈증",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::contrast1",
+      "label": "정상혈압(Normal BP)",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::contrast2",
+      "label": "주의혈압(Elevated BP)",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::dep1",
+      "label": "콩팥병(CKD)",
+      "domain": "고혈압",
+      "node_kind": "file",
+      "file": "01_개념노트/콩팥병(CKD)/콩팥병(CKD).md"
+    },
+    {
+      "concept_id": "고혈압::dep2",
+      "label": "좌심실비대",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::dep3",
+      "label": "동맥경화",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "고혈압::legend",
+      "label": "## 범례 (온톨로지 관계 유형)\n- 빨강: is-a (상위/하위개념)\n- 주황: part-of (부분-전체)\n- 초록: related-to (관련개념)\n- 청록: contrasts-with (대비개념)\n- 보라: depends-on (의존관계)",
+      "domain": "고혈압",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "통합::dm",
+      "label": "당뇨병(DM)",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "01_개념노트/당뇨병(DM)/당뇨병(DM).md"
+    },
+    {
+      "concept_id": "통합::htn",
+      "label": "고혈압(HTN)",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "01_개념노트/고혈압(HTN)/고혈압(HTN).md"
+    },
+    {
+      "concept_id": "통합::ckd",
+      "label": "콩팥병(CKD)",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "01_개념노트/콩팥병(CKD)/콩팥병(CKD).md"
+    },
+    {
+      "concept_id": "통합::loop",
+      "label": "관계_당뇨병_고혈압_콩팥병_악순환",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "02_관계노트/관계_당뇨병_고혈압_콩팥병_악순환.md"
+    },
+    {
+      "concept_id": "통합::rel_dm_ckd",
+      "label": "관계_당뇨병_콩팥병",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "02_관계노트/관계_당뇨병_콩팥병.md"
+    },
+    {
+      "concept_id": "통합::rel_htn_ckd",
+      "label": "관계_고혈압_콩팥병",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "02_관계노트/관계_고혈압_콩팥병.md"
+    },
+    {
+      "concept_id": "통합::rel_dm_htn",
+      "label": "관계_당뇨병_고혈압",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "02_관계노트/관계_당뇨병_고혈압.md"
+    },
+    {
+      "concept_id": "통합::egfr",
+      "label": "eGFR 계산(CKD-EPI 2021)",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "01_개념노트/공통요인/eGFR 계산(CKD-EPI 2021).md"
+    },
+    {
+      "concept_id": "통합::labtest",
+      "label": "임상지표(eGFR·ACR·HbA1c·혈압)",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "01_개념노트/공통요인/임상지표(eGFR·ACR·HbA1c·혈압).md"
+    },
+    {
+      "concept_id": "통합::raas",
+      "label": "RAAS억제제(ACEi·ARB)",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "01_개념노트/공통요인/RAAS억제제(ACEi·ARB).md"
+    },
+    {
+      "concept_id": "통합::sglt2",
+      "label": "SGLT2억제제",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "01_개념노트/공통요인/SGLT2억제제.md"
+    },
+    {
+      "concept_id": "통합::welfare",
+      "label": "장애인등록 및 복지혜택",
+      "domain": "통합",
+      "node_kind": "file",
+      "file": "01_개념노트/공통요인/장애인등록 및 복지혜택.md"
+    },
+    {
+      "concept_id": "통합::ann_dm_ckd",
+      "label": "📄 「콩이팥이」/「241212 당뇨병콩팥병 진료지침」\n- DKD vs 일반DM 7대 차이(혈압·미세알부민뇨·관상동맥 등)\n- 초치료: 메트포민+SGLT2억제제\n- 목표혈압 SBP<120",
+      "domain": "통합",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "통합::ann_htn_ckd",
+      "label": "📄 「고혈압콩팥병 진료지침(2025)」\n- I12 고혈압성신장병(38481006)\n- I13 고혈압성심장및신장병(86234004)\n- 사구체내압 캐스케이드, 목표혈압 <130/80",
+      "domain": "통합",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "통합::ann_dm_htn",
+      "label": "📄 「생활습관관리·혈당·혈압」/「당뇨병 만성합병증」\n- 정상혈압 120/80, 매 방문시 혈압측정\n- 동맥경화 공통경로(고혈압→뇌졸중·신증·망막증)",
+      "domain": "통합",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "통합::ann_loop",
+      "label": "📄 「말기콩팥병 팩트시트 2024」\n- ESKD 원인: 당뇨병48%+고혈압21%=70%\n- 3질환 통합코드 SNOMED 71421000119105\n- 단계적 목표혈압: 140/90→130/80→SBP<120",
+      "domain": "통합",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "통합::ann_welfare",
+      "label": "📄 「당뇨인의 복지정보」/「요양비」/「장애정도 심사제도」\n- 신장장애: 투석 3개월↑ → 장애정도 심한 장애인\n- 신장이식 → 장애정도 심하지 않은 장애인\n- 요양비 1일 10,420원(복막투석)\n- 장애인연금·의료비지원·보장구급여 등",
+      "domain": "통합",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "통합::ann_egfr",
+      "label": "📄 KDIGO 2024 / CKD-EPI 2021\n- 연령·성별·Scr → eGFR → G1~G5\n- G단계별 SNOMED 코드(431855005 등) 매핑",
+      "domain": "통합",
+      "node_kind": "text",
+      "file": null
+    },
+    {
+      "concept_id": "통합::legend",
+      "label": "## 범례\n- 빨강선: is-a / feedback-loop\n- 파랑(2): depends-on (eGFR·임상지표·복지)\n- 초록(4): 공통 치료축(RAAS·SGLT2)\n- 노랑(3): comorbid-with/related-to (질환 본체)\n- 보라(6): 실제 PDF·공공자료 근거 요약",
+      "domain": "통합",
+      "node_kind": "text",
+      "file": null
+    }
+  ],
+  "concept_relations": [
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::super1",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::super2",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "콩팥병::sub1",
+      "to_concept": "콩팥병::ckd",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "콩팥병::sub2",
+      "to_concept": "콩팥병::ckd",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "콩팥병::sub3",
+      "to_concept": "콩팥병::ckd",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::part1",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::part2",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::part3",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::part4",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::rel1",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::rel2",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::rel3",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::contrast1",
+      "relation_type": "contrasts-with",
+      "original_label": "contrasts-with"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::dep1",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::dep2",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::ann_staging",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::ann_eskd",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::ann_bp_drug",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::ann_welfare",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "콩팥병::ckd",
+      "to_concept": "콩팥병::hospital_capability",
+      "relation_type": "depends-on/recommends",
+      "original_label": "depends-on/recommends"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::super1",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::super2",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "당뇨병::sub1",
+      "to_concept": "당뇨병::dm",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "당뇨병::sub2",
+      "to_concept": "당뇨병::dm",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "당뇨병::sub3",
+      "to_concept": "당뇨병::dm",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "당뇨병::sub4",
+      "to_concept": "당뇨병::dm",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::part1",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::part2",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::part3",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::part4",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::rel1",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::rel2",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::rel3",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::contrast1",
+      "relation_type": "contrasts-with",
+      "original_label": "contrasts-with"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::contrast2",
+      "relation_type": "contrasts-with",
+      "original_label": "contrasts-with"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::dep1",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::dep2",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "당뇨병::dm",
+      "to_concept": "당뇨병::dep3",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::super1",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::super2",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "고혈압::sub1",
+      "to_concept": "고혈압::htn",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "고혈압::sub2",
+      "to_concept": "고혈압::htn",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "고혈압::sub3",
+      "to_concept": "고혈압::htn",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "고혈압::sub4",
+      "to_concept": "고혈압::htn",
+      "relation_type": "is-a",
+      "original_label": "is-a"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::part1",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::part2",
+      "relation_type": "part-of",
+      "original_label": "part-of"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::rel1",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::rel2",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::rel3",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::rel4",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::contrast1",
+      "relation_type": "contrasts-with",
+      "original_label": "contrasts-with"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::contrast2",
+      "relation_type": "contrasts-with",
+      "original_label": "contrasts-with"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::dep1",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::dep2",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "고혈압::htn",
+      "to_concept": "고혈압::dep3",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "통합::dm",
+      "to_concept": "통합::rel_dm_ckd",
+      "relation_type": "causes/comorbid-with",
+      "original_label": "causes/comorbid-with"
+    },
+    {
+      "from_concept": "통합::ckd",
+      "to_concept": "통합::rel_dm_ckd",
+      "relation_type": "causes/comorbid-with",
+      "original_label": "causes/comorbid-with"
+    },
+    {
+      "from_concept": "통합::htn",
+      "to_concept": "통합::rel_htn_ckd",
+      "relation_type": "causes/comorbid-with",
+      "original_label": "causes/comorbid-with"
+    },
+    {
+      "from_concept": "통합::ckd",
+      "to_concept": "통합::rel_htn_ckd",
+      "relation_type": "causes/comorbid-with",
+      "original_label": "causes/comorbid-with"
+    },
+    {
+      "from_concept": "통합::dm",
+      "to_concept": "통합::rel_dm_htn",
+      "relation_type": "comorbid-with",
+      "original_label": "comorbid-with"
+    },
+    {
+      "from_concept": "통합::htn",
+      "to_concept": "통합::rel_dm_htn",
+      "relation_type": "comorbid-with",
+      "original_label": "comorbid-with"
+    },
+    {
+      "from_concept": "통합::dm",
+      "to_concept": "통합::loop",
+      "relation_type": "feedback-loop",
+      "original_label": "feedback-loop"
+    },
+    {
+      "from_concept": "통합::htn",
+      "to_concept": "통합::loop",
+      "relation_type": "feedback-loop",
+      "original_label": "feedback-loop"
+    },
+    {
+      "from_concept": "통합::ckd",
+      "to_concept": "통합::loop",
+      "relation_type": "feedback-loop",
+      "original_label": "feedback-loop"
+    },
+    {
+      "from_concept": "통합::rel_dm_ckd",
+      "to_concept": "통합::ann_dm_ckd",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "통합::rel_htn_ckd",
+      "to_concept": "통합::ann_htn_ckd",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "통합::rel_dm_htn",
+      "to_concept": "통합::ann_dm_htn",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "통합::loop",
+      "to_concept": "통합::ann_loop",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "통합::welfare",
+      "to_concept": "통합::ann_welfare",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "통합::egfr",
+      "to_concept": "통합::ann_egfr",
+      "relation_type": "근거자료",
+      "original_label": "근거자료"
+    },
+    {
+      "from_concept": "통합::ckd",
+      "to_concept": "통합::egfr",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "통합::dm",
+      "to_concept": "통합::labtest",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "통합::htn",
+      "to_concept": "통합::labtest",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "통합::ckd",
+      "to_concept": "통합::labtest",
+      "relation_type": "depends-on",
+      "original_label": "depends-on"
+    },
+    {
+      "from_concept": "통합::htn",
+      "to_concept": "통합::raas",
+      "relation_type": "공통치료축",
+      "original_label": "공통치료축"
+    },
+    {
+      "from_concept": "통합::ckd",
+      "to_concept": "통합::raas",
+      "relation_type": "공통치료축",
+      "original_label": "공통치료축"
+    },
+    {
+      "from_concept": "통합::loop",
+      "to_concept": "통합::raas",
+      "relation_type": "공통치료축",
+      "original_label": "공통치료축"
+    },
+    {
+      "from_concept": "통합::dm",
+      "to_concept": "통합::sglt2",
+      "relation_type": "공통치료축",
+      "original_label": "공통치료축"
+    },
+    {
+      "from_concept": "통합::ckd",
+      "to_concept": "통합::sglt2",
+      "relation_type": "공통치료축",
+      "original_label": "공통치료축"
+    },
+    {
+      "from_concept": "통합::loop",
+      "to_concept": "통합::sglt2",
+      "relation_type": "공통치료축",
+      "original_label": "공통치료축"
+    },
+    {
+      "from_concept": "통합::dm",
+      "to_concept": "통합::welfare",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "통합::htn",
+      "to_concept": "통합::welfare",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    },
+    {
+      "from_concept": "통합::ckd",
+      "to_concept": "통합::welfare",
+      "relation_type": "related-to",
+      "original_label": "related-to"
+    }
+  ]
+}

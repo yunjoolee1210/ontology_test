@@ -1,0 +1,211 @@
+{
+  "diseases": [
+    {
+      "doid": "DOID:1074",
+      "label_en": "kidney failure",
+      "label_ko": "신부전",
+      "category": "CKD"
+    },
+    {
+      "doid": "DOID:3021",
+      "label_en": "acute kidney failure",
+      "label_ko": "급성신손상",
+      "category": "CKD"
+    },
+    {
+      "doid": "DOID:783",
+      "label_en": "end stage renal disease",
+      "label_ko": "말기콩팥병(ESKD)",
+      "category": "CKD"
+    },
+    {
+      "doid": "DOID:784",
+      "label_en": "chronic kidney disease",
+      "label_ko": "만성콩팥병(CKD)",
+      "category": "CKD"
+    },
+    {
+      "doid": "DOID:13207",
+      "label_en": "proliferative diabetic retinopathy",
+      "label_ko": "증식성 당뇨망막병증",
+      "category": "DM"
+    },
+    {
+      "doid": "DOID:13208",
+      "label_en": "background diabetic retinopathy",
+      "label_ko": "비증식성 당뇨망막병증(배경형)",
+      "category": "DM"
+    },
+    {
+      "doid": "DOID:8946",
+      "label_en": "severe nonproliferative diabetic retinopathy",
+      "label_ko": "중증 비증식성 당뇨망막병증",
+      "category": "DM"
+    },
+    {
+      "doid": "DOID:8947",
+      "label_en": "diabetic retinopathy",
+      "label_ko": "당뇨망막병증",
+      "category": "DM"
+    },
+    {
+      "doid": "DOID:9352",
+      "label_en": "type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병",
+      "category": "DM"
+    },
+    {
+      "doid": "DOID:9743",
+      "label_en": "diabetic neuropathy",
+      "label_ko": "당뇨신경병증",
+      "category": "DM"
+    },
+    {
+      "doid": "DOID:10823",
+      "label_en": "malignant essential hypertension",
+      "label_ko": "악성 본태성고혈압",
+      "category": "HTN"
+    },
+    {
+      "doid": "DOID:10825",
+      "label_en": "essential hypertension",
+      "label_ko": "본태성고혈압",
+      "category": "HTN"
+    },
+    {
+      "doid": "DOID:10913",
+      "label_en": "benign essential hypertension",
+      "label_ko": "양성 본태성고혈압",
+      "category": "HTN"
+    }
+  ],
+  "symptoms": [
+    {
+      "hp_id": "HP:0001953",
+      "label_en": "Diabetic ketoacidosis",
+      "label_ko": "당뇨병성 케톤산증"
+    },
+    {
+      "hp_id": "HP:0001959",
+      "label_en": "Polydipsia",
+      "label_ko": "다음(물 많이 마심)"
+    },
+    {
+      "hp_id": "HP:0003126",
+      "label_en": "Low-molecular-weight proteinuria",
+      "label_ko": "저분자단백뇨"
+    },
+    {
+      "hp_id": "HP:0011998",
+      "label_en": "Postprandial hyperglycemia",
+      "label_ko": "식후 고혈당"
+    },
+    {
+      "hp_id": "HP:0012213",
+      "label_en": "Decreased glomerular filtration rate",
+      "label_ko": "사구체여과율(GFR) 저하"
+    },
+    {
+      "hp_id": "HP:0012398",
+      "label_en": "Peripheral edema",
+      "label_ko": "말초부종"
+    },
+    {
+      "hp_id": "HP:0012593",
+      "label_en": "Nephrotic range proteinuria",
+      "label_ko": "신증후군 수준 단백뇨"
+    },
+    {
+      "hp_id": "HP:0012594",
+      "label_en": "Moderate albuminuria",
+      "label_ko": "중등도 알부민뇨"
+    },
+    {
+      "hp_id": "HP:0012595",
+      "label_en": "Mild proteinuria",
+      "label_ko": "경증 단백뇨"
+    },
+    {
+      "hp_id": "HP:0012596",
+      "label_en": "Moderate proteinuria",
+      "label_ko": "중등도 단백뇨"
+    },
+    {
+      "hp_id": "HP:0012597",
+      "label_en": "Heavy proteinuria",
+      "label_ko": "고도 단백뇨"
+    },
+    {
+      "hp_id": "HP:0033065",
+      "label_en": "Mild albuminuria",
+      "label_ko": "경증 알부민뇨"
+    },
+    {
+      "hp_id": "HP:0033066",
+      "label_en": "Severe albuminuria",
+      "label_ko": "중증 알부민뇨"
+    },
+    {
+      "hp_id": "HP:4000058",
+      "label_en": "Glomerular proteinuria",
+      "label_ko": "사구체성 단백뇨"
+    },
+    {
+      "hp_id": "HP:6000833",
+      "label_en": "Hyperkalemia while symptomatic",
+      "label_ko": "증상성 고칼륨혈증"
+    }
+  ],
+  "disease_symptoms": [
+    {
+      "doid": "DOID:784",
+      "hp_id": "HP:0012213",
+      "note": "GFR저하 -> CKD 핵심지표"
+    },
+    {
+      "doid": "DOID:784",
+      "hp_id": "HP:0012398",
+      "note": "말초부종 -> CKD"
+    },
+    {
+      "doid": "DOID:784",
+      "hp_id": "HP:0033065",
+      "note": "경증알부민뇨 -> CKD초기"
+    },
+    {
+      "doid": "DOID:784",
+      "hp_id": "HP:0033066",
+      "note": "중증알부민뇨 -> CKD진행"
+    },
+    {
+      "doid": "DOID:783",
+      "hp_id": "HP:6000833",
+      "note": "고칼륨혈증 -> 말기신부전 응급"
+    },
+    {
+      "doid": "DOID:9352",
+      "hp_id": "HP:0011998",
+      "note": "식후고혈당 -> 제2형당뇨"
+    },
+    {
+      "doid": "DOID:9352",
+      "hp_id": "HP:0001953",
+      "note": "당뇨케톤산증 -> 제2형당뇨 응급"
+    },
+    {
+      "doid": "DOID:9743",
+      "hp_id": "HP:0012398",
+      "note": "말초부종 -> 당뇨신경병증 연관"
+    },
+    {
+      "doid": "DOID:8947",
+      "hp_id": "HP:0011998",
+      "note": "고혈당 -> 당뇨망막병증 연관지표"
+    },
+    {
+      "doid": "DOID:10825",
+      "hp_id": "HP:0012398",
+      "note": "말초부종 -> 고혈압성 부종"
+    }
+  ]
+}

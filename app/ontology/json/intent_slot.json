@@ -1,0 +1,140 @@
+{
+  "intents": [
+    {
+      "intent_name": "SymptomInquiry",
+      "label_ko": "증상 문진",
+      "response_type": "free_form",
+      "description": "자유 발화 증상 설명 -> 임상 개념 매핑 및 대처 가이드"
+    },
+    {
+      "intent_name": "HospitalInfo",
+      "label_ko": "병원 정보",
+      "response_type": "structured_slot_filling",
+      "description": "조건에 맞는 병원/투석 시설 슬롯필링 안내"
+    }
+  ],
+  "slots": [
+    {
+      "slot_name": "symptom_name",
+      "label_ko": "증상명",
+      "data_type": "string",
+      "source": "user_utterance",
+      "fallback_strategy": "llm_extract_then_ask",
+      "note": "증상명 자체가 없으면 무엇에 대해 답할지 정의되지 않아 의도 처리 불가능"
+    },
+    {
+      "slot_name": "disease_stage",
+      "label_ko": "질환 단계(CKD/DM 병기)",
+      "data_type": "string",
+      "source": "user_profile_or_utterance",
+      "fallback_strategy": "profile_lookup_then_ask",
+      "note": "같은 증상도 병기(예: CKD 3기 vs 5기)에 따라 위험도/응급도/권고가 달라짐 - 모르면 오답 위험. 프로필에 있으면 자동 충족"
+    },
+    {
+      "slot_name": "duration",
+      "label_ko": "증상 지속기간",
+      "data_type": "string",
+      "source": "user_utterance",
+      "fallback_strategy": "llm_infer_or_skip",
+      "note": "없어도 일반적 대처 가이드는 제공 가능 - 보조지표일 뿐 필수 아님"
+    },
+    {
+      "slot_name": "severity",
+      "label_ko": "증상 심각도",
+      "data_type": "enum",
+      "source": "user_utterance",
+      "fallback_strategy": "llm_infer_or_skip",
+      "note": "없어도 일반적 대처 가이드는 제공 가능 - 보조지표일 뿐 필수 아님"
+    },
+    {
+      "slot_name": "location",
+      "label_ko": "위치",
+      "data_type": "geo",
+      "source": "user_utterance_explicit",
+      "fallback_strategy": "must_ask_explicitly",
+      "note": "위치 없이는 병원 추천 자체가 불가능 - 의도가 성립하지 않음. 프로필/IP 추론 절대 금지, 매번 명시적으로 질문"
+    },
+    {
+      "slot_name": "dialysis_type",
+      "label_ko": "투석 종류(혈액투석/복막투석/야간투석)",
+      "data_type": "enum",
+      "source": "user_profile_or_utterance",
+      "fallback_strategy": "profile_lookup_then_ask",
+      "note": "투석 종류별로 찾아야 할 시설이 완전히 다름 - 모르고 추천하면 잘못된 병원을 추천하는 오답이 됨. 프로필에 있으면 자동 충족"
+    },
+    {
+      "slot_name": "time_preference",
+      "label_ko": "방문 가능 시간대",
+      "data_type": "string",
+      "source": "user_utterance",
+      "fallback_strategy": "llm_infer_or_skip",
+      "note": "없어도 병원 추천 자체는 가능 - 편의성 보조정보일 뿐 필수 아님"
+    },
+    {
+      "slot_name": "insurance_type",
+      "label_ko": "건강보험 유형",
+      "data_type": "string",
+      "source": "user_profile",
+      "fallback_strategy": "profile_lookup_then_ask",
+      "note": "없어도 병원 추천 자체는 가능 - 필수 아님"
+    }
+  ],
+  "intent_slots": [
+    {
+      "intent_name": "SymptomInquiry",
+      "slot_name": "symptom_name",
+      "requirement": "REQUIRED",
+      "priority": 1,
+      "required_reason": "증상명이 없으면 처리 대상 자체가 정의되지 않음"
+    },
+    {
+      "intent_name": "SymptomInquiry",
+      "slot_name": "disease_stage",
+      "requirement": "REQUIRED",
+      "priority": 2,
+      "required_reason": "병기에 따라 같은 증상도 위험도/권고가 달라져 모르면 오답 위험 - 프로필 자동충족 우선"
+    },
+    {
+      "intent_name": "SymptomInquiry",
+      "slot_name": "duration",
+      "requirement": "OPTIONAL",
+      "priority": 3,
+      "required_reason": "없어도 일반 가이드 제공 가능"
+    },
+    {
+      "intent_name": "SymptomInquiry",
+      "slot_name": "severity",
+      "requirement": "OPTIONAL",
+      "priority": 4,
+      "required_reason": "없어도 일반 가이드 제공 가능"
+    },
+    {
+      "intent_name": "HospitalInfo",
+      "slot_name": "location",
+      "requirement": "REQUIRED",
+      "priority": 1,
+      "required_reason": "위치 없이는 추천 자체가 불가능, 프로필/IP 추론 절대 금지"
+    },
+    {
+      "intent_name": "HospitalInfo",
+      "slot_name": "dialysis_type",
+      "requirement": "REQUIRED",
+      "priority": 2,
+      "required_reason": "투석종류별 시설이 달라 모르면 잘못된 병원을 추천하게 됨 - 프로필 자동충족 우선"
+    },
+    {
+      "intent_name": "HospitalInfo",
+      "slot_name": "time_preference",
+      "requirement": "OPTIONAL",
+      "priority": 3,
+      "required_reason": "없어도 추천 가능, 편의성 보조정보"
+    },
+    {
+      "intent_name": "HospitalInfo",
+      "slot_name": "insurance_type",
+      "requirement": "OPTIONAL",
+      "priority": 4,
+      "required_reason": "없어도 추천 가능"
+    }
+  ]
+}

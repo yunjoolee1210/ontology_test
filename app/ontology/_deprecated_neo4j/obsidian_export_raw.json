@@ -1,0 +1,1616 @@
+{
+  "nodes": [
+    {
+      "id": "콩팥병::ckd",
+      "raw_id": "ckd",
+      "domain": "콩팥병",
+      "label": "콩팥병(CKD)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/콩팥병(CKD)/콩팥병(CKD).md"
+    },
+    {
+      "id": "콩팥병::super1",
+      "raw_id": "super1",
+      "domain": "콩팥병",
+      "label": "만성질환",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::super2",
+      "raw_id": "super2",
+      "domain": "콩팥병",
+      "label": "콩팥(신장) 질환",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::sub1",
+      "raw_id": "sub1",
+      "domain": "콩팥병",
+      "label": "말기콩팥병(ESKD)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::sub2",
+      "raw_id": "sub2",
+      "domain": "콩팥병",
+      "label": "당뇨병성콩팥병(DKD)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::sub3",
+      "raw_id": "sub3",
+      "domain": "콩팥병",
+      "label": "고혈압성신장병",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::part1",
+      "raw_id": "part1",
+      "domain": "콩팥병",
+      "label": "사구체(glomerulus)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::part2",
+      "raw_id": "part2",
+      "domain": "콩팥병",
+      "label": "세뇨관",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::part3",
+      "raw_id": "part3",
+      "domain": "콩팥병",
+      "label": "eGFR(사구체여과율)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::part4",
+      "raw_id": "part4",
+      "domain": "콩팥병",
+      "label": "알부민-크레아티닌비(ACR)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::rel1",
+      "raw_id": "rel1",
+      "domain": "콩팥병",
+      "label": "당뇨병(DM)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/당뇨병(DM)/당뇨병(DM).md"
+    },
+    {
+      "id": "콩팥병::rel2",
+      "raw_id": "rel2",
+      "domain": "콩팥병",
+      "label": "고혈압(HTN)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/고혈압(HTN)/고혈압(HTN).md"
+    },
+    {
+      "id": "콩팥병::rel3",
+      "raw_id": "rel3",
+      "domain": "콩팥병",
+      "label": "심혈관질환",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::contrast1",
+      "raw_id": "contrast1",
+      "domain": "콩팥병",
+      "label": "급성신손상(AKI)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::dep1",
+      "raw_id": "dep1",
+      "domain": "콩팥병",
+      "label": "사구체여과율(GFR) 측정",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::dep2",
+      "raw_id": "dep2",
+      "domain": "콩팥병",
+      "label": "알부민뇨(ACR) 측정",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "콩팥병::doid_ckd",
+      "raw_id": "doid_ckd",
+      "domain": "콩팥병",
+      "label": "만성콩팥병(CKD)\nDOID:784",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "콩팥병::doid_eskd",
+      "raw_id": "doid_eskd",
+      "domain": "콩팥병",
+      "label": "말기콩팥병(ESKD)\nDOID:783",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "콩팥병::doid_aki",
+      "raw_id": "doid_aki",
+      "domain": "콩팥병",
+      "label": "급성신손상\nDOID:3021",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "콩팥병::doid_kf",
+      "raw_id": "doid_kf",
+      "domain": "콩팥병",
+      "label": "신부전\nDOID:1074",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "콩팥병::hp_gfr",
+      "raw_id": "hp_gfr",
+      "domain": "콩팥병",
+      "label": "사구체여과율(GFR) 저하\nHP:0012213",
+      "type": "text",
+      "color": "3",
+      "file": null
+    },
+    {
+      "id": "콩팥병::hp_edema",
+      "raw_id": "hp_edema",
+      "domain": "콩팥병",
+      "label": "말초부종\nHP:0012398",
+      "type": "text",
+      "color": "3",
+      "file": null
+    },
+    {
+      "id": "콩팥병::hp_alb_mild",
+      "raw_id": "hp_alb_mild",
+      "domain": "콩팥병",
+      "label": "경증 알부민뇨\nHP:0033065",
+      "type": "text",
+      "color": "3",
+      "file": null
+    },
+    {
+      "id": "콩팥병::hp_alb_severe",
+      "raw_id": "hp_alb_severe",
+      "domain": "콩팥병",
+      "label": "중증 알부민뇨\nHP:0033066",
+      "type": "text",
+      "color": "3",
+      "file": null
+    },
+    {
+      "id": "콩팥병::hp_hyperk",
+      "raw_id": "hp_hyperk",
+      "domain": "콩팥병",
+      "label": "증상성 고칼륨혈증\nHP:6000833",
+      "type": "text",
+      "color": "3",
+      "file": null
+    },
+    {
+      "id": "당뇨병::dm",
+      "raw_id": "dm",
+      "domain": "당뇨병",
+      "label": "당뇨병(DM)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/당뇨병(DM)/당뇨병(DM).md"
+    },
+    {
+      "id": "당뇨병::super1",
+      "raw_id": "super1",
+      "domain": "당뇨병",
+      "label": "대사질환",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::super2",
+      "raw_id": "super2",
+      "domain": "당뇨병",
+      "label": "만성질환",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::sub1",
+      "raw_id": "sub1",
+      "domain": "당뇨병",
+      "label": "1형당뇨병",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::sub2",
+      "raw_id": "sub2",
+      "domain": "당뇨병",
+      "label": "2형당뇨병",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::sub3",
+      "raw_id": "sub3",
+      "domain": "당뇨병",
+      "label": "기타 당뇨병",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::sub4",
+      "raw_id": "sub4",
+      "domain": "당뇨병",
+      "label": "임신당뇨병",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::part1",
+      "raw_id": "part1",
+      "domain": "당뇨병",
+      "label": "췌장 베타세포",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::part2",
+      "raw_id": "part2",
+      "domain": "당뇨병",
+      "label": "인슐린",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::part3",
+      "raw_id": "part3",
+      "domain": "당뇨병",
+      "label": "혈당\n(공복혈당/식후혈당)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::part4",
+      "raw_id": "part4",
+      "domain": "당뇨병",
+      "label": "당화혈색소(HbA1c)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::rel1",
+      "raw_id": "rel1",
+      "domain": "당뇨병",
+      "label": "고혈압(HTN)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/고혈압(HTN)/고혈압(HTN).md"
+    },
+    {
+      "id": "당뇨병::rel2",
+      "raw_id": "rel2",
+      "domain": "당뇨병",
+      "label": "비만",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::rel3",
+      "raw_id": "rel3",
+      "domain": "당뇨병",
+      "label": "이상지질혈증",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::contrast1",
+      "raw_id": "contrast1",
+      "domain": "당뇨병",
+      "label": "정상혈당",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::contrast2",
+      "raw_id": "contrast2",
+      "domain": "당뇨병",
+      "label": "전당뇨\n(공복혈당장애·내당능장애)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::dep1",
+      "raw_id": "dep1",
+      "domain": "당뇨병",
+      "label": "콩팥병(CKD)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/콩팥병(CKD)/콩팥병(CKD).md"
+    },
+    {
+      "id": "당뇨병::dep2",
+      "raw_id": "dep2",
+      "domain": "당뇨병",
+      "label": "당뇨병성망막병증",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::dep3",
+      "raw_id": "dep3",
+      "domain": "당뇨병",
+      "label": "당뇨병성신경병증",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "당뇨병::doid_t2dm",
+      "raw_id": "doid_t2dm",
+      "domain": "당뇨병",
+      "label": "제2형 당뇨병\nDOID:9352",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "당뇨병::doid_dnp",
+      "raw_id": "doid_dnp",
+      "domain": "당뇨병",
+      "label": "당뇨신경병증\nDOID:9743",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "당뇨병::doid_dr",
+      "raw_id": "doid_dr",
+      "domain": "당뇨병",
+      "label": "당뇨망막병증\nDOID:8947",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "당뇨병::doid_dr_prolif",
+      "raw_id": "doid_dr_prolif",
+      "domain": "당뇨병",
+      "label": "증식성 당뇨망막병증\nDOID:13207",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "당뇨병::doid_dr_bg",
+      "raw_id": "doid_dr_bg",
+      "domain": "당뇨병",
+      "label": "비증식성 당뇨망막병증\nDOID:13208",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "당뇨병::hp_pphg",
+      "raw_id": "hp_pphg",
+      "domain": "당뇨병",
+      "label": "식후 고혈당\nHP:0011998",
+      "type": "text",
+      "color": "3",
+      "file": null
+    },
+    {
+      "id": "당뇨병::hp_dka",
+      "raw_id": "hp_dka",
+      "domain": "당뇨병",
+      "label": "당뇨병성 케톤산증\nHP:0001953",
+      "type": "text",
+      "color": "3",
+      "file": null
+    },
+    {
+      "id": "당뇨병::hp_polydipsia",
+      "raw_id": "hp_polydipsia",
+      "domain": "당뇨병",
+      "label": "다음(물 많이 마심)\nHP:0001959",
+      "type": "text",
+      "color": "3",
+      "file": null
+    },
+    {
+      "id": "고혈압::htn",
+      "raw_id": "htn",
+      "domain": "고혈압",
+      "label": "고혈압(HTN)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/고혈압(HTN)/고혈압(HTN).md"
+    },
+    {
+      "id": "고혈압::super1",
+      "raw_id": "super1",
+      "domain": "고혈압",
+      "label": "심혈관질환",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::super2",
+      "raw_id": "super2",
+      "domain": "고혈압",
+      "label": "만성질환",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::sub1",
+      "raw_id": "sub1",
+      "domain": "고혈압",
+      "label": "1차성(본태성)고혈압",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::sub2",
+      "raw_id": "sub2",
+      "domain": "고혈압",
+      "label": "2차성고혈압",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::sub3",
+      "raw_id": "sub3",
+      "domain": "고혈압",
+      "label": "수축기단독고혈압(ISH)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::sub4",
+      "raw_id": "sub4",
+      "domain": "고혈압",
+      "label": "고혈압 위기\n(hypertensive emergency)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::part1",
+      "raw_id": "part1",
+      "domain": "고혈압",
+      "label": "수축기혈압(SBP)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::part2",
+      "raw_id": "part2",
+      "domain": "고혈압",
+      "label": "확장기혈압(DBP)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::rel1",
+      "raw_id": "rel1",
+      "domain": "고혈압",
+      "label": "당뇨병(DM)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/당뇨병(DM)/당뇨병(DM).md"
+    },
+    {
+      "id": "고혈압::rel2",
+      "raw_id": "rel2",
+      "domain": "고혈압",
+      "label": "심부전",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::rel3",
+      "raw_id": "rel3",
+      "domain": "고혈압",
+      "label": "뇌졸중",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::rel4",
+      "raw_id": "rel4",
+      "domain": "고혈압",
+      "label": "이상지질혈증",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::contrast1",
+      "raw_id": "contrast1",
+      "domain": "고혈압",
+      "label": "정상혈압(Normal BP)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::contrast2",
+      "raw_id": "contrast2",
+      "domain": "고혈압",
+      "label": "주의혈압(Elevated BP)",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::dep1",
+      "raw_id": "dep1",
+      "domain": "고혈압",
+      "label": "콩팥병(CKD)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/콩팥병(CKD)/콩팥병(CKD).md"
+    },
+    {
+      "id": "고혈압::dep2",
+      "raw_id": "dep2",
+      "domain": "고혈압",
+      "label": "좌심실비대",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::dep3",
+      "raw_id": "dep3",
+      "domain": "고혈압",
+      "label": "동맥경화",
+      "type": "text",
+      "color": null,
+      "file": null
+    },
+    {
+      "id": "고혈압::doid_essential",
+      "raw_id": "doid_essential",
+      "domain": "고혈압",
+      "label": "본태성고혈압\nDOID:10825",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "고혈압::doid_malignant",
+      "raw_id": "doid_malignant",
+      "domain": "고혈압",
+      "label": "악성 본태성고혈압\nDOID:10823",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "고혈압::doid_benign",
+      "raw_id": "doid_benign",
+      "domain": "고혈압",
+      "label": "양성 본태성고혈압\nDOID:10913",
+      "type": "text",
+      "color": "4",
+      "file": null
+    },
+    {
+      "id": "고혈압::hp_edema_htn",
+      "raw_id": "hp_edema_htn",
+      "domain": "고혈압",
+      "label": "말초부종\nHP:0012398",
+      "type": "text",
+      "color": "3",
+      "file": null
+    },
+    {
+      "id": "통합::dm",
+      "raw_id": "dm",
+      "domain": "통합",
+      "label": "당뇨병(DM)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/당뇨병(DM)/당뇨병(DM).md"
+    },
+    {
+      "id": "통합::htn",
+      "raw_id": "htn",
+      "domain": "통합",
+      "label": "고혈압(HTN)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/고혈압(HTN)/고혈압(HTN).md"
+    },
+    {
+      "id": "통합::ckd",
+      "raw_id": "ckd",
+      "domain": "통합",
+      "label": "콩팥병(CKD)",
+      "type": "file",
+      "color": "3",
+      "file": "01_개념노트/콩팥병(CKD)/콩팥병(CKD).md"
+    },
+    {
+      "id": "통합::loop",
+      "raw_id": "loop",
+      "domain": "통합",
+      "label": "관계_당뇨병_고혈압_콩팥병_악순환",
+      "type": "file",
+      "color": "1",
+      "file": "02_관계노트/관계_당뇨병_고혈압_콩팥병_악순환.md"
+    },
+    {
+      "id": "통합::rel_dm_ckd",
+      "raw_id": "rel_dm_ckd",
+      "domain": "통합",
+      "label": "관계_당뇨병_콩팥병",
+      "type": "file",
+      "color": null,
+      "file": "02_관계노트/관계_당뇨병_콩팥병.md"
+    },
+    {
+      "id": "통합::rel_htn_ckd",
+      "raw_id": "rel_htn_ckd",
+      "domain": "통합",
+      "label": "관계_고혈압_콩팥병",
+      "type": "file",
+      "color": null,
+      "file": "02_관계노트/관계_고혈압_콩팥병.md"
+    },
+    {
+      "id": "통합::rel_dm_htn",
+      "raw_id": "rel_dm_htn",
+      "domain": "통합",
+      "label": "관계_당뇨병_고혈압",
+      "type": "file",
+      "color": null,
+      "file": "02_관계노트/관계_당뇨병_고혈압.md"
+    },
+    {
+      "id": "통합::egfr",
+      "raw_id": "egfr",
+      "domain": "통합",
+      "label": "eGFR 계산(CKD-EPI 2021)",
+      "type": "file",
+      "color": "2",
+      "file": "01_개념노트/공통요인/eGFR 계산(CKD-EPI 2021).md"
+    },
+    {
+      "id": "통합::labtest",
+      "raw_id": "labtest",
+      "domain": "통합",
+      "label": "임상지표(eGFR·ACR·HbA1c·혈압)",
+      "type": "file",
+      "color": "2",
+      "file": "01_개념노트/공통요인/임상지표(eGFR·ACR·HbA1c·혈압).md"
+    },
+    {
+      "id": "통합::raas",
+      "raw_id": "raas",
+      "domain": "통합",
+      "label": "RAAS억제제(ACEi·ARB)",
+      "type": "file",
+      "color": "4",
+      "file": "01_개념노트/공통요인/RAAS억제제(ACEi·ARB).md"
+    },
+    {
+      "id": "통합::sglt2",
+      "raw_id": "sglt2",
+      "domain": "통합",
+      "label": "SGLT2억제제",
+      "type": "file",
+      "color": "4",
+      "file": "01_개념노트/공통요인/SGLT2억제제.md"
+    },
+    {
+      "id": "통합::welfare",
+      "raw_id": "welfare",
+      "domain": "통합",
+      "label": "장애인등록 및 복지혜택",
+      "type": "file",
+      "color": "2",
+      "file": "01_개념노트/공통요인/장애인등록 및 복지혜택.md"
+    }
+  ],
+  "edges": [
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::super1",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::super2",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::sub1",
+      "to": "콩팥병::ckd",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::sub2",
+      "to": "콩팥병::ckd",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::sub3",
+      "to": "콩팥병::ckd",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::part1",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::part2",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::part3",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::part4",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::rel1",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::rel2",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::rel3",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::contrast1",
+      "label": "contrasts-with",
+      "color": "5",
+      "relation_type": "contrasts-with"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::dep1",
+      "label": "depends-on",
+      "color": "6",
+      "relation_type": "depends-on"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::dep2",
+      "label": "depends-on",
+      "color": "6",
+      "relation_type": "depends-on"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::ckd",
+      "to": "콩팥병::doid_ckd",
+      "label": "표준코드",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::sub1",
+      "to": "콩팥병::doid_eskd",
+      "label": "표준코드",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::doid_ckd",
+      "to": "콩팥병::doid_aki",
+      "label": "contrasts-with",
+      "color": "5",
+      "relation_type": "contrasts-with"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::doid_ckd",
+      "to": "콩팥병::doid_kf",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::doid_ckd",
+      "to": "콩팥병::hp_gfr",
+      "label": "has-symptom",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::doid_ckd",
+      "to": "콩팥병::hp_edema",
+      "label": "has-symptom",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::doid_ckd",
+      "to": "콩팥병::hp_alb_mild",
+      "label": "has-symptom",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::doid_ckd",
+      "to": "콩팥병::hp_alb_severe",
+      "label": "has-symptom",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "콩팥병",
+      "from": "콩팥병::doid_eskd",
+      "to": "콩팥병::hp_hyperk",
+      "label": "has-symptom",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::super1",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::super2",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::sub1",
+      "to": "당뇨병::dm",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::sub2",
+      "to": "당뇨병::dm",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::sub3",
+      "to": "당뇨병::dm",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::sub4",
+      "to": "당뇨병::dm",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::part1",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::part2",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::part3",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::part4",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::rel1",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::rel2",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::rel3",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::contrast1",
+      "label": "contrasts-with",
+      "color": "5",
+      "relation_type": "contrasts-with"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::contrast2",
+      "label": "contrasts-with",
+      "color": "5",
+      "relation_type": "contrasts-with"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::dep1",
+      "label": "depends-on",
+      "color": "6",
+      "relation_type": "depends-on"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::dep2",
+      "label": "depends-on",
+      "color": "6",
+      "relation_type": "depends-on"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dm",
+      "to": "당뇨병::dep3",
+      "label": "depends-on",
+      "color": "6",
+      "relation_type": "depends-on"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::sub2",
+      "to": "당뇨병::doid_t2dm",
+      "label": "표준코드",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dep3",
+      "to": "당뇨병::doid_dnp",
+      "label": "표준코드",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::dep2",
+      "to": "당뇨병::doid_dr",
+      "label": "표준코드",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::doid_dr",
+      "to": "당뇨병::doid_dr_prolif",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::doid_dr",
+      "to": "당뇨병::doid_dr_bg",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::doid_t2dm",
+      "to": "당뇨병::hp_pphg",
+      "label": "has-symptom",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::doid_t2dm",
+      "to": "당뇨병::hp_dka",
+      "label": "has-symptom",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "당뇨병",
+      "from": "당뇨병::doid_t2dm",
+      "to": "당뇨병::hp_polydipsia",
+      "label": "has-symptom",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::super1",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::super2",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::sub1",
+      "to": "고혈압::htn",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::sub2",
+      "to": "고혈압::htn",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::sub3",
+      "to": "고혈압::htn",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::sub4",
+      "to": "고혈압::htn",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::part1",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::part2",
+      "label": "part-of",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::rel1",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::rel2",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::rel3",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::rel4",
+      "label": "related-to",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::contrast1",
+      "label": "contrasts-with",
+      "color": "5",
+      "relation_type": "contrasts-with"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::contrast2",
+      "label": "contrasts-with",
+      "color": "5",
+      "relation_type": "contrasts-with"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::dep1",
+      "label": "depends-on",
+      "color": "6",
+      "relation_type": "depends-on"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::dep2",
+      "label": "depends-on",
+      "color": "6",
+      "relation_type": "depends-on"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::htn",
+      "to": "고혈압::dep3",
+      "label": "depends-on",
+      "color": "6",
+      "relation_type": "depends-on"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::sub1",
+      "to": "고혈압::doid_essential",
+      "label": "표준코드",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::doid_essential",
+      "to": "고혈압::doid_malignant",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::doid_essential",
+      "to": "고혈압::doid_benign",
+      "label": "is-a",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "고혈압",
+      "from": "고혈압::doid_essential",
+      "to": "고혈압::hp_edema_htn",
+      "label": "has-symptom",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::dm",
+      "to": "통합::rel_dm_ckd",
+      "label": "causes/comorbid-with",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::ckd",
+      "to": "통합::rel_dm_ckd",
+      "label": "causes/comorbid-with",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::htn",
+      "to": "통합::rel_htn_ckd",
+      "label": "causes/comorbid-with",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::ckd",
+      "to": "통합::rel_htn_ckd",
+      "label": "causes/comorbid-with",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::dm",
+      "to": "통합::rel_dm_htn",
+      "label": "comorbid-with",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::htn",
+      "to": "통합::rel_dm_htn",
+      "label": "comorbid-with",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::dm",
+      "to": "통합::loop",
+      "label": "feedback-loop",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::htn",
+      "to": "통합::loop",
+      "label": "feedback-loop",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::ckd",
+      "to": "통합::loop",
+      "label": "feedback-loop",
+      "color": "1",
+      "relation_type": "is-a"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::ckd",
+      "to": "통합::egfr",
+      "label": "depends-on",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::dm",
+      "to": "통합::labtest",
+      "label": "depends-on",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::htn",
+      "to": "통합::labtest",
+      "label": "depends-on",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::ckd",
+      "to": "통합::labtest",
+      "label": "depends-on",
+      "color": "2",
+      "relation_type": "part-of"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::htn",
+      "to": "통합::raas",
+      "label": "공통치료축",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::ckd",
+      "to": "통합::raas",
+      "label": "공통치료축",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::loop",
+      "to": "통합::raas",
+      "label": "공통치료축",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::dm",
+      "to": "통합::sglt2",
+      "label": "공통치료축",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::ckd",
+      "to": "통합::sglt2",
+      "label": "공통치료축",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::loop",
+      "to": "통합::sglt2",
+      "label": "공통치료축",
+      "color": "4",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::dm",
+      "to": "통합::welfare",
+      "label": "related-to",
+      "color": "3",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::htn",
+      "to": "통합::welfare",
+      "label": "related-to",
+      "color": "3",
+      "relation_type": "related-to"
+    },
+    {
+      "domain": "통합",
+      "from": "통합::ckd",
+      "to": "통합::welfare",
+      "label": "related-to",
+      "color": "3",
+      "relation_type": "related-to"
+    }
+  ],
+  "annotations_excluded": [
+    {
+      "id": "콩팥병::ann_staging",
+      "raw_id": "ann_staging",
+      "domain": "콩팥병",
+      "label": "📄 KDIGO 2024 / 「고혈압콩팥병 진료지침」(2025)\n- G1~G5 × A1~A3 2축 병기 분류\n- G3a/G3b/G4/G5 단계별 사망위험 단계적 증가\n- SNOMED: G1 431855005 ~ G5 433146000/46177005",
+      "type": "text",
+      "color": "6",
+      "file": null
+    },
+    {
+      "id": "콩팥병::ann_eskd",
+      "raw_id": "ann_eskd",
+      "domain": "콩팥병",
+      "label": "📄 「말기콩팥병 팩트시트 2024」\n- ESKD 연간 신규진단 약 2만 명\n- 2021년 유병자 127,068명(지속 증가)\n- 원인질환: 당뇨병 48% + 고혈압 21% = 70%",
+      "type": "text",
+      "color": "6",
+      "file": null
+    },
+    {
+      "id": "콩팥병::ann_bp_drug",
+      "raw_id": "ann_bp_drug",
+      "domain": "콩팥병",
+      "label": "📄 「고혈압콩팥병 진료지침」(2025) / 「당뇨병콩팥병 진료지침」\n- 혈압 목표 <130/80 (단백뇨 동반시 120~129)\n- 1차 권고약물: RAAS억제제(ACEi/ARB)\n- ACEi·ARB·직접레닌억제제 병용투여 금지",
+      "type": "text",
+      "color": "6",
+      "file": null
+    },
+    {
+      "id": "콩팥병::ann_welfare",
+      "raw_id": "ann_welfare",
+      "domain": "콩팥병",
+      "label": "📄 「장애인등록 및 복지혜택」 / 요양비 / 장애정도 심사제도\n- 혈액·복막투석 3개월 이상 연속 → 장애정도 심한 장애인\n- 신장이식 → 장애정도 심하지 않은 장애인\n- 복막투석 소모성재료 요양비 1일 10,420원\n- 장애인연금·의료비지원·보장구급여 등",
+      "type": "text",
+      "color": "6",
+      "file": null
+    },
+    {
+      "id": "통합::ann_dm_ckd",
+      "raw_id": "ann_dm_ckd",
+      "domain": "통합",
+      "label": "📄 「콩이팥이」/「241212 당뇨병콩팥병 진료지침」\n- DKD vs 일반DM 7대 차이(혈압·미세알부민뇨·관상동맥 등)\n- 초치료: 메트포민+SGLT2억제제\n- 목표혈압 SBP<120",
+      "type": "text",
+      "color": "6",
+      "file": null
+    },
+    {
+      "id": "통합::ann_htn_ckd",
+      "raw_id": "ann_htn_ckd",
+      "domain": "통합",
+      "label": "📄 「고혈압콩팥병 진료지침(2025)」\n- I12 고혈압성신장병(38481006)\n- I13 고혈압성심장및신장병(86234004)\n- 사구체내압 캐스케이드, 목표혈압 <130/80",
+      "type": "text",
+      "color": "6",
+      "file": null
+    },
+    {
+      "id": "통합::ann_dm_htn",
+      "raw_id": "ann_dm_htn",
+      "domain": "통합",
+      "label": "📄 「생활습관관리·혈당·혈압」/「당뇨병 만성합병증」\n- 정상혈압 120/80, 매 방문시 혈압측정\n- 동맥경화 공통경로(고혈압→뇌졸중·신증·망막증)",
+      "type": "text",
+      "color": "6",
+      "file": null
+    },
+    {
+      "id": "통합::ann_loop",
+      "raw_id": "ann_loop",
+      "domain": "통합",
+      "label": "📄 「말기콩팥병 팩트시트 2024」\n- ESKD 원인: 당뇨병48%+고혈압21%=70%\n- 3질환 통합코드 SNOMED 71421000119105\n- 단계적 목표혈압: 140/90→130/80→SBP<120",
+      "type": "text",
+      "color": "6",
+      "file": null
+    },
+    {
+      "id": "통합::ann_welfare",
+      "raw_id": "ann_welfare",
+      "domain": "통합",
+      "label": "📄 「당뇨인의 복지정보」/「요양비」/「장애정도 심사제도」\n- 신장장애: 투석 3개월↑ → 장애정도 심한 장애인\n- 신장이식 → 장애정도 심하지 않은 장애인\n- 요양비 1일 10,420원(복막투석)\n- 장애인연금·의료비지원·보장구급여 등",
+      "type": "text",
+      "color": "6",
+      "file": null
+    },
+    {
+      "id": "통합::ann_egfr",
+      "raw_id": "ann_egfr",
+      "domain": "통합",
+      "label": "📄 KDIGO 2024 / CKD-EPI 2021\n- 연령·성별·Scr → eGFR → G1~G5\n- G단계별 SNOMED 코드(431855005 등) 매핑",
+      "type": "text",
+      "color": "6",
+      "file": null
+    }
+  ]
+}
