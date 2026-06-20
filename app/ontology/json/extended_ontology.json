@@ -1,0 +1,436 @@
+{
+  "_meta": {
+    "sources": {
+      "CKDO": "http://clininf.eu/ckdo (alpha v2, 2017-07-01) / https://bioportal.bioontology.org/ontologies/CKDO",
+      "HTN": "https://github.com/aellenhicks/htn_owl",
+      "DMTO": "https://bioportal.bioontology.org/ontologies/DMTO (v1.0)"
+    },
+    "note": "DOID/HP(disease_symptom.json)보다 더 세부적인 임상 실무 개념(투석방식, 접근로, 이식, 혈압병기, 당뇨 응급/가족력)"
+  },
+  "extended_concepts": [
+    {
+      "concept_id": "CKDO:CKD-EPI_formula",
+      "source": "CKDO",
+      "label_en": "CKD-EPI formula",
+      "label_ko": "CKD-EPI 공식",
+      "parent_class": "CKDO:eGFR",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Dialysis_adequacy_test",
+      "source": "CKDO",
+      "label_en": "Dialysis adequacy test",
+      "label_ko": "투석 적정성 검사",
+      "parent_class": "CKDO:Laboratory_tests",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Dialysis_recirculation_syndrome",
+      "source": "CKDO",
+      "label_en": "Dialysis recirculation syndrome",
+      "label_ko": "투석 재순환 증후군",
+      "parent_class": "CKDO:Complications_associated_with_haemodialysis",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Dialysis_related_amyloidosis",
+      "source": "CKDO",
+      "label_en": "Dialysis related amyloidosis",
+      "label_ko": "투석 관련 아밀로이드증",
+      "parent_class": "CKDO:Complications_associated_with_haemodialysis",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:History_of_CKD",
+      "source": "CKDO",
+      "label_en": "History of CKD",
+      "label_ko": "CKD 과거력",
+      "parent_class": "CKDO:Past_medical_history",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:History_of_renal_transplantation",
+      "source": "CKDO",
+      "label_en": "History of renal transplantation",
+      "label_ko": "신장이식 과거력",
+      "parent_class": "CKDO:Past_medical_history",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Isotopic_eGFR",
+      "source": "CKDO",
+      "label_en": "Isotopic eGFR",
+      "label_ko": "동위원소법 eGFR",
+      "parent_class": "CKDO:eGFR",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Monitoring_of_CKD",
+      "source": "CKDO",
+      "label_en": "Monitoring of CKD",
+      "label_ko": "CKD 모니터링",
+      "parent_class": "CKDO:Process_of_care",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Peritoneal_leak_in_peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Peritoneal leak in peritoneal dialysis",
+      "label_ko": "복막투석 중 복막 누출",
+      "parent_class": "CKDO:Complications_associated_with_peritoneal_dialysis",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Renal_transplant_procedure",
+      "source": "CKDO",
+      "label_en": "Renal transplant procedure",
+      "label_ko": "신장이식 시술",
+      "parent_class": "CKDO:Procedures",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Renal_transplantation",
+      "source": "CKDO",
+      "label_en": "Renal transplantation",
+      "label_ko": "신장이식",
+      "parent_class": "CKDO:Procedures",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:eGFR",
+      "source": "CKDO",
+      "label_en": "eGFR",
+      "label_ko": "사구체여과율 추정치(eGFR)",
+      "parent_class": "CKDO:Estimations_of_renal_function",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Arteriovenous_fistula_for_haemodialysis",
+      "source": "CKDO",
+      "label_en": "Arteriovenous fistula for haemodialysis",
+      "label_ko": "혈액투석용 동정맥누공(AVF)",
+      "parent_class": "CKDO:Dialysis_access",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Arteriovenous_graft_for_haemodialysis",
+      "source": "CKDO",
+      "label_en": "Arteriovenous graft for haemodialysis",
+      "label_ko": "혈액투석용 동정맥이식편(AVG)",
+      "parent_class": "CKDO:Dialysis_access",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Assisted_peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Assisted peritoneal dialysis",
+      "label_ko": "보조복막투석",
+      "parent_class": "CKDO:Peritoneal_dialysis",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Automatic_peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Automatic peritoneal dialysis",
+      "label_ko": "자동복막투석(APD)",
+      "parent_class": "CKDO:Peritoneal_dialysis",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:CKD_KDIGO_stages_1-5",
+      "source": "CKDO",
+      "label_en": "CKD KDIGO stages 1-5",
+      "label_ko": "CKD KDIGO 병기(1~5단계)",
+      "parent_class": "CKDO:CKD_defined_by_stage",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:CKD_defined_by_stage",
+      "source": "CKDO",
+      "label_en": "CKD defined by stage",
+      "label_ko": "병기로 정의된 CKD",
+      "parent_class": "CKDO:CKD_of_unspecified_aetiology",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Complications_associated_with_haemodialysis",
+      "source": "CKDO",
+      "label_en": "Complications associated with haemodialysis",
+      "label_ko": "혈액투석 관련 합병증",
+      "parent_class": "CKDO:Complications_of_care",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Complications_associated_with_peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Complications associated with peritoneal dialysis",
+      "label_ko": "복막투석 관련 합병증",
+      "parent_class": "CKDO:Complications_of_care",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Declining_renal_graft_function",
+      "source": "CKDO",
+      "label_en": "Declining renal graft function",
+      "label_ko": "이식신 기능 저하",
+      "parent_class": "CKDO:Complications_associated_with_renal_transplant",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Haemodialysis",
+      "source": "CKDO",
+      "label_en": "Haemodialysis",
+      "label_ko": "혈액투석",
+      "parent_class": "CKDO:Dialysis",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Peritoneal_dialysis",
+      "source": "CKDO",
+      "label_en": "Peritoneal dialysis",
+      "label_ko": "복막투석",
+      "parent_class": "CKDO:Dialysis",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Tunnelled_venous_catheter_for_haemodialysis",
+      "source": "CKDO",
+      "label_en": "Tunnelled venous catheter for haemodialysis",
+      "label_ko": "혈액투석용 터널형 정맥카테터",
+      "parent_class": "CKDO:Dialysis_access",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "CKDO:Peritoneal_dialysis_(Tenckhoff)_catheter",
+      "source": "CKDO",
+      "label_en": "Peritoneal dialysis (Tenckhoff) catheter",
+      "label_ko": "복막투석용 텐코프 카테터",
+      "parent_class": "CKDO:Dialysis_access",
+      "category": "CKD"
+    },
+    {
+      "concept_id": "HTN:HTN_00000000",
+      "source": "HTN",
+      "label_en": "diastolic blood pressure measurement datum",
+      "label_ko": "확장기혈압 측정값",
+      "parent_class": null,
+      "category": "HTN"
+    },
+    {
+      "concept_id": "HTN:HTN_00000001",
+      "source": "HTN",
+      "label_en": "systolic blood pressure measurement datum",
+      "label_ko": "수축기혈압 측정값",
+      "parent_class": null,
+      "category": "HTN"
+    },
+    {
+      "concept_id": "HTN:HTN_00000014",
+      "source": "HTN",
+      "label_en": "elevated blood pressure phenotype",
+      "label_ko": "혈압상승 표현형",
+      "parent_class": null,
+      "category": "HTN"
+    },
+    {
+      "concept_id": "HTN:HTN_00000015",
+      "source": "HTN",
+      "label_en": "documented hypertensive phenotype",
+      "label_ko": "진단된 고혈압 표현형",
+      "parent_class": null,
+      "category": "HTN"
+    },
+    {
+      "concept_id": "HTN:HTN_00000003",
+      "source": "HTN",
+      "label_en": "stage 1 elevated adult systolic blood pressure meaurement datum per ACC 2017 guidelines",
+      "label_ko": "ACC 2017 기준 1단계 수축기혈압 상승",
+      "parent_class": null,
+      "category": "HTN"
+    },
+    {
+      "concept_id": "HTN:HTN_00000044",
+      "source": "HTN",
+      "label_en": "stage 1 elevated adult diastolic blood pressure measurement datum per 2017 guidelines",
+      "label_ko": "2017 가이드라인 기준 1단계 확장기혈압 상승",
+      "parent_class": null,
+      "category": "HTN"
+    },
+    {
+      "concept_id": "HTN:HTN_00000040",
+      "source": "HTN",
+      "label_en": "stage 1 adult blood pressure measurement datum per 2017 guidelines",
+      "label_ko": "2017 가이드라인 기준 1단계 혈압",
+      "parent_class": null,
+      "category": "HTN"
+    },
+    {
+      "concept_id": "HTN:HTN_00000046",
+      "source": "HTN",
+      "label_en": "stage 2 adult blood pressure measurement datum per 2017 guidelines",
+      "label_ko": "2017 가이드라인 기준 2단계 혈압",
+      "parent_class": null,
+      "category": "HTN"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000004",
+      "source": "DMTO",
+      "label_en": "diabetes diagnosis",
+      "label_ko": "당뇨병 진단",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000112",
+      "source": "DMTO",
+      "label_en": "diabetes complication",
+      "label_ko": "당뇨병 합병증",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000222",
+      "source": "DMTO",
+      "label_en": "diabetic ketoacidosis",
+      "label_ko": "당뇨병성 케톤산증",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000227",
+      "source": "DMTO",
+      "label_en": "hypoglycemic coma",
+      "label_ko": "저혈당성 혼수",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000228",
+      "source": "DMTO",
+      "label_en": "hypoglycemia",
+      "label_ko": "저혈당",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000233",
+      "source": "DMTO",
+      "label_en": "history of prediabetes",
+      "label_ko": "전당뇨 과거력",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000235",
+      "source": "DMTO",
+      "label_en": "history of gestational diabetes",
+      "label_ko": "임신당뇨병 과거력",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000242",
+      "source": "DMTO",
+      "label_en": "blood glucose test",
+      "label_ko": "혈당 검사",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000252",
+      "source": "DMTO",
+      "label_en": "Glycated haemoglobin - Hbg",
+      "label_ko": "당화혈색소(HbA1c)",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000362",
+      "source": "DMTO",
+      "label_en": "family history of type 1 diabetes mellitus",
+      "label_ko": "제1형 당뇨병 가족력",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000391",
+      "source": "DMTO",
+      "label_en": "family history of type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병 가족력",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000392",
+      "source": "DMTO",
+      "label_en": "impaired glucose tolerance in pregnancy",
+      "label_ko": "임신 중 내당능장애",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000393",
+      "source": "DMTO",
+      "label_en": "impaired fasting glycaemia",
+      "label_ko": "공복혈당장애",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0000428",
+      "source": "DMTO",
+      "label_en": "impaired glucose tolerance",
+      "label_ko": "내당능장애",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0002292",
+      "source": "DMTO",
+      "label_en": "foot ulcer due to type 1 diabetes mellitus",
+      "label_ko": "제1형 당뇨병으로 인한 족부궤양",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0003905",
+      "source": "DMTO",
+      "label_en": "type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DD_0002293",
+      "source": "DMTO",
+      "label_en": "foot ulcer due to type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병으로 인한 족부궤양",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DDO_0010008",
+      "source": "DMTO",
+      "label_en": "gestational diabetes mellitus",
+      "label_ko": "임신당뇨병",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DMTO_0001817",
+      "source": "DMTO",
+      "label_en": "diabetic ketoacidosis without coma",
+      "label_ko": "혼수 없는 당뇨병성 케톤산증",
+      "parent_class": null,
+      "category": "DM"
+    },
+    {
+      "concept_id": "DMTO:DMTO_0001818",
+      "source": "DMTO",
+      "label_en": "ketoacidosis in type 2 diabetes mellitus",
+      "label_ko": "제2형 당뇨병의 케톤산증",
+      "parent_class": null,
+      "category": "DM"
+    }
+  ]
+}
