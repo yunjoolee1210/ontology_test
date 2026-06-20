@@ -1,0 +1,1614 @@
+{
+  "_meta": {
+    "source": "Chronic Disease Patient Education Ontology (CDPEO)",
+    "source_uri": "http://www.semanticweb.org/ontologies/chronic-diease-patient-education-ontology",
+    "local_file": "data/raw/ontology/CDPEO.owl",
+    "note": "환자 위험도 벡터화를 위한 분류체계(40개 클래스) + SWRL 규칙(80개, 수치 임계값 기반 위험도 산출 로직) 전체 반영"
+  },
+  "concepts": [
+    {
+      "concept_id": "CDPEO:Age",
+      "label_en": "Age",
+      "label_ko": "연령",
+      "parent_class": "CDPEO:Demographic"
+    },
+    {
+      "concept_id": "CDPEO:AntiHypetensiveDrug",
+      "label_en": "AntiHypetensiveDrug",
+      "label_ko": "항고혈압제",
+      "parent_class": "CDPEO:Medication"
+    },
+    {
+      "concept_id": "CDPEO:BloodGlucose",
+      "label_en": "BloodGlucose",
+      "label_ko": "혈당",
+      "parent_class": "CDPEO:PhysiologicalIndex"
+    },
+    {
+      "concept_id": "CDPEO:BloodPressure",
+      "label_en": "BloodPressure",
+      "label_ko": "혈압",
+      "parent_class": "CDPEO:PhysiologicalIndex"
+    },
+    {
+      "concept_id": "CDPEO:BodyMassIndex",
+      "label_en": "BodyMassIndex",
+      "label_ko": "체질량지수(BMI)",
+      "parent_class": "CDPEO:Demographic"
+    },
+    {
+      "concept_id": "CDPEO:ChronicDisease",
+      "label_en": "ChronicDisease",
+      "label_ko": "만성질환",
+      "parent_class": "CDPEO:Disease"
+    },
+    {
+      "concept_id": "CDPEO:ChronicObstructivePulmonaryDisease",
+      "label_en": "ChronicObstructivePulmonaryDisease",
+      "label_ko": "만성폐쇄성폐질환(COPD)",
+      "parent_class": "CDPEO:ChronicDisease"
+    },
+    {
+      "concept_id": "CDPEO:Complication",
+      "label_en": "Complication",
+      "label_ko": "합병증",
+      "parent_class": "CDPEO:Disease"
+    },
+    {
+      "concept_id": "CDPEO:CoronaryHeartDisease",
+      "label_en": "CoronaryHeartDisease",
+      "label_ko": "관상동맥질환",
+      "parent_class": "CDPEO:ChronicDisease"
+    },
+    {
+      "concept_id": "CDPEO:Demographic",
+      "label_en": "Demographic",
+      "label_ko": "인구통계학적 요인",
+      "parent_class": null
+    },
+    {
+      "concept_id": "CDPEO:Diabetes",
+      "label_en": "Diabetes",
+      "label_ko": "당뇨병",
+      "parent_class": "CDPEO:ChronicDisease"
+    },
+    {
+      "concept_id": "CDPEO:Diet",
+      "label_en": "Diet",
+      "label_ko": "식이",
+      "parent_class": "CDPEO:Lifestyle"
+    },
+    {
+      "concept_id": "CDPEO:Disease",
+      "label_en": "Disease",
+      "label_ko": "질환",
+      "parent_class": null
+    },
+    {
+      "concept_id": "CDPEO:Drinking",
+      "label_en": "Drinking",
+      "label_ko": "음주",
+      "parent_class": "CDPEO:Lifestyle"
+    },
+    {
+      "concept_id": "CDPEO:Education",
+      "label_en": "Education",
+      "label_ko": "교육수준",
+      "parent_class": "CDPEO:Demographic"
+    },
+    {
+      "concept_id": "CDPEO:Exercise",
+      "label_en": "Exercise",
+      "label_ko": "운동",
+      "parent_class": "CDPEO:Lifestyle"
+    },
+    {
+      "concept_id": "CDPEO:EyeDisease",
+      "label_en": "EyeDisease",
+      "label_ko": "안과질환(합병증)",
+      "parent_class": "CDPEO:Complication"
+    },
+    {
+      "concept_id": "CDPEO:Gender",
+      "label_en": "Gender",
+      "label_ko": "성별",
+      "parent_class": "CDPEO:Demographic"
+    },
+    {
+      "concept_id": "CDPEO:Hyperlipidemia",
+      "label_en": "Hyperlipidemia",
+      "label_ko": "이상지질혈증",
+      "parent_class": "CDPEO:ChronicDisease"
+    },
+    {
+      "concept_id": "CDPEO:Hypertension",
+      "label_en": "Hypertension",
+      "label_ko": "고혈압",
+      "parent_class": "CDPEO:ChronicDisease"
+    },
+    {
+      "concept_id": "CDPEO:HypoglycemicDrug",
+      "label_en": "HypoglycemicDrug",
+      "label_ko": "혈당강하제",
+      "parent_class": "CDPEO:Medication"
+    },
+    {
+      "concept_id": "CDPEO:HypolipidemicDrug",
+      "label_en": "HypolipidemicDrug",
+      "label_ko": "지질강하제",
+      "parent_class": "CDPEO:Medication"
+    },
+    {
+      "concept_id": "CDPEO:KidneyDisease",
+      "label_en": "KidneyDisease",
+      "label_ko": "신장질환(합병증)",
+      "parent_class": "CDPEO:Complication"
+    },
+    {
+      "concept_id": "CDPEO:Lifestyle",
+      "label_en": "Lifestyle",
+      "label_ko": "생활습관",
+      "parent_class": null
+    },
+    {
+      "concept_id": "CDPEO:Lipoprotein",
+      "label_en": "Lipoprotein",
+      "label_ko": "지단백(HDL/LDL)",
+      "parent_class": "CDPEO:PhysiologicalIndex"
+    },
+    {
+      "concept_id": "CDPEO:LiverDisease",
+      "label_en": "LiverDisease",
+      "label_ko": "간질환(합병증)",
+      "parent_class": "CDPEO:Complication"
+    },
+    {
+      "concept_id": "CDPEO:LungDisease",
+      "label_en": "LungDisease",
+      "label_ko": "폐질환(합병증)",
+      "parent_class": "CDPEO:Complication"
+    },
+    {
+      "concept_id": "CDPEO:Medication",
+      "label_en": "Medication",
+      "label_ko": "복약",
+      "parent_class": null
+    },
+    {
+      "concept_id": "CDPEO:Mentality",
+      "label_en": "Mentality",
+      "label_ko": "정신건강(우울 등)",
+      "parent_class": "CDPEO:Lifestyle"
+    },
+    {
+      "concept_id": "CDPEO:Occupation",
+      "label_en": "Occupation",
+      "label_ko": "직업",
+      "parent_class": "CDPEO:Demographic"
+    },
+    {
+      "concept_id": "CDPEO:PatientProfile",
+      "label_en": "PatientProfile",
+      "label_ko": "환자 프로필",
+      "parent_class": null
+    },
+    {
+      "concept_id": "CDPEO:PhysiologicalIndex",
+      "label_en": "PhysiologicalIndex",
+      "label_ko": "생리지표",
+      "parent_class": null
+    },
+    {
+      "concept_id": "CDPEO:Pregnancy",
+      "label_en": "Pregnancy",
+      "label_ko": "임신",
+      "parent_class": "CDPEO:Demographic"
+    },
+    {
+      "concept_id": "CDPEO:SkinDisease",
+      "label_en": "SkinDisease",
+      "label_ko": "피부질환(합병증)",
+      "parent_class": "CDPEO:Complication"
+    },
+    {
+      "concept_id": "CDPEO:Smoking",
+      "label_en": "Smoking",
+      "label_ko": "흡연",
+      "parent_class": "CDPEO:Lifestyle"
+    },
+    {
+      "concept_id": "CDPEO:StomachDisease",
+      "label_en": "StomachDisease",
+      "label_ko": "위장질환(합병증)",
+      "parent_class": "CDPEO:Complication"
+    },
+    {
+      "concept_id": "CDPEO:Stroke",
+      "label_en": "Stroke",
+      "label_ko": "뇌졸중",
+      "parent_class": "CDPEO:ChronicDisease"
+    },
+    {
+      "concept_id": "CDPEO:TotalCholesterol",
+      "label_en": "TotalCholesterol",
+      "label_ko": "총콜레스테롤",
+      "parent_class": "CDPEO:PhysiologicalIndex"
+    },
+    {
+      "concept_id": "CDPEO:Triglyceride",
+      "label_en": "Triglyceride",
+      "label_ko": "중성지방",
+      "parent_class": "CDPEO:PhysiologicalIndex"
+    },
+    {
+      "concept_id": "CDPEO:UricAcid",
+      "label_en": "UricAcid",
+      "label_ko": "요산",
+      "parent_class": "CDPEO:PhysiologicalIndex"
+    }
+  ],
+  "swrl_rules": [
+    {
+      "rule_code": "C03",
+      "description_en": "Lifestyle rule 03-mentality",
+      "description_ko": "정신건강(PHQ-9 우울척도)",
+      "body_properties": [
+        "vectorItemDepression",
+        "hasMentality",
+        "hasPHQ9Value"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "14",
+        "10"
+      ],
+      "head_property": "vectorItemDepression",
+      "head_value": "2"
+    },
+    {
+      "rule_code": "C04",
+      "description_en": "Lifestyle rule 04-mentality",
+      "description_ko": "정신건강(PHQ-9 우울척도)",
+      "body_properties": [
+        "vectorItemDepression",
+        "hasMentality",
+        "hasPHQ9Value"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "19",
+        "15"
+      ],
+      "head_property": "vectorItemDepression",
+      "head_value": "3"
+    },
+    {
+      "rule_code": "C05",
+      "description_en": "Lifestyle rule 05-mentality",
+      "description_ko": "정신건강(PHQ-9 우울척도)",
+      "body_properties": [
+        "vectorItemDepression",
+        "hasMentality",
+        "hasPHQ9Value"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "27",
+        "20"
+      ],
+      "head_property": "vectorItemDepression",
+      "head_value": "4"
+    },
+    {
+      "rule_code": "C02",
+      "description_en": "Lifestyle rule 02-mentality",
+      "description_ko": "정신건강(PHQ-9 우울척도)",
+      "body_properties": [
+        "vectorItemDepression",
+        "hasMentality",
+        "hasPHQ9Value"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "9",
+        "5"
+      ],
+      "head_property": "vectorItemDepression",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "C01",
+      "description_en": "Lifestyle rule 01-mentality",
+      "description_ko": "정신건강(PHQ-9 우울척도)",
+      "body_properties": [
+        "vectorItemDepression",
+        "hasMentality",
+        "hasPHQ9Value"
+      ],
+      "body_operators": [
+        "lessThanOrEqual"
+      ],
+      "body_thresholds": [
+        "4"
+      ],
+      "head_property": "vectorItemDepression",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "A06",
+      "description_en": "demographic rule 06-pregnancy",
+      "description_ko": "임신",
+      "body_properties": [
+        "vectorItemPregnant",
+        "hasPregnancy",
+        "hasPregnancyValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemPregnant",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "A05",
+      "description_en": "demographic rule 05-pregnancy",
+      "description_ko": "임신",
+      "body_properties": [
+        "vectorItemPregnant",
+        "hasPregnancy",
+        "hasPregnancyValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemPregnant",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "B17",
+      "description_en": "Disease rule 17-skindisease",
+      "description_ko": "피부질환 합병증",
+      "body_properties": [
+        "hasSkinDiseaseValue",
+        "vectorItemSkinDisease",
+        "hasSkinDisease"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemSkinDisease",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B18",
+      "description_en": "Disease rule 18-skindisease",
+      "description_ko": "피부질환 합병증",
+      "body_properties": [
+        "hasSkinDiseaseValue",
+        "vectorItemSkinDisease",
+        "hasSkinDisease"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemSkinDisease",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "C09",
+      "description_en": "Lifestyle rule 09-smoking",
+      "description_ko": "흡연",
+      "body_properties": [
+        "vectorItemSmoking",
+        "hasDailyCigarettes",
+        "hasSmoking"
+      ],
+      "body_operators": [
+        "equal"
+      ],
+      "body_thresholds": [
+        "0"
+      ],
+      "head_property": "vectorItemSmoking",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "C06",
+      "description_en": "Lifestyle rule 06-smoking",
+      "description_ko": "흡연",
+      "body_properties": [
+        "vectorItemSmoking",
+        "hasDailyCigarettes",
+        "hasSmoking"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "10",
+        "0"
+      ],
+      "head_property": "vectorItemSmoking",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "C07",
+      "description_en": "Lifestyle rule 07-smoking",
+      "description_ko": "흡연",
+      "body_properties": [
+        "vectorItemSmoking",
+        "hasDailyCigarettes",
+        "hasSmoking"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "20",
+        "11"
+      ],
+      "head_property": "vectorItemSmoking",
+      "head_value": "2"
+    },
+    {
+      "rule_code": "C08",
+      "description_en": "Lifestyle rule 08-smoking",
+      "description_ko": "흡연",
+      "body_properties": [
+        "vectorItemSmoking",
+        "hasDailyCigarettes",
+        "hasSmoking"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "21"
+      ],
+      "head_property": "vectorItemSmoking",
+      "head_value": "3"
+    },
+    {
+      "rule_code": "B24",
+      "description_en": "Disease rule 24-stomachdisease",
+      "description_ko": "위장질환 합병증",
+      "body_properties": [
+        "hasStomachDisease",
+        "vectorItemStomachDisease",
+        "hasStomachDiseaseValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemStomachDisease",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B23",
+      "description_en": "Disease rule 23-stomachdisease",
+      "description_ko": "위장질환 합병증",
+      "body_properties": [
+        "hasStomachDisease",
+        "vectorItemStomachDisease",
+        "hasStomachDiseaseValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemStomachDisease",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "B11",
+      "description_en": "Disease rule 11-stroke",
+      "description_ko": "뇌졸중",
+      "body_properties": [
+        "hasStrokeValue",
+        "hasStroke",
+        "vectorItemStroke"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemStroke",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B12",
+      "description_en": "Disease rule 12-stroke",
+      "description_ko": "뇌졸중",
+      "body_properties": [
+        "hasStrokeValue",
+        "hasStroke",
+        "vectorItemStroke"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemStroke",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D15",
+      "description_en": "VitalSIgn rule 15-tc",
+      "description_ko": "총콜레스테롤",
+      "body_properties": [
+        "hasTCValue",
+        "hasTC",
+        "vectorItemTotalCholesterol"
+      ],
+      "body_operators": [
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "5.2"
+      ],
+      "head_property": "vectorItemTotalCholesterol",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D14",
+      "description_en": "VitalSIgn rule 14-tc",
+      "description_ko": "총콜레스테롤",
+      "body_properties": [
+        "hasTCValue",
+        "hasTC",
+        "vectorItemTotalCholesterol"
+      ],
+      "body_operators": [
+        "lessThanOrEqual"
+      ],
+      "body_thresholds": [
+        "5.2"
+      ],
+      "head_property": "vectorItemTotalCholesterol",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "D16",
+      "description_en": "VitalSIgn rule 16-tg",
+      "description_ko": "중성지방",
+      "body_properties": [
+        "hasTG",
+        "vectorItemTriglyceride",
+        "hasTGValue"
+      ],
+      "body_operators": [
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "1.7"
+      ],
+      "head_property": "vectorItemTriglyceride",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D17",
+      "description_en": "VitalSIgn rule 17-tg",
+      "description_ko": "중성지방",
+      "body_properties": [
+        "hasTG",
+        "vectorItemTriglyceride",
+        "hasTGValue"
+      ],
+      "body_operators": [
+        "lessThanOrEqual"
+      ],
+      "body_thresholds": [
+        "1.7"
+      ],
+      "head_property": "vectorItemTriglyceride",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "D22",
+      "description_en": "VitalSIgn rule 22-ua",
+      "description_ko": "요산(성별·연령 보정)",
+      "body_properties": [
+        "vectorItemUricAcid",
+        "hasGenderValue",
+        "hasUA",
+        "hasGender",
+        "hasAgeValue",
+        "hasAge",
+        "hasUAValue"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "434",
+        "60"
+      ],
+      "head_property": "vectorItemUricAcid",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "D21",
+      "description_en": "VitalSIgn rule 21-ua",
+      "description_ko": "요산(성별·연령 보정)",
+      "body_properties": [
+        "vectorItemUricAcid",
+        "hasGenderValue",
+        "hasUA",
+        "hasGender",
+        "hasAgeValue",
+        "hasAge",
+        "hasUAValue"
+      ],
+      "body_operators": [
+        "greaterThan",
+        "lessThanOrEqual"
+      ],
+      "body_thresholds": [
+        "357",
+        "60"
+      ],
+      "head_property": "vectorItemUricAcid",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D19",
+      "description_en": "VitalSIgn rule 19-ua",
+      "description_ko": "요산(성별·연령 보정)",
+      "body_properties": [
+        "vectorItemUricAcid",
+        "hasGenderValue",
+        "hasUA",
+        "hasGender",
+        "hasAgeValue",
+        "hasAge",
+        "hasUAValue"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "lessThanOrEqual"
+      ],
+      "body_thresholds": [
+        "357",
+        "60"
+      ],
+      "head_property": "vectorItemUricAcid",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "D24",
+      "description_en": "VitalSIgn rule 24-ua",
+      "description_ko": "요산(성별·연령 보정)",
+      "body_properties": [
+        "vectorItemUricAcid",
+        "hasGenderValue",
+        "hasUA",
+        "hasGender",
+        "hasAgeValue",
+        "hasAge",
+        "hasUAValue"
+      ],
+      "body_operators": [
+        "greaterThan",
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "476",
+        "60"
+      ],
+      "head_property": "vectorItemUricAcid",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D23",
+      "description_en": "VitalSIgn rule 23-ua",
+      "description_ko": "요산(성별·연령 보정)",
+      "body_properties": [
+        "vectorItemUricAcid",
+        "hasGenderValue",
+        "hasUA",
+        "hasGender",
+        "hasAgeValue",
+        "hasAge",
+        "hasUAValue"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "476",
+        "60"
+      ],
+      "head_property": "vectorItemUricAcid",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "D20",
+      "description_en": "VitalSIgn rule 20-ua",
+      "description_ko": "요산(성별·연령 보정)",
+      "body_properties": [
+        "vectorItemUricAcid",
+        "hasGenderValue",
+        "hasUA",
+        "hasGender",
+        "hasAgeValue",
+        "hasAge",
+        "hasUAValue"
+      ],
+      "body_operators": [
+        "greaterThan",
+        "lessThanOrEqual"
+      ],
+      "body_thresholds": [
+        "416",
+        "60"
+      ],
+      "head_property": "vectorItemUricAcid",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D18",
+      "description_en": "VitalSIgn rule 18-ua",
+      "description_ko": "요산(성별·연령 보정)",
+      "body_properties": [
+        "vectorItemUricAcid",
+        "hasGenderValue",
+        "hasUA",
+        "hasGender",
+        "hasAgeValue",
+        "hasAge",
+        "hasUAValue"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "lessThanOrEqual"
+      ],
+      "body_thresholds": [
+        "416",
+        "60"
+      ],
+      "head_property": "vectorItemUricAcid",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "A03",
+      "description_en": "demographic rule 02-age",
+      "description_ko": "연령(고령 기준)",
+      "body_properties": [
+        "vectorItemYouth",
+        "hasAgeValue",
+        "hasAge",
+        "vectorItemOldAge"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "60"
+      ],
+      "head_property": "vectorItemYouth",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "A04",
+      "description_en": "demographic rule 04-age",
+      "description_ko": "연령(고령 기준)",
+      "body_properties": [
+        "vectorItemYouth",
+        "hasAgeValue",
+        "hasAge",
+        "vectorItemOldAge"
+      ],
+      "body_operators": [
+        "lessThanOrEqual"
+      ],
+      "body_thresholds": [
+        "60"
+      ],
+      "head_property": "vectorItemYouth",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "E01",
+      "description_en": "Medication rule 01-antihypertensivedrug",
+      "description_ko": "항고혈압제 복용",
+      "body_properties": [
+        "vectorItemAntiHypertensiveDrug",
+        "hasAntiHypertensiveDrugValue",
+        "hasAntiHypertensiveDrug"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemAntiHypertensiveDrug",
+      "head_value": null
+    },
+    {
+      "rule_code": "D09",
+      "description_en": "VitalSIgn rule 09-bg",
+      "description_ko": "혈당",
+      "body_properties": [
+        "hasBG",
+        "vectorItemBloodGlucose",
+        "hasBGValue"
+      ],
+      "body_operators": [
+        "lessThan",
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "7",
+        "6.1"
+      ],
+      "head_property": "vectorItemBloodGlucose",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D10",
+      "description_en": "VitalSIgn rule 10-bg",
+      "description_ko": "혈당",
+      "body_properties": [
+        "hasBG",
+        "vectorItemBloodGlucose",
+        "hasBGValue"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "7"
+      ],
+      "head_property": "vectorItemBloodGlucose",
+      "head_value": "2"
+    },
+    {
+      "rule_code": "D08",
+      "description_en": "VitalSIgn rule 08-bg",
+      "description_ko": "혈당",
+      "body_properties": [
+        "hasBG",
+        "vectorItemBloodGlucose",
+        "hasBGValue"
+      ],
+      "body_operators": [
+        "lessThan"
+      ],
+      "body_thresholds": [
+        "6.1"
+      ],
+      "head_property": "vectorItemBloodGlucose",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "A07",
+      "description_en": "demographic rule 07-bmi",
+      "description_ko": "체질량지수",
+      "body_properties": [
+        "hasBMI",
+        "vectorItemOverWeight",
+        "hasBMIValue"
+      ],
+      "body_operators": [
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "24"
+      ],
+      "head_property": "vectorItemOverWeight",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "A08",
+      "description_en": "demographic rule 08-bmi",
+      "description_ko": "체질량지수",
+      "body_properties": [
+        "hasBMI",
+        "vectorItemOverWeight",
+        "hasBMIValue"
+      ],
+      "body_operators": [
+        "lessThanOrEqual"
+      ],
+      "body_thresholds": [
+        "24"
+      ],
+      "head_property": "vectorItemOverWeight",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "D07",
+      "description_en": "VitalSIgn rule 07-bp",
+      "description_ko": "혈압",
+      "body_properties": [
+        "hasBP",
+        "hasDBPValue",
+        "hasSBPValue",
+        "vectorItemBloodPressure"
+      ],
+      "body_operators": [
+        "lessThan",
+        "lessThan"
+      ],
+      "body_thresholds": [
+        "90",
+        "140"
+      ],
+      "head_property": "vectorItemBloodPressure",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "D03",
+      "description_en": "VitalSIgn rule 03-bp",
+      "description_ko": "혈압",
+      "body_properties": [
+        "hasBP",
+        "hasDBPValue",
+        "vectorItemBloodPressure"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual",
+        "lessThan"
+      ],
+      "body_thresholds": [
+        "100",
+        "110"
+      ],
+      "head_property": "vectorItemBloodPressure",
+      "head_value": "2"
+    },
+    {
+      "rule_code": "D02",
+      "description_en": "VitalSIgn rule 02-bp",
+      "description_ko": "혈압",
+      "body_properties": [
+        "hasBP",
+        "hasDBPValue",
+        "vectorItemBloodPressure"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "110"
+      ],
+      "head_property": "vectorItemBloodPressure",
+      "head_value": "3"
+    },
+    {
+      "rule_code": "D06",
+      "description_en": "VitalSIgn rule 06-bp",
+      "description_ko": "혈압",
+      "body_properties": [
+        "hasBP",
+        "hasDBPValue",
+        "vectorItemBloodPressure"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual",
+        "lessThan"
+      ],
+      "body_thresholds": [
+        "90",
+        "100"
+      ],
+      "head_property": "vectorItemBloodPressure",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D05",
+      "description_en": "VitalSIgn rule 05-bp",
+      "description_ko": "혈압",
+      "body_properties": [
+        "hasBP",
+        "hasSBPValue",
+        "vectorItemBloodPressure"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual",
+        "lessThan"
+      ],
+      "body_thresholds": [
+        "140",
+        "160"
+      ],
+      "head_property": "vectorItemBloodPressure",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D04",
+      "description_en": "VitalSIgn rule 04-bp",
+      "description_ko": "혈압",
+      "body_properties": [
+        "hasBP",
+        "hasSBPValue",
+        "vectorItemBloodPressure"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual",
+        "lessThan"
+      ],
+      "body_thresholds": [
+        "160",
+        "180"
+      ],
+      "head_property": "vectorItemBloodPressure",
+      "head_value": "2"
+    },
+    {
+      "rule_code": "D01",
+      "description_en": "VitalSIgn rule 01-bp",
+      "description_ko": "혈압",
+      "body_properties": [
+        "hasBP",
+        "hasSBPValue",
+        "vectorItemBloodPressure"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "180"
+      ],
+      "head_property": "vectorItemBloodPressure",
+      "head_value": "3"
+    },
+    {
+      "rule_code": "B06",
+      "description_en": "Disease rule 06-chd",
+      "description_ko": "관상동맥질환",
+      "body_properties": [
+        "hasCHDValue",
+        "vectorItemCoronaryHeartDisease",
+        "hasCHD"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemCoronaryHeartDisease",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B05",
+      "description_en": "Disease rule 05-chd",
+      "description_ko": "관상동맥질환",
+      "body_properties": [
+        "hasCHDValue",
+        "vectorItemCoronaryHeartDisease",
+        "hasCHD"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemCoronaryHeartDisease",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "B03",
+      "description_en": "Disease rule 03-copd",
+      "description_ko": "만성폐쇄성폐질환",
+      "body_properties": [
+        "vectorItemChronicObstructivePulmonaryDisease",
+        "hasCOPD",
+        "hasCOPDValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemChronicObstructivePulmonaryDisease",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B04",
+      "description_en": "Disease rule 04-copd",
+      "description_ko": "만성폐쇄성폐질환",
+      "body_properties": [
+        "vectorItemChronicObstructivePulmonaryDisease",
+        "hasCOPD",
+        "hasCOPDValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemChronicObstructivePulmonaryDisease",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "B07",
+      "description_en": "Disease rule 07-diabetes",
+      "description_ko": "당뇨병 동반질환",
+      "body_properties": [
+        "vectorItemDiabetes",
+        "hasDiabetesValue",
+        "hasDiabetes"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemDiabetes",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B08",
+      "description_en": "Disease rule 08-diabetes",
+      "description_ko": "당뇨병 동반질환",
+      "body_properties": [
+        "vectorItemDiabetes",
+        "hasDiabetesValue",
+        "hasDiabetes"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemDiabetes",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "C14",
+      "description_en": "Lifestyle rule 14-diet",
+      "description_ko": "식이",
+      "body_properties": [
+        "vectorItemDiet",
+        "hasDiet",
+        "hasDietLevel"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemDiet",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "C15",
+      "description_en": "Lifestyle rule 15-diet",
+      "description_ko": "식이",
+      "body_properties": [
+        "vectorItemDiet",
+        "hasDiet",
+        "hasDietLevel"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemDiet",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "C16",
+      "description_en": "Lifestyle rule 16-diet",
+      "description_ko": "식이",
+      "body_properties": [
+        "vectorItemDiet",
+        "hasDiet",
+        "hasDietLevel"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemDiet",
+      "head_value": "2"
+    },
+    {
+      "rule_code": "C10",
+      "description_en": "Lifestyle rule 10-drinking",
+      "description_ko": "음주",
+      "body_properties": [
+        "hasDailyDrinking",
+        "vectorItemDrinking",
+        "hasDrinking"
+      ],
+      "body_operators": [
+        "equal"
+      ],
+      "body_thresholds": [
+        "0"
+      ],
+      "head_property": "vectorItemDrinking",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "C11",
+      "description_en": "Lifestyle rule 11-drinking",
+      "description_ko": "음주",
+      "body_properties": [
+        "hasDailyDrinking",
+        "vectorItemDrinking",
+        "hasDrinking"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "1",
+        "0"
+      ],
+      "head_property": "vectorItemDrinking",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "C12",
+      "description_en": "Lifestyle rule 12-drinking",
+      "description_ko": "음주",
+      "body_properties": [
+        "hasDailyDrinking",
+        "vectorItemDrinking",
+        "hasDrinking"
+      ],
+      "body_operators": [
+        "lessThan",
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "3",
+        "1"
+      ],
+      "head_property": "vectorItemDrinking",
+      "head_value": "2"
+    },
+    {
+      "rule_code": "C13",
+      "description_en": "Lifestyle rule 13-drinking",
+      "description_ko": "음주",
+      "body_properties": [
+        "hasDailyDrinking",
+        "vectorItemDrinking",
+        "hasDrinking"
+      ],
+      "body_operators": [
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "3"
+      ],
+      "head_property": "vectorItemDrinking",
+      "head_value": "3"
+    },
+    {
+      "rule_code": "C17",
+      "description_en": "Lifestyle rule 17-exercise",
+      "description_ko": "운동(IPAQ)",
+      "body_properties": [
+        "hasExercise",
+        "hasIPAQLevel",
+        "vectorItemExercise"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemExercise",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "C19",
+      "description_en": "Lifestyle rule 19-exercise",
+      "description_ko": "운동(IPAQ)",
+      "body_properties": [
+        "hasExercise",
+        "hasIPAQLevel",
+        "vectorItemExercise"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemExercise",
+      "head_value": "2"
+    },
+    {
+      "rule_code": "C18",
+      "description_en": "Lifestyle rule 18-exercise",
+      "description_ko": "운동(IPAQ)",
+      "body_properties": [
+        "hasExercise",
+        "hasIPAQLevel",
+        "vectorItemExercise"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemExercise",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "B13",
+      "description_en": "Disease rule 13-eyedisease",
+      "description_ko": "안과질환 합병증",
+      "body_properties": [
+        "hasEyeDisease",
+        "hasEyeDiseaseValue",
+        "vectorItemEyeDisease"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemEyeDisease",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B14",
+      "description_en": "Disease rule 14-eyedisease",
+      "description_ko": "안과질환 합병증",
+      "body_properties": [
+        "hasEyeDisease",
+        "hasEyeDiseaseValue",
+        "vectorItemEyeDisease"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemEyeDisease",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "A01",
+      "description_en": "demographic rule 01-gender",
+      "description_ko": "성별",
+      "body_properties": [
+        "vectorItemMale",
+        "hasGender",
+        "vectorItemFemale",
+        "hasGenderValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemFemale",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "A02",
+      "description_en": "demographic rule 02-gender",
+      "description_ko": "성별",
+      "body_properties": [
+        "vectorItemMale",
+        "hasGender",
+        "vectorItemFemale",
+        "hasGenderValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemFemale",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B10",
+      "description_en": "Disease rule 10-hyperlipidemia",
+      "description_ko": "이상지질혈증 동반질환",
+      "body_properties": [
+        "hasHyperlipidemia",
+        "hasHyperlipidemiaValue",
+        "vectorItemHyperlipidemia"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemHyperlipidemia",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B09",
+      "description_en": "Disease rule 09-hyperlipidemia",
+      "description_ko": "이상지질혈증 동반질환",
+      "body_properties": [
+        "hasHyperlipidemia",
+        "hasHyperlipidemiaValue",
+        "vectorItemHyperlipidemia"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemHyperlipidemia",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "B02",
+      "description_en": "Disease rule 02-hypertension",
+      "description_ko": "고혈압 동반질환",
+      "body_properties": [
+        "hasHypertension",
+        "vectorItemHypertension",
+        "hasHypertensionValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemHypertension",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B01",
+      "description_en": "Disease rule 01-hypertension",
+      "description_ko": "고혈압 동반질환",
+      "body_properties": [
+        "hasHypertension",
+        "vectorItemHypertension",
+        "hasHypertensionValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemHypertension",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "E02",
+      "description_en": "Medication rule 02-hypoglycemicdrug",
+      "description_ko": "혈당강하제 복용",
+      "body_properties": [
+        "hasHypoglycemicDrug",
+        "vectorItemHypoglycemicDrug",
+        "hasHypoglycemicDrugValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemHypoglycemicDrug",
+      "head_value": null
+    },
+    {
+      "rule_code": "E05",
+      "description_en": "Medication rule 05-insulin",
+      "description_ko": "인슐린 사용",
+      "body_properties": [
+        "hasHypoglycemicDrug",
+        "vectorItemInsulin",
+        "hasInsulinValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemInsulin",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "E04",
+      "description_en": "Medication rule 04-insulin",
+      "description_ko": "인슐린 사용",
+      "body_properties": [
+        "hasHypoglycemicDrug",
+        "vectorItemInsulin",
+        "hasInsulinValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemInsulin",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "E03",
+      "description_en": "Medication rule 03-hypolipidemicdrug",
+      "description_ko": "지질강하제 복용",
+      "body_properties": [
+        "hasHypolipidemicDrug",
+        "hasHypolipidemicDrugValue",
+        "vectorItemHypolipidemicDrug"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemHypolipidemicDrug",
+      "head_value": null
+    },
+    {
+      "rule_code": "B16",
+      "description_en": "Disease rule 16-kidneydisease",
+      "description_ko": "신장질환 합병증",
+      "body_properties": [
+        "vectorItemKidneyDisease",
+        "hasKidneyDisease",
+        "hasKidneyDiseaseValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemKidneyDisease",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B15",
+      "description_en": "Disease rule 15-kidneydisease",
+      "description_ko": "신장질환 합병증",
+      "body_properties": [
+        "vectorItemKidneyDisease",
+        "hasKidneyDisease",
+        "hasKidneyDiseaseValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemKidneyDisease",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D11",
+      "description_en": "VitalSIgn rule 11-lipoprotein",
+      "description_ko": "지단백(HDL/LDL)",
+      "body_properties": [
+        "hasHDLValue",
+        "vectorItemLipoprotein",
+        "hasLipoprotein"
+      ],
+      "body_operators": [
+        "lessThan"
+      ],
+      "body_thresholds": [
+        "1.2"
+      ],
+      "head_property": "vectorItemLipoprotein",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "D13",
+      "description_en": "VitalSIgn rule 13-lipoprotein",
+      "description_ko": "지단백(HDL/LDL)",
+      "body_properties": [
+        "hasHDLValue",
+        "vectorItemLipoprotein",
+        "hasLDLValue",
+        "hasLipoprotein"
+      ],
+      "body_operators": [
+        "lessThanOrEqual",
+        "greaterThanOrEqual"
+      ],
+      "body_thresholds": [
+        "3.12",
+        "1.2"
+      ],
+      "head_property": "vectorItemLipoprotein",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "D12",
+      "description_en": "VitalSIgn rule 12-lipoprotein",
+      "description_ko": "지단백(HDL/LDL)",
+      "body_properties": [
+        "vectorItemLipoprotein",
+        "hasLDLValue",
+        "hasLipoprotein"
+      ],
+      "body_operators": [
+        "greaterThan"
+      ],
+      "body_thresholds": [
+        "3.12"
+      ],
+      "head_property": "vectorItemLipoprotein",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "B21",
+      "description_en": "Disease rule 21-liverdisease",
+      "description_ko": "간질환 합병증",
+      "body_properties": [
+        "vectorItemLiverDisease",
+        "hasLiverDisease",
+        "hasLiverDiseaseValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemLiverDisease",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B22",
+      "description_en": "Disease rule 22-liverdisease",
+      "description_ko": "간질환 합병증",
+      "body_properties": [
+        "vectorItemLiverDisease",
+        "hasLiverDisease",
+        "hasLiverDiseaseValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemLiverDisease",
+      "head_value": "1"
+    },
+    {
+      "rule_code": "B20",
+      "description_en": "Disease rule 20-lungdisease",
+      "description_ko": "폐질환 합병증",
+      "body_properties": [
+        "vectorItemLungDisease",
+        "hasLungDisease",
+        "hasLungDiseaseValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemLungDisease",
+      "head_value": "0"
+    },
+    {
+      "rule_code": "B19",
+      "description_en": "Disease rule 19-lungdisease",
+      "description_ko": "폐질환 합병증",
+      "body_properties": [
+        "vectorItemLungDisease",
+        "hasLungDisease",
+        "hasLungDiseaseValue"
+      ],
+      "body_operators": [],
+      "body_thresholds": [],
+      "head_property": "vectorItemLungDisease",
+      "head_value": "1"
+    }
+  ]
+}
