@@ -95,6 +95,7 @@ export async function searchSupabaseVectors(
       query_embedding: embedding,
       match_threshold: 0.1,
       match_count: matchCount,
+      table_name: tableName,
     });
 
     if (error) {

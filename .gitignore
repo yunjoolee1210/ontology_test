@@ -9,3 +9,5 @@ node_modules/
 __pycache__/
 .DS_Store
 .vercel
+scratch/parsed_pdfs.json
+
