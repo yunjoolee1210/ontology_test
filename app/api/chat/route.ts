@@ -123,16 +123,8 @@ export async function POST(req: NextRequest) {
     // ④ 오케스트레이터 호출 (의도 분류 → 병렬 실행 → 답변 합성)
     const orchestratorResult = await orchestrator(userMessage, userProfile, ragMode);
 
-    // 출처 요약을 답변 밑에 정갈하게 배치
-    let finalAnswer = orchestratorResult.answer;
-    if (orchestratorResult.sources && orchestratorResult.sources.length > 0) {
-      finalAnswer += '\n\n🔍 **신뢰 정보 검색 출처**:\n';
-      orchestratorResult.sources.forEach((s, idx) => {
-        const doiStr = s.doi ? ` (DOI: ${s.doi})` : '';
-        const urlStr = s.url ? ` [링크](${s.url})` : '';
-        finalAnswer += `${idx + 1}. *${s.title}* - ${s.org || '공식 정보처'}${doiStr}${urlStr}\n`;
-      });
-    }
+    // 출처 요약을 답변 본문에 텍스트로 추가하지 않고, 클라이언트의 출처 패널(SourcePanel)로만 노출하여 중복을 방지하고 길이를 단축합니다.
+    const finalAnswer = orchestratorResult.answer;
 
     // ⑤ Supabase DB 기록 (AI 답변) - Optional
     let dbMessageId = '';

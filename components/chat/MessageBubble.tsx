@@ -25,6 +25,7 @@ export function MessageBubble({ role, content, agentType, sources, onActionClick
   const [comment, setComment] = useState('');
   const [saving, setSaving] = useState(false);
   const [hasFeedback, setHasFeedback] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   useEffect(() => {
     if (dbMessageId) {
@@ -63,18 +64,33 @@ export function MessageBubble({ role, content, agentType, sources, onActionClick
     if (!dbMessageId || !sessionId) return;
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from('conversation_feedback')
-        .upsert({
-          session_id: sessionId,
-          message_id: dbMessageId,
-          rating,
-          tags: selectedTags,
-          comment,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'message_id' });
+      if (hasFeedback) {
+        // 기존 피드백이 존재하는 경우 수정(UPDATE)
+        const { error } = await supabase
+          .from('conversation_feedback')
+          .update({
+            rating,
+            tags: selectedTags,
+            comment,
+            updated_at: new Date().toISOString()
+          })
+          .eq('message_id', dbMessageId);
+        if (error) throw error;
+      } else {
+        // 기존 피드백이 없는 경우 신규 등록(INSERT)
+        const { error } = await supabase
+          .from('conversation_feedback')
+          .insert({
+            session_id: sessionId,
+            message_id: dbMessageId,
+            rating,
+            tags: selectedTags,
+            comment,
+            updated_at: new Date().toISOString()
+          });
+        if (error) throw error;
+      }
 
-      if (error) throw error;
       setHasFeedback(true);
       alert('평가가 안전하게 저장되었습니다!');
     } catch (e) {
@@ -274,81 +290,98 @@ export function MessageBubble({ role, content, agentType, sources, onActionClick
           </div>
         )}
 
-        {/* 모델 평가 피드백 영역 */}
+        {/* 모델 평가 피드백 영역 - 디폴트 접힘 상태 */}
         {!isUser && dbMessageId && sessionId && (
-          <div className="mt-4 pt-3 border-t border-slate-100 space-y-3 text-xs text-slate-700">
+          <div className="mt-2.5 pt-2 border-t border-slate-100 text-xs text-slate-700">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-500 uppercase tracking-wider text-[10px]">🤖 답변 피드백 및 평가</span>
-              {hasFeedback && <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">✓ 평가 완료</span>}
-            </div>
-
-            {/* 별점 */}
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-semibold text-slate-500">평점 (1-5):</span>
-              <div className="flex items-center">
-                {[1, 2, 3, 4, 5].map((val) => (
-                  <button
-                    key={val}
-                    type="button"
-                    onClick={() => setRating(val)}
-                    className="p-0.5 text-slate-200 hover:text-amber-500 transition-colors"
-                  >
-                    <Star
-                      size={16}
-                      className={rating >= val ? 'text-amber-500 fill-amber-500' : 'text-slate-200'}
-                    />
-                  </button>
-                ))}
-              </div>
-              <span className="text-[11px] font-bold text-slate-600">{rating}점</span>
-            </div>
-
-            {/* 태그 */}
-            <div className="space-y-1.5">
-              <span className="text-[11px] font-semibold text-slate-500 block">평가 태그:</span>
-              <div className="flex flex-wrap gap-1">
-                {tagsList.map(tag => {
-                  const isSelected = selectedTags.includes(tag.id);
-                  return (
-                    <button
-                      key={tag.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedTags(prev =>
-                          prev.includes(tag.id) ? prev.filter(t => t !== tag.id) : [...prev, tag.id]
-                        );
-                      }}
-                      className={`text-[9px] px-2 py-0.5 rounded-lg border font-bold transition-all cursor-pointer ${
-                        isSelected 
-                          ? 'border-purple-600 bg-purple-50 text-purple-700' 
-                          : 'border-slate-100 bg-slate-50 text-slate-500 hover:bg-slate-100'
-                      }`}
-                    >
-                      {tag.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* 코멘트 입력 및 저장 버튼 */}
-            <div className="flex gap-2 items-end">
-              <input
-                type="text"
-                value={comment}
-                onChange={e => setComment(e.target.value)}
-                placeholder="피드백 코멘트를 입력하세요 (선택)..."
-                className="flex-1 px-3 py-1.5 bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-xl text-[11px] focus:outline-none focus:ring-1 focus:ring-purple-600 focus:bg-white transition-all text-slate-700"
-              />
               <button
-                onClick={handleSaveFeedback}
-                disabled={saving}
-                className="px-3 py-1.5 bg-purple-700 hover:bg-purple-800 text-white rounded-xl text-[10px] font-bold shadow-xs active:scale-[0.98] transition-all flex items-center gap-1 shrink-0"
+                type="button"
+                onClick={() => setIsFeedbackOpen(!isFeedbackOpen)}
+                className="text-[10px] font-extrabold text-[#6D3FA0] hover:text-purple-900 transition-colors flex items-center gap-1.5 px-1.5 py-0.5 rounded-md hover:bg-purple-50/50"
               >
-                <Save size={10} />
-                <span>저장</span>
+                <span>평가...</span>
+                <span className="text-[8px] text-slate-400 font-normal">
+                  {isFeedbackOpen ? '▲ 접기' : '▼ 펼치기'}
+                </span>
+                {hasFeedback && (
+                  <span className="text-[9px] text-emerald-600 font-bold ml-1.5 flex items-center gap-0.5">
+                    ✓ 완료
+                  </span>
+                )}
               </button>
             </div>
+
+            {isFeedbackOpen && (
+              <div className="mt-2.5 p-3 bg-slate-50/40 border border-slate-100 rounded-2xl space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                {/* 별점 */}
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-slate-500">평점 (1-5):</span>
+                  <div className="flex items-center">
+                    {[1, 2, 3, 4, 5].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setRating(val)}
+                        className="p-0.5 text-slate-200 hover:text-amber-500 transition-colors"
+                      >
+                        <Star
+                          size={16}
+                          className={rating >= val ? 'text-amber-500 fill-amber-500' : 'text-slate-200'}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-[11px] font-bold text-slate-600">{rating}점</span>
+                </div>
+
+                {/* 태그 */}
+                <div className="space-y-1.5">
+                  <span className="text-[11px] font-semibold text-slate-500 block">평가 태그:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {tagsList.map(tag => {
+                      const isSelected = selectedTags.includes(tag.id);
+                      return (
+                        <button
+                          key={tag.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedTags(prev =>
+                              prev.includes(tag.id) ? prev.filter(t => t !== tag.id) : [...prev, tag.id]
+                            );
+                          }}
+                          className={`text-[9px] px-2 py-0.5 rounded-lg border font-bold transition-all cursor-pointer ${
+                            isSelected 
+                              ? 'border-purple-600 bg-purple-50 text-purple-700' 
+                              : 'border-slate-100 bg-slate-50 text-slate-500 hover:bg-slate-100'
+                          }`}
+                        >
+                          {tag.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 코멘트 입력 및 저장 버튼 */}
+                <div className="flex gap-2 items-end">
+                  <input
+                    type="text"
+                    value={comment}
+                    onChange={e => setComment(e.target.value)}
+                    placeholder="피드백 코멘트를 입력하세요 (선택)..."
+                    className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[11px] focus:outline-none focus:ring-1 focus:ring-[#6D3FA0] focus:border-[#6D3FA0] transition-all text-slate-700 shadow-2xs"
+                  />
+                  <button
+                    onClick={handleSaveFeedback}
+                    disabled={saving}
+                    className="px-3 py-1.5 bg-[#6D3FA0] hover:bg-purple-800 text-white rounded-xl text-[10px] font-bold shadow-xs active:scale-[0.98] transition-all flex items-center gap-1 shrink-0"
+                  >
+                    <Save size={10} />
+                    <span>저장</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
