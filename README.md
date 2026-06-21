@@ -40,8 +40,8 @@ graph TD
     B -- "복지/지원금 탐지" --> D[Welfare Agent]
     B -- "분류 불명확" --> E[일반 어드바이저]
     
-    C --> F[PubMed API + Pinecone Hybrid RAG]
-    D --> G[Supabase FTS + Pinecone Welfare RAG]
+    C --> F[PubMed API + Supabase Vector RAG]
+    D --> G[Supabase FTS + Supabase Vector Welfare RAG]
     E --> H[GPT-4o-mini 직접 스트리밍]
     
     F --> I[RRF 병합 및 GPT-4o-mini 한글 요약]
@@ -56,9 +56,9 @@ graph TD
    - 1차 키워드 매칭을 통해 발화의 의도를 분류합니다 (비용 0).
    - 키워드가 동시 포함되거나 모호한 경우에만 GPT-4o-mini few-shot Fallback을 적용하여 라우팅합니다.
 2. **Research Agent (연구논문 특화)**
-   - PubMed API 실시간 검색 + Pinecone 벡터 시맨틱 검색을 병행하고 **RRF(Reciprocal Rank Fusion)**를 통해 정밀 병합 후 한국어로 맞춤 요약합니다.
+   - PubMed API 실시간 검색 + Supabase pgvector 시맨틱 검색을 병행하고 **RRF(Reciprocal Rank Fusion)**를 통해 정밀 병합 후 한국어로 맞춤 요약합니다.
 3. **Welfare Agent (의료복지 특화)**
-   - Supabase 한국어 Full-Text Search(BM25) 및 `kongdang-welfare` 벡터 데이터베이스를 병용하여 소득 기준, 구비 서류 및 동사무소 방문 가이드를 일목요연하게 정리합니다.
+   - Supabase 한국어 Full-Text Search(BM25) 및 Supabase pgvector `welfare_documents` 벡터 검색을 병용하여 소득 기준, 구비 서류 및 동사무소 방문 가이드를 일목요연하게 정리합니다.
 4. **일반 건강 코칭**
    - 복지나 학술 논문 이외의 식단 관리, 생활 습관 안내 등은 RAG를 거치지 않고 직접 GPT-4o-mini를 스트리밍해 비용과 인프라 부담을 대폭 경감합니다.
 

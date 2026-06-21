@@ -41,7 +41,7 @@ export function InputBar({
       </form>
       <div className="flex justify-between items-center mt-2 px-1 text-[10px] text-slate-400">
         <span>최대 500자 입력 가능</span>
-        <span>에이전트가 Pinecone & Supabase 실시간 데이터를 탐색합니다</span>
+        <span>에이전트가 Supabase 실시간 데이터를 탐색합니다</span>
       </div>
     </div>
   );

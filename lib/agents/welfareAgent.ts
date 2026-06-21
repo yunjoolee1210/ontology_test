@@ -1,7 +1,6 @@
 import OpenAI from 'openai';
 import { entityExtractor } from './entityExtractor';
-import { searchWelfareDocs } from '../rag/supabaseClient';
-import { queryPinecone } from '../rag/pineconeClient';
+import { searchWelfareDocs, searchSupabaseVectors } from '../rag/supabaseClient';
 import { AgentResponse, UserProfile } from '../types/chat';
 
 const openai = new OpenAI({
@@ -29,22 +28,22 @@ export async function welfareAgent(message: string, userProfile?: UserProfile): 
       return [];
     });
 
-    // 3. Supabase 결과가 없는 경우 Pinecone 복지인덱스('kongdang-welfare')로 폴백 검색
+    // 3. Supabase 결과가 없는 경우 Supabase 벡터 검색으로 폴백
     if (welfareDocs.length === 0) {
-      console.log('No results in Supabase FTS. Querying Pinecone kongdang-welfare...');
-      const pineconeMatches = await queryPinecone('kongdang-welfare', keywordsQuery, 5).catch(err => {
-        console.error('Pinecone welfare search failed:', err);
+      console.log('No results in Supabase FTS. Querying Supabase vectors for welfare...');
+      const vectorMatches = await searchSupabaseVectors('welfare_documents', keywordsQuery, 5).catch(err => {
+        console.error('Supabase welfare vector search failed:', err);
         return [];
       });
 
-      welfareDocs = pineconeMatches.map(match => ({
+      welfareDocs = vectorMatches.map(match => ({
         id: match.id,
-        content: match.metadata?.content || match.metadata?.abstract || '',
-        org: match.metadata?.org || '복지 지원처',
-        url: match.metadata?.url || '',
-        rank: match.score,
-        title: match.metadata?.title || '공공 복지 혜택 안내',
-        disease: match.metadata?.disease as any,
+        content: match.content || '',
+        org: match.org || '복지 지원처',
+        url: match.url || '',
+        rank: match.score ?? 0,
+        title: match.title || '공공 복지 혜택 안내',
+        disease: undefined, // no disease field in VectorDocResult by default
       }));
     }
 

@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { entityExtractor } from './entityExtractor';
 import { searchPubMed } from '../rag/pubmedClient';
-import { queryPinecone } from '../rag/pineconeClient';
+import { searchSupabaseVectors } from '../rag/supabaseClient';
 import { reciprocalRankFusion } from '../rag/hybridMerger';
 import { AgentResponse, UserProfile } from '../types/chat';
 
@@ -48,20 +48,20 @@ export async function researchAgent(message: string, userProfile?: UserProfile):
     const entities = await entityExtractor(message);
     const keywordsQuery = entities.keywords.join(' ');
 
-    // 2. PubMed 및 Pinecone 병행 검색 진행
-    const [pubmedResults, pineconeResults] = await Promise.all([
+    // 2. PubMed 및 Supabase Vector 병행 검색 진행
+    const [pubmedResults, vectorResults] = await Promise.all([
       searchPubMed(entities).catch(err => {
         console.error('PubMed search failed, falling back:', err);
         return [];
       }),
-      queryPinecone('kongdang-papers', keywordsQuery, 10).catch(err => {
-        console.error('Pinecone papers search failed, falling back:', err);
+      searchSupabaseVectors('papers', keywordsQuery, 10).catch(err => {
+        console.error('Supabase papers vector search failed, falling back:', err);
         return [];
       })
     ]);
 
     // 3. RRF Hybrid Merger로 병합
-    const mergedDocs = reciprocalRankFusion(pubmedResults, pineconeResults);
+    const mergedDocs = reciprocalRankFusion(pubmedResults, vectorResults);
     const topDocs = mergedDocs.slice(0, 3);
 
     // 환자 프로필 정보 포맷

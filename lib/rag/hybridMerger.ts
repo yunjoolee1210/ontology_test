@@ -5,20 +5,20 @@ export interface UnifiedDocument {
   url?: string;
   doi?: string;
   org?: string;
-  sourceType: 'pubmed' | 'pinecone' | 'hybrid';
+  sourceType: 'pubmed' | 'supabase_vector' | 'hybrid';
   score?: number;
 }
 
 /**
  * Reciprocal Rank Fusion (RRF)를 사용하여 두 검색 결과 리스트를 병합하고 정렬합니다.
- * RRF Score = 1 / (60 + Rank_PubMed) + 1 / (60 + Rank_Pinecone)
+ * RRF Score = 1 / (60 + Rank_PubMed) + 1 / (60 + Rank_SupabaseVector)
  */
 export function reciprocalRankFusion(
   pubmedList: any[],
-  pineconeList: any[],
+  vectorList: any[],
   k: number = 60
 ): UnifiedDocument[] {
-  const mergedMap = new Map<string, { doc: UnifiedDocument; pubmedRank: number; pineconeRank: number }>();
+  const mergedMap = new Map<string, { doc: UnifiedDocument; pubmedRank: number; vectorRank: number }>();
 
   // 1. PubMed 문서 처리
   pubmedList.forEach((item, index) => {
@@ -39,13 +39,13 @@ export function reciprocalRankFusion(
     mergedMap.set(idKey, {
       doc,
       pubmedRank: index + 1,
-      pineconeRank: -1,
+      vectorRank: -1,
     });
   });
 
-  // 2. Pinecone 문서 처리
-  pineconeList.forEach((item, index) => {
-    const cleanTitle = (item.metadata?.title || '').toLowerCase().trim();
+  // 2. Supabase 벡터 문서 처리
+  vectorList.forEach((item, index) => {
+    const cleanTitle = (item.title || '').toLowerCase().trim();
     
     // 기존에 PubMed로 등록된 문서인지 매칭 시도 (제목이 같거나 PMID가 매칭되는 경우)
     let matchedKey: string | null = null;
@@ -62,37 +62,34 @@ export function reciprocalRankFusion(
 
     if (matchedKey) {
       const existing = mergedMap.get(matchedKey)!;
-      existing.pineconeRank = index + 1;
+      existing.vectorRank = index + 1;
       existing.doc.sourceType = 'hybrid';
       // content가 더 긴 것을 채택하거나 병합
-      if (item.metadata?.abstract && item.metadata.abstract.length > existing.doc.content.length) {
-        existing.doc.content = item.metadata.abstract;
+      if (item.content && item.content.length > existing.doc.content.length) {
+        existing.doc.content = item.content;
       }
-      if (item.metadata?.content && item.metadata.content.length > existing.doc.content.length) {
-        existing.doc.content = item.metadata.content;
+      if (!existing.doc.doi && item.doi) {
+        existing.doc.doi = item.doi;
       }
-      if (!existing.doc.doi && item.metadata?.doi) {
-        existing.doc.doi = item.metadata.doi;
-      }
-      if (!existing.doc.url && item.metadata?.url) {
-        existing.doc.url = item.metadata.url;
+      if (!existing.doc.url && item.url) {
+        existing.doc.url = item.url;
       }
     } else {
-      const idKey = item.id ? `pinecone-${item.id}` : `title-${cleanTitle}`;
+      const idKey = item.id ? `vector-${item.id}` : `title-${cleanTitle}`;
       const doc: UnifiedDocument = {
         id: idKey,
-        title: item.metadata?.title || 'Untitled Vector Doc',
-        content: item.metadata?.abstract || item.metadata?.content || '',
-        url: item.metadata?.url,
-        doi: item.metadata?.doi,
-        org: item.metadata?.org || 'Pinecone Database',
-        sourceType: 'pinecone',
+        title: item.title || 'Untitled Vector Doc',
+        content: item.content || '',
+        url: item.url,
+        doi: item.doi,
+        org: item.org || 'Supabase Vector Database',
+        sourceType: 'supabase_vector',
       };
 
       mergedMap.set(idKey, {
         doc,
         pubmedRank: -1,
-        pineconeRank: index + 1,
+        vectorRank: index + 1,
       });
     }
   });
@@ -105,8 +102,8 @@ export function reciprocalRankFusion(
     if (value.pubmedRank !== -1) {
       score += 1 / (k + value.pubmedRank);
     }
-    if (value.pineconeRank !== -1) {
-      score += 1 / (k + value.pineconeRank);
+    if (value.vectorRank !== -1) {
+      score += 1 / (k + value.vectorRank);
     }
 
     value.doc.score = score;
@@ -116,3 +113,4 @@ export function reciprocalRankFusion(
   // 4. Score 기준 내림차순 정렬
   return result.sort((a, b) => (b.score || 0) - (a.score || 0));
 }
+

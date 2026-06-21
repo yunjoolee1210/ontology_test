@@ -40,14 +40,7 @@ export default function DashboardPage() {
   const [systolic, setSystolic] = useState<number>(120);
   const [diastolic, setDiastolic] = useState<number>(80);
   
-  // 체크리스트 상태
-  const [checklist, setChecklist] = useState({
-    meds: false,
-    diet: false,
-    exercise: false,
-    bloodPressure: false,
-    bloodSugar: false
-  });
+
 
   // 프로필 모달 및 필드 상태
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -201,9 +194,7 @@ export default function DashboardPage() {
         setBloodSugarPostprandial(parsed.sugarPost || 135);
         setSystolic(parsed.systolic || 120);
         setDiastolic(parsed.diastolic || 80);
-        setChecklist(parsed.checklist || {
-          meds: false, diet: false, exercise: false, bloodPressure: false, bloodSugar: false
-        });
+
       } catch (e) {
         console.error(e);
       }
@@ -220,7 +211,6 @@ export default function DashboardPage() {
       sugarPost: bloodSugarPostprandial,
       systolic: systolic,
       diastolic: diastolic,
-      checklist: checklist,
       ...updates
     };
     localStorage.setItem(key, JSON.stringify(current));
@@ -239,14 +229,7 @@ export default function DashboardPage() {
     saveData({ water: newVal });
   };
 
-  const toggleCheck = (key: keyof typeof checklist) => {
-    const updatedChecklist = {
-      ...checklist,
-      [key]: !checklist[key]
-    };
-    setChecklist(updatedChecklist);
-    saveData({ checklist: updatedChecklist });
-  };
+
 
   // 신장 단계별 맞춤형 수분/칼륨 가이드 도출
   const getKidneyGuide = (stage: string) => {
@@ -411,8 +394,20 @@ export default function DashboardPage() {
               </div>
               <div className="bg-white/5 p-2 rounded-xl border border-white/5">
                 <span className="text-[9px] text-purple-300 block font-bold">신체 조건</span>
-                <span className="font-extrabold">{profile?.height || '170'}cm | {profile?.target_weight || '65'}kg(목표)</span>
+                <span className="font-extrabold">
+                  {profile?.height || '170'}cm | {profile?.dialysis_type && (profile.dialysis_type === '혈액투석' || profile.dialysis_type === '복막투석') ? `현재체중 ${(profile?.target_weight ? profile.target_weight + 2.5 : 65)}kg` : `${profile?.target_weight || '65'}kg(목표)`}
+                </span>
               </div>
+              <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-purple-300 block font-bold">투석 여부</span>
+                <span className="font-extrabold truncate">{profile?.dialysis_type || '투석 안함'}</span>
+              </div>
+              {profile?.dialysis_type && (profile.dialysis_type === '혈액투석' || profile.dialysis_type === '복막투석') && (
+                <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                  <span className="text-[9px] text-purple-300 block font-bold">건체중(Dry Weight)</span>
+                  <span className="font-extrabold text-amber-200">{profile?.target_weight || '62.5'}kg <span className="text-[8px] text-purple-355 font-normal ml-0.5">← 필수</span></span>
+                </div>
+              )}
               <div className="bg-white/5 p-2 rounded-xl border border-white/5">
                 <span className="text-[9px] text-purple-300 block font-bold">크레아티닌 / eGFR</span>
                 <span className="font-extrabold text-amber-200">{profile?.creatinine || '1.2'}mg/dL ({profile?.egfr || '68'}ml)</span>
@@ -421,13 +416,9 @@ export default function DashboardPage() {
                 <span className="text-[9px] text-purple-300 block font-bold">콩팥 병기 단계</span>
                 <span className="font-extrabold text-amber-200">{profile?.ckd_stage || '1~2기'}</span>
               </div>
-              <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+              <div className="bg-white/5 p-2 rounded-xl border border-white/5 col-span-2">
                 <span className="text-[9px] text-purple-300 block font-bold">당뇨병 유형</span>
                 <span className="font-extrabold">{profile?.diabetes_type !== '없음' ? `${profile?.diabetes_type}` : '해당없음'}</span>
-              </div>
-              <div className="bg-white/5 p-2 rounded-xl border border-white/5">
-                <span className="text-[9px] text-purple-300 block font-bold">투석 여부</span>
-                <span className="font-extrabold truncate">{profile?.dialysis_type || '투석 안함'}</span>
               </div>
 
               {/* 영양소 섭취 제한량 */}
@@ -818,122 +809,7 @@ export default function DashboardPage() {
 
       </div>
 
-      {/* 4. 건강 관리 생활 수칙 체크리스트 (전체 너비 카드) */}
-      <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-md space-y-4">
-        <div className="flex items-center space-x-2">
-          <CheckCircle2 size={18} className="text-[#6D3FA0]" />
-          <h3 className="text-sm font-bold text-slate-800">오늘의 건강 지키기 체크리스트</h3>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-          
-          <button 
-            onClick={() => toggleCheck('meds')}
-            className={`flex flex-col justify-between p-4 rounded-2xl border text-xs text-left transition-all duration-300 min-h-[100px] ${
-              checklist.meds 
-                ? 'bg-[#6D3FA0]/10 border-purple-200 text-purple-900 font-bold' 
-                : 'bg-slate-50 border-slate-100 text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <div className="flex items-center space-x-2">
-              <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                checklist.meds ? 'bg-[#6D3FA0] border-[#6D3FA0] text-white' : 'border-slate-300 bg-white'
-              }`}>
-                {checklist.meds && <Plus size={10} className="stroke-[3]" />}
-              </div>
-              <span className="font-bold text-[10px] text-slate-400">복약 관리</span>
-            </div>
-            <span className="mt-2 text-[11px] leading-tight font-semibold">
-              {profile?.diabetes_type !== '없음' && (profile?.ckd_stage?.includes('정상') || !profile?.ckd_stage)
-                ? '정시 복약 완료 (당뇨 처방약 및 인슐린 시간 확인)'
-                : '정시 복약 완료 (처방약 및 이뇨제/혈압약 복용 시간 확인)'}
-            </span>
-          </button>
-
-          <button 
-            onClick={() => toggleCheck('diet')}
-            className={`flex flex-col justify-between p-4 rounded-2xl border text-xs text-left transition-all duration-300 min-h-[100px] ${
-              checklist.diet 
-                ? 'bg-[#6D3FA0]/10 border-purple-200 text-purple-900 font-bold' 
-                : 'bg-slate-50 border-slate-100 text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <div className="flex items-center space-x-2">
-              <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                checklist.diet ? 'bg-[#6D3FA0] border-[#6D3FA0] text-white' : 'border-slate-300 bg-white'
-              }`}>
-                {checklist.diet && <Plus size={10} className="stroke-[3]" />}
-              </div>
-              <span className="font-bold text-[10px] text-slate-400">식이 요법</span>
-            </div>
-            <span className="mt-2 text-[11px] leading-tight font-semibold">
-              {profile?.diabetes_type !== '없음' && (profile?.ckd_stage?.includes('정상') || !profile?.ckd_stage)
-                ? '저당·식이 조절 준수 (단순당 배제 및 당 조절 잡곡 식사)'
-                : (profile?.diabetes_type === '없음'
-                    ? '저염식·저칼륨 수칙 준수 (식단 칼륨/염분 조절 조리)'
-                    : '복합 식이 조절 준수 (저염·저칼륨 및 저당 식사 요법)')}
-            </span>
-          </button>
-
-          <button 
-            onClick={() => toggleCheck('exercise')}
-            className={`flex flex-col justify-between p-4 rounded-2xl border text-xs text-left transition-all duration-300 min-h-[100px] ${
-              checklist.exercise 
-                ? 'bg-[#6D3FA0]/10 border-purple-200 text-purple-900 font-bold' 
-                : 'bg-slate-50 border-slate-100 text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <div className="flex items-center space-x-2">
-              <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                checklist.exercise ? 'bg-[#6D3FA0] border-[#6D3FA0] text-white' : 'border-slate-300 bg-white'
-              }`}>
-                {checklist.exercise && <Plus size={10} className="stroke-[3]" />}
-              </div>
-              <span className="font-bold text-[10px] text-slate-400">운동 관리</span>
-            </div>
-            <span className="mt-2 text-[11px] leading-tight font-semibold">가벼운 30분 유산소 운동 (맥박수 체크 및 당수치 확인)</span>
-          </button>
-
-          <button 
-            onClick={() => toggleCheck('bloodPressure')}
-            className={`flex flex-col justify-between p-4 rounded-2xl border text-xs text-left transition-all duration-300 min-h-[100px] ${
-              checklist.bloodPressure 
-                ? 'bg-[#6D3FA0]/10 border-purple-200 text-purple-900 font-bold' 
-                : 'bg-slate-50 border-slate-100 text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <div className="flex items-center space-x-2">
-              <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                checklist.bloodPressure ? 'bg-[#6D3FA0] border-[#6D3FA0] text-white' : 'border-slate-300 bg-white'
-              }`}>
-                {checklist.bloodPressure && <Plus size={10} className="stroke-[3]" />}
-              </div>
-              <span className="font-bold text-[10px] text-slate-400">자가 혈압</span>
-            </div>
-            <span className="mt-2 text-[11px] leading-tight font-semibold">아침/저녁 혈압 자가 기록 완료 (수축기/이완기 측정)</span>
-          </button>
-
-          <button 
-            onClick={() => toggleCheck('bloodSugar')}
-            className={`flex flex-col justify-between p-4 rounded-2xl border text-xs text-left transition-all duration-300 min-h-[100px] ${
-              checklist.bloodSugar 
-                ? 'bg-[#6D3FA0]/10 border-purple-200 text-purple-900 font-bold' 
-                : 'bg-slate-50 border-slate-100 text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <div className="flex items-center space-x-2">
-              <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                checklist.bloodSugar ? 'bg-[#6D3FA0] border-[#6D3FA0] text-white' : 'border-slate-300 bg-white'
-              }`}>
-                {checklist.bloodSugar && <Plus size={10} className="stroke-[3]" />}
-              </div>
-              <span className="font-bold text-[10px] text-slate-400">자가 혈당</span>
-            </div>
-            <span className="mt-2 text-[11px] leading-tight font-semibold">공복/매식후 혈당 자가 측정 완료 (목표치 대비 평가)</span>
-          </button>
-
-        </div>
-      </div>
 
       {/* 5. 자가 진단 및 하단 네비게이션 */}
       <div className="w-full">

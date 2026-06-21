@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { AgentResponse, UserProfile } from '../types/chat';
-import { queryPinecone } from '../rag/pineconeClient';
+import { searchSupabaseVectors } from '../rag/supabaseClient';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'dummy_key',
@@ -105,15 +105,15 @@ export async function dietAgent(message: string, userProfile?: UserProfile): Pro
 
     // 2. RAG 검색 (식이/운동 지침 자료)
     const searchTerms = `${lowercaseMsg} 식이요법 운동 지침`;
-    const pineconeResults = await queryPinecone('kongdang-papers', searchTerms, 5).catch(err => {
-      console.error('Pinecone diet query failed:', err);
+    const vectorResults = await searchSupabaseVectors('papers', searchTerms, 5).catch(err => {
+      console.error('Supabase papers vector query failed:', err);
       return [];
     });
 
-    const contextStr = pineconeResults.map((match, idx) => 
+    const contextStr = vectorResults.map((match, idx) => 
       `[식이지침 출처 ${idx + 1}]
-제목: ${match.metadata?.title || '만성신부전 및 당뇨병 임상 영양지침'}
-지침내용: ${match.metadata?.abstract || match.metadata?.content || ''}
+제목: ${match.title || '만성신부전 및 당뇨병 임상 영양지침'}
+지침내용: ${match.content || ''}
 `
     ).join('\n---\n');
 
@@ -179,10 +179,10 @@ ${contextStr || '대한신장학회/대한당뇨병학회 영양 섭취 및 생�
     const answer = response.choices[0]?.message?.content || '식단 및 운동 가이드를 생성하는 데 실패했습니다.';
 
     // 출처 매핑
-    const sources: AgentResponse['sources'] = pineconeResults.map(p => ({
-      title: p.metadata?.title || '만성신부전 및 당뇨병 임상 영양 지침',
-      org: p.metadata?.org || '대한임상영양학회',
-      url: p.metadata?.url || undefined
+    const sources: AgentResponse['sources'] = vectorResults.map(p => ({
+      title: p.title || '만성신부전 및 당뇨병 임상 영양 지침',
+      org: p.org || '대한임상영양학회',
+      url: p.url || undefined
     }));
 
     if (sources.length === 0) {

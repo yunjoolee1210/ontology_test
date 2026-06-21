@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@pinecone-database/pinecone": "^2.2.0",
     "@supabase/supabase-js": "^2.43.0",
     "ai": "^3.2.0",
     "lucide-react": "^0.379.0",

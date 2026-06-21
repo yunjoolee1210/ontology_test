@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { AgentResponse, UserProfile } from '../types/chat';
-import { queryPinecone } from '../rag/pineconeClient';
+import { searchSupabaseVectors } from '../rag/supabaseClient';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'dummy_key',
@@ -92,17 +92,17 @@ export async function medicalAgent(message: string, userProfile?: UserProfile): 
     // RAG 쿼리 생성
     const searchTerms = [mappedConcept, userProfile?.ckd_stage, userProfile?.dialysis_type].filter(Boolean).join(' ');
     
-    // Pinecone RAG 검색 (symptom 가이드라인)
-    const pineconeResults = await queryPinecone('kongdang-papers', searchTerms, 5).catch(err => {
-      console.error('Pinecone papers query failed:', err);
+    // Supabase Vector DB RAG 검색 (symptom 가이드라인)
+    const vectorResults = await searchSupabaseVectors('papers', searchTerms, 5).catch(err => {
+      console.error('Supabase papers vector query failed:', err);
       return [];
     });
 
-    const contextStr = pineconeResults.map((match, idx) => 
+    const contextStr = vectorResults.map((match, idx) => 
       `[임상지침 출처 ${idx + 1}]
-제목: ${match.metadata?.title || '대한신장학회 만성콩팥병 가이드라인'}
-요약: ${match.metadata?.abstract || match.metadata?.content || ''}
-기관: ${match.metadata?.org || '대한신장학회/대한당뇨병학회'}
+제목: ${match.title || '대한신장학회 만성콩팥병 가이드라인'}
+요약: ${match.content || ''}
+기관: ${match.org || '대한신장학회/대한당뇨병학회'}
 `
     ).join('\n---\n');
 
@@ -146,10 +146,10 @@ ${contextStr || '신장/당뇨 학회 임상 진료 지침 요약 정보 참조 
     const answer = response.choices[0]?.message?.content || '의학 진료 정보 요약에 실패했습니다.';
 
     // RAG 출처 매핑
-    const sources: AgentResponse['sources'] = pineconeResults.map(p => ({
-      title: p.metadata?.title || '대한신장학회 만성콩팥병 진료지침',
-      org: p.metadata?.org || '대한신장학회',
-      url: p.metadata?.url || undefined
+    const sources: AgentResponse['sources'] = vectorResults.map(p => ({
+      title: p.title || '대한신장학회 만성콩팥병 진료지침',
+      org: p.org || '대한신장학회',
+      url: p.url || undefined
     }));
 
     if (sources.length === 0) {
