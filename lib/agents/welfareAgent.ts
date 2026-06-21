@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { entityExtractor } from './entityExtractor';
-import { searchWelfareDocs, searchSupabaseVectors } from '../rag/supabaseClient';
+import { searchWelfareDocs, searchSupabaseVectors } from '../rag/supabaseSearch';
 import { AgentResponse, UserProfile } from '../types/chat';
 
 const openai = new OpenAI({

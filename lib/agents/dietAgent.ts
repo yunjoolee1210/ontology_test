@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { AgentResponse, UserProfile } from '../types/chat';
-import { searchSupabaseVectors } from '../rag/supabaseClient';
+import { searchSupabaseVectors } from '../rag/supabaseSearch';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'dummy_key',

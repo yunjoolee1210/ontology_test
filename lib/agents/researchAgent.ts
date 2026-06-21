@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { entityExtractor } from './entityExtractor';
 import { searchPubMed } from '../rag/pubmedClient';
-import { searchSupabaseVectors } from '../rag/supabaseClient';
+import { searchSupabaseVectors } from '../rag/supabaseSearch';
 import { reciprocalRankFusion } from '../rag/hybridMerger';
 import { AgentResponse, UserProfile } from '../types/chat';
 
